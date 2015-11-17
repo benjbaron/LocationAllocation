@@ -1,0 +1,78 @@
+00:09:5B:B5:6E:78
+01:03:30
+PVTA_3213 received 41944 bytes from unknown in 5078 ms on 10 11 2007 at 0:42:33 at location is current longitude is 72.5742616667 latitude is 42.254145 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B5:6E:78
+01:03:30
+PVTA_3213 received 464344 bytes from unknown in 4283 ms on 10 11 2007 at 0:42:23 at location is current longitude is 72.57427 latitude is 42.25414 speed is 0.585635479718 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B5:6E:78
+01:03:30
+PVTA_3213 received 1008400 bytes from PVTA_3202 in 6037 ms on 10 11 2007 at 0:23:48 at location is current longitude is 72.530275 latitude is 42.3219666667 speed is 4.68508383026 direction is SW using 09 satellites (bus-bus)
+00:13:46:93:60:94
+01:36:20
+PVTA_3202 received 2444488 bytes from PVTA_3213 in 7386 ms on 10 11 2007 at 0:23:50 at location is current longitude is 72.5297116667 latitude is 42.3222233333 speed is 6.44199026691 direction is NE using 09 satellites (bus-bus)
+00:13:46:93:60:94
+01:36:24
+PVTA_3202 received 9397240 bytes from PVTA_3213 in 43356 ms on 10 11 2007 at 1:4:38 at location is current longitude is 72.5310983333 latitude is 42.3252516667 speed is 0.585635479718 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B5:6E:78
+01:38:07
+PVTA_3213 received 1874704 bytes from PVTA_3202 in 37726 ms on 10 11 2007 at 1:4:35 at location is current longitude is 72.5302933333 latitude is 42.325095 speed is 5.27071930748 direction is NE using 10 satellites (bus-bus)
+00:09:5B:B5:6E:78
+01:38:07
+PVTA_3213 received 418200 bytes from unknown in 4781 ms on 10 11 2007 at 1:6:7 at location is current longitude is 72.5298866667 latitude is 42.3221783333 speed is 0.585635479718 direction is 0 using 09 satellites (bus-bus)
+00:13:46:93:60:94
+01:49:30
+PVTA_3202 received 82984 bytes from unknown in 2 ms on 10 11 2007 at 1:46:5 at location is current longitude is 72.5289983333 latitude is 42.32513 speed is 0.585635479718 direction is 0 using 10 satellites (bus-bus)
+00:13:46:93:60:94
+01:51:26
+PVTA_3202 received 275080 bytes from PVTA_3213 in 15541 ms on 10 11 2007 at 1:46:1 at location is current longitude is 72.5295133333 latitude is 42.3251216667 speed is 0.0 direction is 0 using 10 satellites (bus-bus)
+00:09:5B:B5:6E:78
+02:01:39
+PVTA_3213 received 285888 bytes from PVTA_3202 in 10893 ms on 10 11 2007 at 1:45:57 at location is current longitude is 72.5308866667 latitude is 42.32527 speed is 1.17127095694 direction is SW using 09 satellites (bus-bus)
+00:09:5B:B3:52:B8
+13:43:41
+PVTA_3028 received 2959832 bytes from PVTA_3040 in 26123 ms on 10 11 2007 at 13:43:31 at location is current longitude is 72.5354316667 latitude is 42.378035 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B3:51:6B
+13:44:20
+PVTA_3040 received 67872 bytes from PVTA_3028 in 2974 ms on 10 11 2007 at 13:43:7 at location is current longitude is 72.5350733333 latitude is 42.3782483333 speed is 1.17127095694 direction is NW using 03 satellites (bus-bus)
+00:09:5B:B5:6E:6A
+14:05:51
+PVTA_3035 received 1870192 bytes from unknown in 15971 ms on 10 11 2007 at 14:5:9 at location is current longitude is 72.535245 latitude is 42.3779766667 speed is 1.75690643666 direction is NW using 06 satellites (bus-bus)
+00:09:5B:B5:6E:71
+14:08:50
+PVTA_3204 received 539048 bytes from PVTA_3201 in 1633 ms on 10 11 2007 at 14:8:40 at location is current longitude is 72.5193983333 latitude is 42.381635 speed is 11.1270740972 direction is NW using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+14:09:33
+PVTA_3201 received 303264 bytes from PVTA_3204 in 1756 ms on 10 11 2007 at 14:8:40 at location is current longitude is 72.5191 latitude is 42.3811433333 speed is 20.4972417552 direction is SW using 07 satellites (bus-bus)
+00:13:46:93:4F:94
+14:44:31
+PVTA_3201 received 170256 bytes from PVTA_3035 in 1947 ms on 10 11 2007 at 14:44:3 at location is current longitude is 72.5224616667 latitude is 42.3860783333 speed is 19.3259707957 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B5:6E:6A
+14:47:00
+PVTA_3035 received 1912064 bytes from PVTA_3201 in 11526 ms on 10 11 2007 at 14:45:31 at location is current longitude is 72.5239916667 latitude is 42.3880716667 speed is 17.5690643616 direction is NW using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+15:50:14
+PVTA_3201 received 3066200 bytes from PVTA_3030 in 17226 ms on 10 11 2007 at 15:47:54 at location is current longitude is 72.523835 latitude is 42.3878 speed is 24.011054626 direction is NW using 08 satellites (bus-bus)
+00:13:46:93:4F:94
+15:50:17
+PVTA_3201 received 1314032 bytes from PVTA_3035 in 11169 ms on 10 11 2007 at 15:47:6 at location is current longitude is 72.52333 latitude is 42.3874766667 speed is 8.19889670107 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B5:6E:6A
+16:01:37
+PVTA_3035 received 1619992 bytes from PVTA_3201 in 8973 ms on 10 11 2007 at 15:47:4 at location is current longitude is 72.5230366667 latitude is 42.387215 speed is 0.0 direction is 0 using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+16:48:20
+PVTA_3201 received 6862896 bytes from PVTA_3204 in 35378 ms on 10 11 2007 at 16:47:41 at location is current longitude is 72.519415 latitude is 42.3802 speed is 26.3535965424 direction is NE using 10 satellites (bus-bus)
+00:09:5B:B5:6E:71
+16:49:12
+PVTA_3204 received 4366448 bytes from PVTA_3201 in 20632 ms on 10 11 2007 at 16:47:40 at location is current longitude is 72.5195933333 latitude is 42.3797416667 speed is 0.585635479718 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B5:6E:71
+16:49:16
+PVTA_3204 received 430616 bytes from PVTA_3201 in 3330 ms on 10 11 2007 at 16:47:8 at location is current longitude is 72.5195516667 latitude is 42.379695 speed is 1.17127095694 direction is NW using 08 satellites (bus-bus)
+00:09:5B:B5:6E:71
+16:50:13
+PVTA_3204 received 1400 bytes from PVTA_3040 in 36 ms on 10 11 2007 at 16:49:43 at location is current longitude is 72.5223966667 latitude is 42.3858316667 speed is 9.37016766051 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B5:6E:71
+18:13:15
+PVTA_3204 received 25488 bytes from PVTA_3201 in 195 ms on 10 11 2007 at 18:12:52 at location is current longitude is 72.5194466667 latitude is 42.3802533333 speed is 37.480670637 direction is S using 08 satellites (bus-bus)
+00:13:46:93:4F:94
+18:13:23
+PVTA_3201 received 890872 bytes from PVTA_3204 in 2588 ms on 10 11 2007 at 18:12:53 at location is current longitude is 72.5193416667 latitude is 42.3809016667 speed is 29.8674094132 direction is N using 09 satellites (bus-bus)

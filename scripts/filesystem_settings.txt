@@ -1,0 +1,41 @@
+Scenario.name = filesystem_scenario
+Scenario.simulateConnections = true
+Scenario.updateInterval = 0.1
+Scenario.endTime = 30000
+
+wifi.type = SimpleBroadcastInterface
+wifi.transmitSpeed = 1M
+wifi.transmitRange = 250
+
+Events.nrof = 0
+Scenario.nrofHostGroups = 2
+
+Group.router = DirectDeliveryRouter
+Group.nrofInterfaces = 1
+Group.interface1 = wifi
+Group.speed = 2.7, 13.9
+
+Group1.groupID = f
+Group1.nrofHosts = 2500
+Group1.movementModel = StationaryMovement
+# Group1.movementModel = RandomWaypoint
+Group1.nodeLocation = -1, -1
+
+MovementModel.worldSize = 5000, 5000
+Group2.groupID = t
+Group2.nrofHosts = 100
+Group2.movementModel = RandomWaypoint
+
+Report.nrofReports = 1
+Report.warmup = 0
+Report.reportDir = reports/
+
+Report.report1 = FileSystemReport2
+FileSystemReport2.reqGenRate = 0.016667
+FileSystemReport2.deadline = 240
+FileSystemReport2.facilityPlacement = random
+FileSystemReport2.allowNodeContacts = false
+FileSystemReport2.useBackend = true
+FileSystemReport2.replicationType = rep
+FileSystemReport2.putPolicy = first
+FileSystemReport2.maxStorage = 1

@@ -1,0 +1,133 @@
+Copyright (c) 2004 by The Regents of the University of California
+All Rights Reserved
+
+Permission to use any part of this trace for educational, research and
+non-profit purposes, without fee, and without a written agreement is
+hereby granted, provided that the above copyright notice, this
+paragraph, the following three paragraphs, and the terms of the
+Acceptable Use Policy (AUP) appear in all uses.
+
+Those desiring to incorporate this trace into commercial products or
+use for commercial purposes should contact: Technology Transfer &
+Intellectual Property Services (SD2002-849), University of California,
+San Diego, 9500 Gilman Drive, Mail Code 0910, La Jolla, CA 92093-0910
+Ph: (858) 534-5815, FAX: (858) 534-7345, E-MAIL: invent@ucsd.edu.
+
+IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY
+FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES,
+INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS TRACE, EVEN IF
+THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+
+THIS TRACE IS PROVIDED HEREIN IS ON AN "AS IS" BASIS, AND THE
+UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO PROVIDE MAINTENANCE,
+SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.  THE UNIVERSITY OF
+CALIFORNIA MAKES NO REPRESENTATIONS AND EXTENDS NO WARRANTIES OF ANY
+KIND, EITHER IMPLIED OR EXPRESS, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR
+PURPOSE, OR THAT THE USE OF THE WIRELESS RESEARCH API WILL NOT
+INFRINGE ANY PATENT, TRADEMARK OR OTHER RIGHTS.
+
+Terms of the Acceptable Use Policy (AUP):
+
+1) Users of the UCSD Wireless Topology Discovery Trace will not
+   distribute the trace beyond those authorized to use the trace.
+
+2) Trace users will identify the names, affiliations, and email
+   addresses of all persons (including graduate students and interns)
+   using the trace data in the form above.  Traces users will identify
+   future users of the trace to wtd-trace@ramp.ucsd.edu.
+
+3) The identifiers in this trace are all anonymized to preserve the
+   privacy of end users (hosts) and networks monitored in the
+   collection of the trace data.  In so far as possible, trace users
+   will respect the privacy of end users (hosts) and networks
+   monitored in the creation of these traces.  Trace users will make
+   no attempts to reverse engineer, decrypt, or otherwise identify the
+   original users or devices referenced in the trace.  TRACE USERS
+   WILL MAKE NO ATTEMPTS TO CONNECT TO, PROBE, OR IN ANY OTHER WAY
+   INITIATE CONTACT WITH A MACHINE, MACHINE ADMINISTRATOR, OR USER
+   IDENTIFIED VIA THE TRACE DATA.
+
+4) At the end of the research, trace users will report a summary of
+   the research and any findings/conclusions to
+   wtd-trace@ramp.ucsd.edu (e.g., links to papers using the trace data
+   are sufficient).  If any research is described on the World Wide
+   Web, trace users will provide a URL to the research.  This
+   information is used primarily in reports to our funding agencies.
+
+5) In so far as possible, trace users will publish and/or make
+   available their findings and conclusions.  To facilitate others to
+   reproduce and/or extend published research findings, (1) use "UCSD
+   Wireless Topology Discovery Trace" as a reference name for the
+   trace, (2) cite the trace download location as
+   "http://ramp.ucsd.edu/wtd/", and (3) include the following
+   attribution:
+
+     Support for the UCSD Wireless Topology Discovery Trace was
+     provided by DARPA Contract N66001-01-1-8933.
+
+-   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+
+The data is provided in two gzipped CSV (comma separated value) files:
+
+	* ap_locations.csv.gz
+	* wtd.csv.gz
+
+
+### ap_locations.csv
+
+The ap_locations.csv.gz file contains infomation about the locations of access
+points which were known to us at the beginning of the trace period.  As
+indicated at the top of the file, the fields are:
+
+	AP_ID:			Unique identifier assigned to the access point
+	X_COORDINATE:	x-coordinate (in ft) of access point w.r.t. campus 
+					coordinate system.
+	Y_COORDINATE:	y-coordinate (in ft) of access point w.r.t. campus 
+					coordinate system.
+	Z_COORDINATE:	z-coordinate (in ft) of access point w.r.t. campus 
+					coordinate system.
+
+Note that locations were not known for all access points detected during the
+trace.  As expected, new access points were continuously being added to the
+campus network.  In addition, many students may have used their own access
+points or detected/associated with off campus access points.
+
+Conversely, there were a few known access points which students did not
+associate with during the trace.  Nonetheless, all detected and known APs have
+been included in our data.
+
+### wtd.csv
+
+The wtd.csv.gz file contains data collected by the WTD software running on the
+student's devices.  The data was collected during an 11 week trace period from
+9/22/2002 to 12/8/2002.  
+
+While a student's device was powered on, WTD sampled and recorded the following
+information every 20 seconds for all APs that it could sense across all
+frequencies--not just the AP the wireless card was associated with at the time:
+
+	USER_ID:	Unique identifier assigned to the user
+	SAMPLE_TIME:	The time the sample was taken by the WTD software
+	AP_ID:		Unique identifier assigned to the detected AP
+	SIG_STRENGTH:	Strength of AP signals received by device
+	AC_POWER:	Whether the device used AC power (1) or battery (0)
+	ASSOCIATED:	Whether the device was associated with this AP (1) or not (0)
+	
+Since WTD recorded the above information for all APs sensed during a sample, if
+a user device saw 3 APs in one sample, there were 3 entries recorded for that
+sample (which differ only in the AP detected, signal strength, and associated
+flag).
+
+Clock skew was corrected for at the server using the formula:
+
+  SAMPLE_TIME = DEVICE_SAMPLE_TIME + (SERVER_UPLOAD_TIME - DEVICE_UPLOAD_TIME) 
+
+The signal strength was as reported by the Symbol Wireless Networker 802.11b
+Compact Flash cards used by the student's devices.
+
+For more information, read the Technical Report "Access and Mobility of
+Wireless PDA Users" located at http://ramp.ucsd.edu/wtd/wtd.pdf.
+
+Marvin McNett (mmcnett@cs.ucsd.edu)

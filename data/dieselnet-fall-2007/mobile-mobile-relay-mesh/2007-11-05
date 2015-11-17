@@ -1,0 +1,1923 @@
+00:09:5B:B5:6E:71
+00:04:26
+diesel received 228192 bytes from PVTA_3204 in 4839 ms on 10 5 2007 at 0:4:23 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+00:23:27
+diesel received 152976 bytes from PVTA_3214 in 4963 ms on 10 5 2007 at 0:23:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+00:35:27
+diesel received 2220728 bytes from PVTA_3204 in 7686 ms on 10 5 2007 at 0:35:24 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+01:18:27
+diesel received 9210912 bytes from PVTA_3214 in 29802 ms on 10 5 2007 at 1:18:4 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+01:20:28
+diesel received 2574864 bytes from PVTA_3214 in 10160 ms on 10 5 2007 at 1:19:38 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:65:51
+01:46:52
+PVTA_3212 received 592920 bytes from PVTA_3204 in 993 ms on 10 5 2007 at 1:45:17 at location is current longitude is 72.5340816667 latitude is 42.39477 speed is 0.585635479718 direction is 0 using 09 satellites (bus-bus)
+00:13:46:93:60:93
+06:17:57
+PVTA_3211 received 3821656 bytes from 00:00:00:00:00:03 in 20883 ms on 10 4 2007 at 1:16:30 at location is current longitude is 72.5252466667 latitude is 42.3914066667 speed is 21.0828772349 direction is N using 07 satellites (bus-bus)
+00:13:46:93:60:93
+06:18:01
+PVTA_3211 received 2448344 bytes from 00:00:00:00:00:03 in 22404 ms on 10 4 2007 at 0:8:1 at location is current longitude is 72.5254016667 latitude is 42.3916333333 speed is 20.4972417527 direction is NW using 10 satellites (bus-bus)
+00:13:46:93:60:93
+06:18:04
+PVTA_3211 received 947832 bytes from 00:00:00:00:00:03 in 10099 ms on 10 4 2007 at 1:48:30 at location is current longitude is 72.5252216667 latitude is 42.3908366667 speed is 0.0 direction is 0 using 08 satellites (bus-bus)
+00:13:46:93:60:93
+06:18:07
+PVTA_3211 received 2243576 bytes from 00:00:00:00:00:03 in 25375 ms on 10 3 2007 at 23:1:36 at location is current longitude is 72.5253116667 latitude is 42.391385 speed is 17.5690643616 direction is N using 11 satellites (bus-bus)
+00:13:46:93:60:93
+06:18:10
+PVTA_3211 received 749616 bytes from 00:00:00:00:00:03 in 12433 ms on 10 3 2007 at 23:38:58 at location is current longitude is 72.5252516667 latitude is 42.3909066667 speed is 0.585635479718 direction is 0 using 08 satellites (bus-bus)
+00:13:46:93:60:93
+06:18:13
+PVTA_3211 received 1150744 bytes from 00:00:00:00:00:03 in 12208 ms on 10 4 2007 at 0:46:40 at location is current longitude is 72.52521 latitude is 42.3908383333 speed is 1.17127095694 direction is S using 09 satellites (bus-bus)
+00:13:46:93:60:93
+06:32:22
+PVTA_3211 received 722620 bytes from diesel in 8093 ms on 10 5 2007 at 6:31:47 at location is current longitude is 72.5200566667 latitude is 42.3823066667 speed is 37.480670637 direction is SE using 09 satellites (bus-host)
+00:13:46:93:60:93
+06:33:57
+PVTA_3211 received 569160 bytes from diesel in 5883 ms on 10 5 2007 at 6:33:38 at location is current longitude is 72.51984 latitude is 42.3739883333 speed is 35.7237642004 direction is S using 09 satellites (bus-host)
+00:13:46:93:60:93
+06:34:01
+PVTA_3211 received 5062432 bytes from diesel in 19611 ms on 10 5 2007 at 6:32:57 at location is current longitude is 72.5199066667 latitude is 42.3766066667 speed is 26.9392320196 direction is S using 09 satellites (bus-host)
+00:13:46:93:60:93
+06:38:10
+PVTA_3211 received 558984 bytes from diesel in 1818 ms on 10 5 2007 at 6:36:51 at location is current longitude is 72.5200916667 latitude is 42.3481983333 speed is 52.1215576025 direction is S using 09 satellites (bus-host)
+00:13:46:93:60:93
+07:00:32
+diesel received 85344 bytes from PVTA_3211 in 1836 ms on 10 5 2007 at 6:59:44 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:02:56
+PVTA_3204 received 333392 bytes from diesel in 9419 ms on 10 4 2007 at 23:11:39 at location is current longitude is 72.530385 latitude is 42.3250816667 speed is 12.2983450541 direction is NE using 10 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:03:00
+PVTA_3204 received 26614000 bytes from PVTA_3213 in 60123 ms on 10 5 2007 at 7:1:32 at location is current longitude is 72.5328583333 latitude is 42.39362 speed is 0.0 direction is 0 using 06 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:03:05
+PVTA_3204 received 1400 bytes from diesel in 9 ms on 10 5 2007 at 0:30:27 at location is current longitude is 72.53101 latitude is 42.3252983333 speed is 1.17127095694 direction is SW using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:03:09
+PVTA_3204 received 1247784 bytes from diesel in 6698 ms on 10 4 2007 at 23:16:12 at location is current longitude is 72.519915 latitude is 42.3499166667 speed is 48.022109252 direction is N using 09 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:03:14
+PVTA_3204 received 3114800 bytes from PVTA_3212 in 14014 ms on 10 5 2007 at 1:45:31 at location is current longitude is 72.5338616667 latitude is 42.3948016667 speed is 4.68508383026 direction is NE using 05 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:03:18
+PVTA_3204 received 40600 bytes from diesel in 1843 ms on 10 4 2007 at 22:23:8 at location is current longitude is 72.5209916667 latitude is 42.3563683333 speed is 39.2375770712 direction is S using 10 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:03:23
+PVTA_3204 received 157888 bytes from diesel in 3896 ms on 10 4 2007 at 23:14:6 at location is current longitude is 72.52291 latitude is 42.3359016667 speed is 51.5359221253 direction is NE using 10 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:03:27
+PVTA_3204 received 95040 bytes from diesel in 2814 ms on 10 5 2007 at 0:30:51 at location is current longitude is 72.531185 latitude is 42.325015 speed is 14.0552514883 direction is SE using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:03:32
+PVTA_3204 received 88880 bytes from diesel in 1162 ms on 10 4 2007 at 23:1:52 at location is current longitude is 72.5535883333 latitude is 42.282355 speed is 25.7679610627 direction is NE using 10 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:03:37
+PVTA_3204 received 1180288 bytes from PVTA_3201 in 3753 ms on 10 4 2007 at 23:6:39 at location is current longitude is 72.5306916667 latitude is 42.3150533333 speed is 53.292828562 direction is NE using 10 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:03:41
+PVTA_3204 received 28863800 bytes from PVTA_3213 in 60133 ms on 10 5 2007 at 7:2:34 at location is current longitude is 72.5328316667 latitude is 42.3936783333 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:08:44
+PVTA_3204 received 3611952 bytes from PVTA_3213 in 14667 ms on 10 5 2007 at 7:5:58 at location is current longitude is 72.5328516667 latitude is 42.39366 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:08:48
+PVTA_3204 received 97120 bytes from unknown in 1 ms on 10 5 2007 at 7:4:41 at location is current longitude is 72.5328116667 latitude is 42.3936516667 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:08:52
+PVTA_3204 received 29222200 bytes from PVTA_3213 in 60179 ms on 10 5 2007 at 7:3:35 at location is current longitude is 72.5328583333 latitude is 42.3936 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:08:54
+PVTA_3204 received 27686400 bytes from PVTA_3213 in 57395 ms on 10 5 2007 at 7:5:38 at location is current longitude is 72.5328333333 latitude is 42.3936583333 speed is 0.0 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:08:57
+PVTA_3204 received 29255800 bytes from PVTA_3213 in 60125 ms on 10 5 2007 at 7:4:37 at location is current longitude is 72.53281 latitude is 42.3936516667 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:10:33
+diesel received 2637760 bytes from PVTA_3204 in 10122 ms on 10 5 2007 at 7:10:24 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+07:13:42
+PVTA_3028 received 1021528 bytes from PVTA_3212 in 18312 ms on 10 5 2007 at 7:13:0 at location is current longitude is 72.5333516667 latitude is 42.39379 speed is 0.585635479718 direction is 0 using 09 satellites (bus-bus)
+00:13:46:93:65:51
+07:16:46
+PVTA_3212 received 3155784 bytes from PVTA_3028 in 18512 ms on 10 5 2007 at 7:13:1 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:65:51
+07:21:36
+PVTA_3212 received 7658232 bytes from PVTA_3214 in 17191 ms on 10 5 2007 at 7:17:34 at location is current longitude is 72.5328683333 latitude is 42.393755 speed is 0.585635479718 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:52:BA
+07:31:38
+PVTA_3037 received 230816 bytes from diesel in 3569 ms on 10 5 2007 at 7:30:44 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+07:35:27
+PVTA_3211 received 407544 bytes from PVTA_3213 in 9041 ms on 10 5 2007 at 7:34:15 at location is current longitude is 72.519925 latitude is 42.3774333333 speed is 21.0828772324 direction is S using 09 satellites (bus-bus)
+00:09:5B:B3:52:BA
+07:38:15
+PVTA_3037 received 213904 bytes from PVTA_3214 in 3349 ms on 10 5 2007 at 7:37:29 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B5:6E:71
+07:38:37
+PVTA_3204 received 11536 bytes from diesel in 1917 ms on 10 5 2007 at 7:37:35 at location is current longitude is 72.5454483333 latitude is 42.4337733333 speed is 0.0 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:40:34
+diesel received 1414176 bytes from PVTA_3214 in 24077 ms on 10 5 2007 at 7:40:28 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+07:42:04
+PVTA_3211 received 7315000 bytes from diesel in 20303 ms on 10 5 2007 at 7:41:33 at location is current longitude is 72.5194816667 latitude is 42.37324 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:13:46:93:65:51
+07:42:21
+PVTA_3212 received 988400 bytes from diesel in 20637 ms on 10 5 2007 at 7:42:4 at location is current longitude is 72.581385 latitude is 42.457735 speed is 0.585635479718 direction is 0 using 08 satellites (bus-host)
+00:09:5B:B3:52:B8
+07:42:34
+diesel received 47696 bytes from PVTA_3028 in 563 ms on 10 5 2007 at 7:41:51 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:65:51
+07:43:44
+PVTA_3212 received 317064 bytes from diesel in 6129 ms on 10 5 2007 at 7:42:44 at location is current longitude is 72.5813866667 latitude is 42.457735 speed is 0.585635479718 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:52:BA
+07:44:17
+PVTA_3037 received 3704400 bytes from diesel in 20446 ms on 10 5 2007 at 7:43:46 at location is not current longitude is 72.523285 latitude is 42.3872916667 speed is 0.0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+07:45:34
+diesel received 835360 bytes from PVTA_3037 in 4336 ms on 10 5 2007 at 7:45:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:46:28
+PVTA_3204 received 1022920 bytes from diesel in 2514 ms on 10 5 2007 at 7:45:26 at location is current longitude is 72.5281716667 latitude is 42.4016233333 speed is 46.2652028178 direction is SE using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+07:47:34
+diesel received 2547300 bytes from PVTA_3204 in 11779 ms on 10 5 2007 at 7:47:6 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+07:48:15
+PVTA_3037 received 2329560 bytes from PVTA_3204 in 14388 ms on 10 5 2007 at 7:47:33 at location is current longitude is 72.5261416667 latitude is 42.394075 speed is 4.68508383026 direction is NW using 03 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:20
+PVTA_3214 received 29928 bytes from diesel in 633 ms on 10 5 2007 at 7:38:26 at location is current longitude is 72.501615 latitude is 42.37616 speed is 10.541438615 direction is NE using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:21
+PVTA_3214 received 182504 bytes from diesel in 3927 ms on 10 4 2007 at 23:38:5 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:21
+PVTA_3214 received 59320 bytes from 00:00:00:00:00:03 in 3525 ms on 10 4 2007 at 22:10:12 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:21
+PVTA_3214 received 472776 bytes from diesel in 20427 ms on 10 4 2007 at 19:48:4 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:21
+PVTA_3214 received 21669352 bytes from unknown in 45905 ms on 10 5 2007 at 6:56:23 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:21
+PVTA_3214 received 567824 bytes from 00:00:00:00:00:03 in 12215 ms on 10 4 2007 at 20:16:33 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:21
+PVTA_3214 received 9243392 bytes from 00:00:00:00:00:02 in 33890 ms on 10 4 2007 at 21:7:12 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:21
+PVTA_3214 received 10252200 bytes from diesel in 20088 ms on 10 4 2007 at 23:20:31 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 1306104 bytes from diesel in 17326 ms on 10 4 2007 at 19:39:43 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 12984 bytes from diesel in 1662 ms on 10 5 2007 at 0:52:7 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 2848 bytes from 00:00:00:00:00:06 in 22 ms on 10 4 2007 at 21:12:8 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 159160 bytes from diesel in 2911 ms on 10 4 2007 at 21:58:46 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 102192 bytes from 00:00:00:00:00:03 in 967 ms on 10 4 2007 at 19:24:56 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 86800 bytes from diesel in 2408 ms on 10 4 2007 at 23:28:36 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 7192 bytes from diesel in 206 ms on 10 4 2007 at 23:28:24 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 634384 bytes from 00:00:00:00:00:03 in 5426 ms on 10 5 2007 at 0:50:33 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:22
+PVTA_3214 received 4820024 bytes from diesel in 16858 ms on 10 5 2007 at 1:1:43 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:23
+PVTA_3214 received 184020 bytes from diesel in 1649 ms on 10 4 2007 at 23:3:24 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:23
+PVTA_3214 received 2414448 bytes from diesel in 11137 ms on 10 4 2007 at 23:27:36 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:23
+PVTA_3214 received 1142940 bytes from diesel in 7164 ms on 10 5 2007 at 0:49:22 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:23
+PVTA_3214 received 2555480 bytes from 00:00:00:00:00:03 in 28353 ms on 10 4 2007 at 21:13:1 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:23
+PVTA_3214 received 53776 bytes from diesel in 1090 ms on 10 5 2007 at 1:13:47 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:23
+PVTA_3214 received 46392 bytes from 00:00:00:00:00:03 in 1879 ms on 10 4 2007 at 21:32:13 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:23
+PVTA_3214 received 3290600 bytes from 00:00:00:00:00:02 in 21249 ms on 10 4 2007 at 20:10:30 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:24
+PVTA_3214 received 384552 bytes from 00:00:00:00:00:03 in 9041 ms on 10 4 2007 at 22:10:3 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:24
+PVTA_3214 received 4691872 bytes from diesel in 20305 ms on 10 5 2007 at 0:55:0 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:24
+PVTA_3214 received 777224 bytes from diesel in 4391 ms on 10 5 2007 at 0:13:6 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:49:24
+PVTA_3214 received 408456 bytes from PVTA_3037 in 1045 ms on 10 5 2007 at 7:37:29 at location is current longitude is 72.5106816667 latitude is 42.3758283333 speed is 2.34254191638 direction is SE using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:49:25
+PVTA_3214 received 405800 bytes from 00:00:00:00:00:03 in 5474 ms on 10 4 2007 at 23:10:31 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:52:B8
+07:49:57
+PVTA_3028 received 46536 bytes from diesel in 144 ms on 10 5 2007 at 7:41:40 at location is current longitude is 72.53533 latitude is 42.3788083333 speed is 2.34254191388 direction is NW using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:50:17
+PVTA_3214 received 864512 bytes from diesel in 19349 ms on 10 5 2007 at 0:51:34 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:50:17
+PVTA_3214 received 226480 bytes from 00:00:00:00:00:03 in 4088 ms on 10 4 2007 at 21:32:22 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:50:17
+PVTA_3214 received 8640 bytes from diesel in 288 ms on 10 5 2007 at 1:2:7 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+07:50:17
+PVTA_3214 received 580248 bytes from 00:00:00:00:00:03 in 11517 ms on 10 4 2007 at 22:31:55 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:50:18
+PVTA_3214 received 1054200 bytes from diesel in 20451 ms on 10 4 2007 at 22:26:47 at location is current longitude is 72.5180816667 latitude is 42.3757616667 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:13:46:93:4F:94
+07:50:34
+diesel received 100504 bytes from PVTA_3201 in 3448 ms on 10 5 2007 at 7:49:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+07:51:27
+PVTA_3037 received 804176 bytes from PVTA_3201 in 2357 ms on 10 5 2007 at 7:49:43 at location is current longitude is 72.52895 latitude is 42.4039216667 speed is 9.37016766051 direction is NE using 03 satellites (bus-bus)
+00:09:5B:B3:51:71
+07:52:34
+diesel received 94032 bytes from PVTA_3214 in 3228 ms on 10 5 2007 at 7:52:9 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+07:59:25
+PVTA_3202 received 5086200 bytes from diesel in 20140 ms on 10 5 2007 at 7:58:53 at location is current longitude is 72.575875 latitude is 42.257735 speed is 0.0 direction is 0 using 09 satellites (bus-host)
+00:13:46:93:60:94
+08:02:02
+PVTA_3202 received 272336 bytes from diesel in 1893 ms on 10 5 2007 at 7:59:30 at location is current longitude is 72.575725 latitude is 42.2581516667 speed is 28.110502979 direction is NE using 09 satellites (bus-host)
+00:09:5B:B3:52:BA
+08:02:34
+diesel received 165240 bytes from PVTA_3037 in 16833 ms on 10 5 2007 at 8:2:13 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+08:06:42
+PVTA_3037 received 394776 bytes from PVTA_3214 in 2332 ms on 10 5 2007 at 8:5:45 at location is current longitude is 72.5254883333 latitude is 42.3928366667 speed is 20.4972417552 direction is SE using 00 satellites (bus-bus)
+00:09:5B:B3:51:71
+08:16:35
+diesel received 3475040 bytes from PVTA_3214 in 46597 ms on 10 5 2007 at 8:15:37 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+08:18:35
+diesel received 620096 bytes from PVTA_3201 in 2604 ms on 10 5 2007 at 8:18:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+08:19:44
+PVTA_3204 received 8234800 bytes from diesel in 20047 ms on 10 5 2007 at 8:19:5 at location is current longitude is 72.51991 latitude is 42.37744 speed is 0.0 direction is 0 using 09 satellites (bus-host)
+00:13:46:93:60:94
+08:19:57
+PVTA_3202 received 204808 bytes from unknown in 795 ms on 10 5 2007 at 8:19:22 at location is current longitude is 72.5208533333 latitude is 42.35531 speed is 53.8784640417 direction is N using 09 satellites (bus-bus)
+00:13:46:93:60:94
+08:21:35
+diesel received 243200 bytes from PVTA_3202 in 5349 ms on 10 5 2007 at 8:20:56 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+08:23:06
+PVTA_3204 received 4293976 bytes from PVTA_3213 in 12402 ms on 10 5 2007 at 8:22:56 at location is current longitude is 72.5235983333 latitude is 42.387695 speed is 0.0 direction is 0 using 11 satellites (bus-bus)
+00:09:5B:B5:6E:71
+08:23:17
+PVTA_3204 received 319368 bytes from diesel in 2547 ms on 10 5 2007 at 8:23:3 at location is current longitude is 72.52362 latitude is 42.3876883333 speed is 0.0 direction is 0 using 11 satellites (bus-host)
+00:13:46:93:65:51
+08:26:20
+PVTA_3212 received 472056 bytes from diesel in 5455 ms on 10 5 2007 at 8:25:16 at location is current longitude is 72.5302883333 latitude is 42.35031 speed is 20.4972417552 direction is N using 10 satellites (bus-host)
+00:09:5B:B5:6E:71
+08:26:35
+diesel received 1013448 bytes from PVTA_3204 in 5939 ms on 10 5 2007 at 8:26:35 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BE
+08:29:25
+PVTA_3041 received 32088 bytes from diesel in 759 ms on 10 5 2007 at 8:28:18 at location is current longitude is 72.5358033333 latitude is 42.3840783333 speed is 4.68508383026 direction is SW using 09 satellites (bus-host)
+00:13:46:93:4F:94
+08:30:31
+PVTA_3201 received 4803736 bytes from PVTA_3214 in 36888 ms on 10 5 2007 at 8:29:33 at location is current longitude is 72.51983 latitude is 42.377415 speed is 1.17127095694 direction is S using 09 satellites (bus-bus)
+00:13:46:93:4F:94
+08:32:49
+PVTA_3201 received 278544 bytes from PVTA_3202 in 871 ms on 10 5 2007 at 8:32:0 at location is current longitude is 72.5222533333 latitude is 42.3859466667 speed is 15.2265224477 direction is NW using 07 satellites (bus-bus)
+00:13:46:93:61:21
+08:34:47
+PVTA_3036 received 120728 bytes from PVTA_3037 in 2045 ms on 10 5 2007 at 8:33:37 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B3:52:BA
+08:37:47
+PVTA_3037 received 41360 bytes from diesel in 799 ms on 10 5 2007 at 8:36:53 at location is current longitude is 72.4993 latitude is 42.369305 speed is 19.911606278 direction is SW using 05 satellites (bus-host)
+00:09:5B:B3:52:B8
+08:38:35
+diesel received 57344 bytes from PVTA_3028 in 1324 ms on 10 5 2007 at 8:37:39 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+08:38:35
+diesel received 3399344 bytes from PVTA_3214 in 15178 ms on 10 5 2007 at 8:38:22 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BE
+08:43:33
+PVTA_3041 received 1113000 bytes from diesel in 25943 ms on 10 5 2007 at 8:43:12 at location is current longitude is 72.5269016667 latitude is 42.3950483333 speed is 22.2541481893 direction is SE using 07 satellites (bus-host)
+00:09:5B:B3:52:B8
+08:44:05
+PVTA_3028 received 153440 bytes from diesel in 7205 ms on 10 5 2007 at 8:42:40 at location is current longitude is 72.5358683333 latitude is 42.3781983333 speed is 0.585635479718 direction is 0 using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+08:47:06
+PVTA_3204 received 503960 bytes from diesel in 11323 ms on 10 5 2007 at 8:46:26 at location is current longitude is 72.5826983333 latitude is 42.4581266667 speed is 17.5690643616 direction is NE using 07 satellites (bus-host)
+00:09:5B:B3:52:BE
+08:47:35
+diesel received 985560 bytes from PVTA_3041 in 9598 ms on 10 5 2007 at 8:47:29 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+08:48:36
+diesel received 9608 bytes from PVTA_3036 in 393 ms on 10 5 2007 at 8:47:40 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+08:48:36
+diesel received 462040 bytes from PVTA_3037 in 15836 ms on 10 5 2007 at 8:48:23 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+08:49:09
+PVTA_3201 received 7123200 bytes from diesel in 20608 ms on 10 5 2007 at 8:38:58 at location is current longitude is 72.5325083333 latitude is 42.40581 speed is 5.8563547872 direction is SE using 08 satellites (bus-host)
+00:13:46:93:4F:94
+08:49:09
+PVTA_3201 received 238664 bytes from PVTA_3041 in 2658 ms on 10 5 2007 at 8:37:46 at location is current longitude is 72.5297416667 latitude is 42.4047883333 speed is 25.7679610627 direction is N using 07 satellites (bus-bus)
+00:09:5B:B5:6E:67
+08:49:17
+PVTA_3118 received 45680 bytes from diesel in 1875 ms on 10 5 2007 at 8:41:43 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+08:49:27
+PVTA_3036 received 1399640 bytes from diesel in 12213 ms on 10 5 2007 at 8:48:36 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+08:50:29
+PVTA_3201 received 190320 bytes from diesel in 1582 ms on 10 5 2007 at 8:49:51 at location is current longitude is 72.52804 latitude is 42.40171 speed is 40.4088480306 direction is SE using 05 satellites (bus-host)
+00:09:5B:B5:6E:71
+08:50:36
+diesel received 163208 bytes from PVTA_3204 in 2484 ms on 10 5 2007 at 8:49:45 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+08:50:36
+diesel received 6872 bytes from PVTA_3037 in 41 ms on 10 5 2007 at 8:49:57 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+08:50:36
+diesel received 257056 bytes from PVTA_3201 in 2434 ms on 10 5 2007 at 8:50:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+08:52:13
+PVTA_3211 received 221864 bytes from diesel in 5813 ms on 10 5 2007 at 8:52:0 at location is current longitude is 72.51985 latitude is 42.3751433333 speed is 4.09944835054 direction is N using 06 satellites (bus-host)
+00:09:5B:B3:52:B8
+08:54:51
+PVTA_3028 received 5264 bytes from diesel in 757 ms on 10 5 2007 at 8:54:32 at location is current longitude is 72.5355233333 latitude is 42.3781866667 speed is 1.17127095944 direction is SW using 08 satellites (bus-host)
+00:13:46:93:61:21
+08:55:19
+PVTA_3036 received 1436288 bytes from diesel in 5534 ms on 10 5 2007 at 8:55:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+08:55:39
+PVTA_3211 received 4929400 bytes from diesel in 20279 ms on 10 5 2007 at 8:54:42 at location is current longitude is 72.5196733333 latitude is 42.3795583333 speed is 29.281773936 direction is NE using 07 satellites (bus-host)
+00:09:5B:B3:52:BA
+08:56:16
+PVTA_3037 received 63912 bytes from PVTA_3201 in 2512 ms on 10 5 2007 at 8:55:57 at location is current longitude is 72.524845 latitude is 42.3913316667 speed is 4.09944835054 direction is SW using 04 satellites (bus-bus)
+00:13:46:93:4F:94
+08:56:57
+PVTA_3201 received 81680 bytes from PVTA_3037 in 950 ms on 10 5 2007 at 8:55:53 at location is current longitude is 72.5251683333 latitude is 42.39137 speed is 11.1270740947 direction is SE using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+08:57:00
+PVTA_3201 received 767880 bytes from PVTA_3037 in 9954 ms on 10 5 2007 at 8:56:9 at location is current longitude is 72.5252183333 latitude is 42.3909516667 speed is 4.09944835054 direction is SW using 07 satellites (bus-bus)
+00:13:46:93:4F:94
+08:57:04
+PVTA_3201 received 112472 bytes from PVTA_3036 in 2796 ms on 10 5 2007 at 8:56:42 at location is current longitude is 72.5251966667 latitude is 42.3908466667 speed is 1.17127095694 direction is SE using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+08:57:35
+PVTA_3201 received 3208800 bytes from PVTA_3036 in 9494 ms on 10 5 2007 at 8:57:1 at location is current longitude is 72.524965 latitude is 42.390465 speed is 28.110502979 direction is SE using 06 satellites (bus-bus)
+00:13:46:93:61:21
+08:59:09
+PVTA_3036 received 2161432 bytes from diesel in 10733 ms on 10 5 2007 at 8:58:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+09:01:27
+PVTA_3036 received 380128 bytes from diesel in 5313 ms on 10 5 2007 at 9:1:24 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:67
+09:01:36
+diesel received 356640 bytes from PVTA_3118 in 4646 ms on 10 5 2007 at 9:1:18 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:67
+09:02:12
+PVTA_3118 received 1240488 bytes from PVTA_3213 in 4019 ms on 10 5 2007 at 8:54:51 at location is current longitude is 72.52651 latitude is 42.394215 speed is 25.1823255829 direction is SE using 06 satellites (bus-bus)
+00:13:46:93:60:94
+09:07:36
+PVTA_3202 received 114304 bytes from unknown in 3522 ms on 10 5 2007 at 9:6:38 at location is current longitude is 72.5302383333 latitude is 42.325105 speed is 4.68508383026 direction is NE using 08 satellites (bus-bus)
+00:13:46:93:60:93
+09:07:41
+PVTA_3211 received 45376 bytes from PVTA_3214 in 875 ms on 10 5 2007 at 9:6:26 at location is current longitude is 72.5193116667 latitude is 42.3812783333 speed is 33.9668577637 direction is SW using 09 satellites (bus-bus)
+00:13:46:93:60:94
+09:10:36
+diesel received 35624 bytes from PVTA_3202 in 2599 ms on 10 5 2007 at 9:10:10 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+09:11:36
+diesel received 302618 bytes from PVTA_3037 in 26590 ms on 10 5 2007 at 9:11:28 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+09:13:55
+PVTA_3211 received 173816 bytes from diesel in 504 ms on 10 5 2007 at 9:12:47 at location is current longitude is 72.52017 latitude is 42.367625 speed is 55.0497349986 direction is S using 09 satellites (bus-host)
+00:13:46:93:5F:32
+09:15:53
+PVTA_3031 received 81040 bytes from PVTA_3211 in 10457 ms on 10 3 2007 at 1:26:37 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B3:52:B8
+09:17:36
+diesel received 2501496 bytes from PVTA_3028 in 37448 ms on 10 5 2007 at 9:16:40 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:19:36
+PVTA_3028 received 137984 bytes from diesel in 10208 ms on 10 5 2007 at 9:19:23 at location is current longitude is 72.5351316667 latitude is 42.3781783333 speed is 0.0 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B5:6E:71
+09:19:36
+diesel received 33256 bytes from PVTA_3204 in 3544 ms on 10 5 2007 at 9:18:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+09:23:37
+diesel received 4296 bytes from PVTA_3201 in 63 ms on 10 5 2007 at 9:23:9 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:23:50
+PVTA_3028 received 216552 bytes from diesel in 10161 ms on 10 5 2007 at 9:23:19 at location is current longitude is 72.53516 latitude is 42.37812 speed is 0.585635477221 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:26:11
+PVTA_3028 received 224336 bytes from diesel in 10351 ms on 10 5 2007 at 9:25:39 at location is current longitude is 72.5351433333 latitude is 42.378155 speed is 0.0 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B5:6E:67
+09:28:12
+PVTA_3118 received 6456600 bytes from unknown in 18366 ms on 10 5 2007 at 9:20:16 at location is current longitude is 72.5194333333 latitude is 42.38158 speed is 1.17127095694 direction is S using 07 satellites (bus-bus)
+00:09:5B:B3:52:B8
+09:30:39
+PVTA_3028 received 253904 bytes from diesel in 7727 ms on 10 5 2007 at 9:30:36 at location is current longitude is 72.5351716667 latitude is 42.3782083333 speed is 0.585635479718 direction is 0 using 09 satellites (bus-host)
+00:13:46:93:61:21
+09:31:02
+PVTA_3036 received 86792 bytes from PVTA_3041 in 3090 ms on 10 5 2007 at 9:30:45 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B3:52:BE
+09:31:24
+PVTA_3041 received 36152 bytes from PVTA_3036 in 1783 ms on 10 5 2007 at 9:30:52 at location is current longitude is 72.5325616667 latitude is 42.3936766667 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B3:52:B8
+09:34:37
+diesel received 1231968 bytes from PVTA_3028 in 5156 ms on 10 5 2007 at 9:34:10 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+09:34:59
+PVTA_3211 received 147120 bytes from PVTA_3202 in 474 ms on 10 5 2007 at 9:34:20 at location is current longitude is 72.5336783333 latitude is 42.3202733333 speed is 0.0 direction is 0 using 08 satellites (bus-bus)
+00:13:46:93:60:93
+09:35:02
+PVTA_3211 received 167504 bytes from PVTA_3202 in 1356 ms on 10 5 2007 at 9:34:15 at location is current longitude is 72.53423 latitude is 42.3202866667 speed is 3.51381287082 direction is SE using 08 satellites (bus-bus)
+00:09:5B:B3:52:B8
+09:35:27
+PVTA_3028 received 1400 bytes from diesel in 227 ms on 10 5 2007 at 9:35:22 at location is current longitude is 72.5353866667 latitude is 42.3781266667 speed is 1.17127095694 direction is NE using 08 satellites (bus-host)
+00:13:46:93:60:94
+09:35:29
+PVTA_3202 received 713304 bytes from PVTA_3211 in 7122 ms on 10 5 2007 at 9:34:20 at location is current longitude is 72.5343183333 latitude is 42.32037 speed is 2.34254191388 direction is NW using 08 satellites (bus-bus)
+00:13:46:93:4F:94
+09:35:33
+PVTA_3201 received 5374800 bytes from PVTA_3213 in 24341 ms on 10 5 2007 at 9:35:25 at location is current longitude is 72.52534 latitude is 42.3914116667 speed is 24.0110546285 direction is N using 07 satellites (bus-bus)
+00:09:5B:B3:52:BA
+09:35:52
+PVTA_3037 received 1970080 bytes from PVTA_3214 in 8936 ms on 10 5 2007 at 9:35:45 at location is current longitude is 72.5019633333 latitude is 42.3693933333 speed is 2.9281773936 direction is NW using 06 satellites (bus-bus)
+00:09:5B:B3:51:71
+09:37:37
+diesel received 154160 bytes from PVTA_3214 in 9150 ms on 10 5 2007 at 9:36:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:38:37
+diesel received 76656 bytes from PVTA_3028 in 890 ms on 10 5 2007 at 9:37:37 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+09:39:09
+PVTA_3202 received 1831200 bytes from diesel in 20187 ms on 10 5 2007 at 9:38:20 at location is current longitude is 72.5312866667 latitude is 42.3252383333 speed is 0.585635479718 direction is 0 using 08 satellites (bus-host)
+00:09:5B:B5:6E:67
+09:39:37
+diesel received 3699056 bytes from PVTA_3118 in 15362 ms on 10 5 2007 at 9:39:13 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:40:10
+PVTA_3028 received 3976 bytes from diesel in 279 ms on 10 5 2007 at 9:39:46 at location is current longitude is 72.5352766667 latitude is 42.378185 speed is 2.34254191388 direction is SW using 08 satellites (bus-host)
+00:13:46:93:60:94
+09:40:35
+PVTA_3202 received 1321600 bytes from diesel in 20136 ms on 10 5 2007 at 9:40:7 at location is current longitude is 72.53124 latitude is 42.3252516667 speed is 1.17127095694 direction is SW using 08 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:41:37
+diesel received 522384 bytes from PVTA_3028 in 5051 ms on 10 5 2007 at 9:40:58 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BE
+09:42:31
+PVTA_3041 received 584624 bytes from PVTA_3201 in 1230 ms on 10 5 2007 at 9:41:18 at location is current longitude is 72.5324733333 latitude is 42.40575 speed is 7.02762574413 direction is SW using 07 satellites (bus-bus)
+00:09:5B:B3:52:BA
+09:42:45
+PVTA_3037 received 1274000 bytes from diesel in 20872 ms on 10 5 2007 at 9:42:17 at location is current longitude is 72.5194783333 latitude is 42.3757016667 speed is 0.0 direction is 0 using 06 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:43:05
+PVTA_3028 received 97608 bytes from diesel in 8356 ms on 10 5 2007 at 9:43:3 at location is current longitude is 72.5351383333 latitude is 42.3782 speed is 0.0 direction is 0 using 08 satellites (bus-host)
+00:09:5B:B3:52:BE
+09:43:37
+diesel received 75208 bytes from PVTA_3041 in 2110 ms on 10 5 2007 at 9:43:16 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:45:17
+PVTA_3028 received 20328 bytes from diesel in 1017 ms on 10 5 2007 at 9:45:8 at location is current longitude is 72.5353583333 latitude is 42.37816 speed is 0.585635479718 direction is 0 using 07 satellites (bus-host)
+00:09:5B:B3:52:BA
+09:46:02
+PVTA_3037 received 4510800 bytes from diesel in 20262 ms on 10 5 2007 at 9:44:34 at location is current longitude is 72.519935 latitude is 42.377515 speed is 9.37016766051 direction is N using 06 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:46:37
+diesel received 529680 bytes from PVTA_3028 in 7696 ms on 10 5 2007 at 9:46:8 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:47:37
+diesel received 1527456 bytes from PVTA_3028 in 20663 ms on 10 5 2007 at 9:47:24 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+09:47:53
+PVTA_3037 received 2788800 bytes from diesel in 20219 ms on 10 5 2007 at 9:47:41 at location is current longitude is 72.5235066667 latitude is 42.387745 speed is 0.0 direction is 0 using 04 satellites (bus-host)
+00:13:46:93:60:94
+09:48:37
+diesel received 22592 bytes from PVTA_3202 in 1031 ms on 10 5 2007 at 9:48:2 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+09:49:37
+diesel received 393056 bytes from PVTA_3204 in 2477 ms on 10 5 2007 at 9:48:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+09:50:43
+PVTA_3037 received 1411816 bytes from diesel in 8451 ms on 10 5 2007 at 9:50:37 at location is current longitude is 72.5269166667 latitude is 42.3951783333 speed is 1.17127095694 direction is SW using 06 satellites (bus-host)
+00:13:46:93:4F:94
+09:51:08
+PVTA_3201 received 1226400 bytes from diesel in 21928 ms on 10 5 2007 at 9:50:30 at location is current longitude is 72.5281016667 latitude is 42.3980916667 speed is 0.0 direction is 0 using 07 satellites (bus-host)
+00:09:5B:B3:52:BA
+09:52:10
+PVTA_3037 received 15880 bytes from PVTA_3201 in 124 ms on 10 5 2007 at 9:51:24 at location is current longitude is 72.5275866667 latitude is 42.3966933333 speed is 54.4640995189 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B3:52:BA
+09:52:13
+PVTA_3037 received 147904 bytes from diesel in 5000 ms on 10 5 2007 at 9:52:5 at location is current longitude is 72.5281483333 latitude is 42.3990883333 speed is 56.8066414328 direction is N using 05 satellites (bus-host)
+00:13:46:93:4F:94
+09:52:27
+PVTA_3201 received 5863200 bytes from diesel in 20404 ms on 10 5 2007 at 9:51:58 at location is current longitude is 72.5270466667 latitude is 42.395355 speed is 3.51381287082 direction is SE using 08 satellites (bus-host)
+00:09:5B:B3:52:B8
+09:52:37
+diesel received 3101080 bytes from PVTA_3028 in 34584 ms on 10 5 2007 at 9:51:46 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+09:55:38
+diesel received 224352 bytes from PVTA_3036 in 14791 ms on 10 5 2007 at 9:55:29 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+09:57:16
+PVTA_3201 received 2848 bytes from diesel in 129 ms on 10 5 2007 at 9:57:9 at location is current longitude is 72.5223833333 latitude is 42.3863883333 speed is 25.7679610627 direction is S using 07 satellites (bus-host)
+00:13:46:93:60:93
+09:58:38
+diesel received 158864 bytes from PVTA_3211 in 4106 ms on 10 5 2007 at 9:58:30 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+09:59:38
+diesel received 168070 bytes from PVTA_3201 in 4244 ms on 10 5 2007 at 9:58:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+10:01:37
+PVTA_3201 received 3407192 bytes from PVTA_3214 in 35055 ms on 10 5 2007 at 10:1:14 at location is current longitude is 72.5198733333 latitude is 42.377035 speed is 31.0386803701 direction is S using 08 satellites (bus-bus)
+00:09:5B:B3:52:B8
+10:02:13
+PVTA_3028 received 382200 bytes from diesel in 21051 ms on 10 5 2007 at 10:2:5 at location is current longitude is 72.5351383333 latitude is 42.3781583333 speed is 0.0 direction is 0 using 07 satellites (bus-host)
+00:13:46:93:60:94
+10:04:22
+PVTA_3202 received 79072 bytes from PVTA_3213 in 410 ms on 10 5 2007 at 10:4:15 at location is current longitude is 72.5199133333 latitude is 42.376495 speed is 38.651941594 direction is S using 07 satellites (bus-bus)
+00:13:46:93:60:94
+10:08:38
+diesel received 5504 bytes from PVTA_3202 in 1048 ms on 10 5 2007 at 10:7:47 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+10:18:53
+PVTA_3204 received 10203200 bytes from diesel in 20258 ms on 10 5 2007 at 10:18:27 at location is current longitude is 72.526085 latitude is 42.3933866667 speed is 0.585635477221 direction is 0 using 07 satellites (bus-host)
+00:13:46:93:65:51
+10:19:38
+diesel received 252192 bytes from PVTA_3212 in 1124 ms on 10 5 2007 at 10:18:57 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+10:19:38
+diesel received 53488 bytes from PVTA_3202 in 6404 ms on 10 5 2007 at 10:19:24 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+10:21:38
+diesel received 64492 bytes from PVTA_3202 in 3795 ms on 10 5 2007 at 10:21:1 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+10:23:38
+diesel received 24040 bytes from PVTA_3204 in 1286 ms on 10 5 2007 at 10:23:33 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+10:25:38
+diesel received 247868 bytes from PVTA_3211 in 5513 ms on 10 5 2007 at 10:25:18 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+10:25:49
+PVTA_3201 received 29400 bytes from PVTA_3204 in 2717 ms on 10 5 2007 at 10:25:47 at location is current longitude is 72.519885 latitude is 42.3774466667 speed is 1.17127095944 direction is SE using 07 satellites (bus-bus)
+00:13:46:93:60:93
+10:26:16
+PVTA_3211 received 339816 bytes from PVTA_3214 in 3420 ms on 10 5 2007 at 10:25:48 at location is current longitude is 72.5232633333 latitude is 42.38612 speed is 1.17127095694 direction is SW using 08 satellites (bus-bus)
+00:13:46:93:4F:94
+10:26:38
+diesel received 262464 bytes from PVTA_3201 in 4721 ms on 10 5 2007 at 10:26:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+10:33:02
+PVTA_3201 received 4269344 bytes from PVTA_3118 in 12930 ms on 10 5 2007 at 10:30:57 at location is current longitude is 72.5235733333 latitude is 42.3877233333 speed is 1.17127095694 direction is NW using 08 satellites (bus-bus)
+00:13:46:93:4F:94
+10:33:05
+PVTA_3201 received 39968 bytes from PVTA_3212 in 78 ms on 10 5 2007 at 10:31:53 at location is current longitude is 72.5251883333 latitude is 42.3911183333 speed is 1.75690643416 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B3:52:B8
+10:39:52
+PVTA_3028 received 33656 bytes from diesel in 366 ms on 10 5 2007 at 10:37:44 at location is current longitude is 72.5322983333 latitude is 42.3823066667 speed is 1.75690643666 direction is NE using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+10:51:54
+PVTA_3204 received 8282288 bytes from PVTA_3213 in 28615 ms on 10 5 2007 at 10:51:19 at location is current longitude is 72.5236 latitude is 42.3877516667 speed is 0.585635479718 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B5:6E:71
+10:53:17
+PVTA_3204 received 245952 bytes from PVTA_3118 in 1699 ms on 10 5 2007 at 10:53:12 at location is current longitude is 72.5261133333 latitude is 42.3938333333 speed is 16.3977934046 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B5:6E:71
+10:57:15
+PVTA_3204 received 596200 bytes from diesel in 7060 ms on 10 5 2007 at 10:56:53 at location is current longitude is 72.528035 latitude is 42.3990266667 speed is 47.4364737748 direction is N using 09 satellites (bus-host)
+00:09:5B:B5:6E:71
+10:58:39
+diesel received 2496072 bytes from PVTA_3204 in 15871 ms on 10 5 2007 at 10:58:11 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+11:02:53
+PVTA_3201 received 201688 bytes from diesel in 6243 ms on 10 5 2007 at 11:2:4 at location is current longitude is 72.514645 latitude is 42.3759616667 speed is 1.75690643666 direction is NE using 09 satellites (bus-host)
+00:13:46:93:4F:94
+11:05:39
+diesel received 44160 bytes from PVTA_3201 in 3243 ms on 10 5 2007 at 11:5:37 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+11:22:18
+PVTA_3202 received 3640000 bytes from diesel in 20423 ms on 10 5 2007 at 11:21:49 at location is current longitude is 72.5197783333 latitude is 42.374725 speed is 0.0 direction is 0 using 07 satellites (bus-host)
+00:09:5B:B5:6E:71
+11:24:39
+diesel received 577424 bytes from PVTA_3204 in 2060 ms on 10 5 2007 at 11:23:54 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+11:26:42
+PVTA_3202 received 62048 bytes from diesel in 543 ms on 10 5 2007 at 11:26:24 at location is current longitude is 72.5251633333 latitude is 42.3857383333 speed is 9.95580313773 direction is NW using 08 satellites (bus-host)
+00:13:46:93:4F:94
+11:28:39
+diesel received 36424 bytes from PVTA_3201 in 4701 ms on 10 5 2007 at 11:27:47 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+11:30:11
+PVTA_3201 received 2143872 bytes from PVTA_3214 in 19980 ms on 10 5 2007 at 11:29:19 at location is current longitude is 72.5235533333 latitude is 42.3876966667 speed is 1.17127095694 direction is NW using 08 satellites (bus-bus)
+00:13:46:93:60:94
+11:30:39
+diesel received 21453600 bytes from PVTA_3202 in 60166 ms on 10 5 2007 at 11:30:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+11:32:06
+PVTA_3202 received 5203800 bytes from diesel in 15487 ms on 10 5 2007 at 11:31:12 at location is current longitude is 72.5260383333 latitude is 42.386105 speed is 38.651941594 direction is SE using 08 satellites (bus-host)
+00:13:46:93:61:21
+11:35:40
+diesel received 3590 bytes from PVTA_3036 in 415 ms on 10 5 2007 at 11:34:52 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+11:36:40
+diesel received 177056 bytes from PVTA_3202 in 9142 ms on 10 5 2007 at 11:35:43 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+11:37:16
+PVTA_3036 received 385910 bytes from diesel in 3969 ms on 10 5 2007 at 11:36:59 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+11:38:10
+PVTA_3036 received 31150 bytes from diesel in 547 ms on 10 5 2007 at 11:38:3 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+11:38:40
+diesel received 19604 bytes from PVTA_3036 in 3821 ms on 10 5 2007 at 11:37:42 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+11:38:40
+diesel received 6510 bytes from PVTA_3036 in 1039 ms on 10 5 2007 at 11:38:21 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+11:38:41
+PVTA_3202 received 7420000 bytes from diesel in 20267 ms on 10 5 2007 at 11:37:31 at location is current longitude is 72.5197983333 latitude is 42.3732116667 speed is 25.1823255829 direction is S using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+11:52:40
+diesel received 192008 bytes from PVTA_3204 in 14976 ms on 10 5 2007 at 11:51:47 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+11:59:46
+PVTA_3201 received 731456 bytes from PVTA_3204 in 3446 ms on 10 5 2007 at 11:59:23 at location is current longitude is 72.5191366667 latitude is 42.3756283333 speed is 3.51381287332 direction is SE using 05 satellites (bus-bus)
+00:13:46:93:4F:94
+11:59:49
+PVTA_3201 received 1591512 bytes from diesel in 18569 ms on 10 5 2007 at 11:59:19 at location is current longitude is 72.5194066667 latitude is 42.37565 speed is 0.0 direction is 0 using 05 satellites (bus-host)
+00:09:5B:B5:6E:71
+12:00:20
+PVTA_3204 received 226872 bytes from PVTA_3201 in 2877 ms on 10 5 2007 at 11:59:23 at location is current longitude is 72.5198166667 latitude is 42.3758066667 speed is 33.3812222865 direction is N using 07 satellites (bus-bus)
+00:13:46:93:4F:94
+12:02:12
+PVTA_3201 received 48560 bytes from diesel in 1939 ms on 10 5 2007 at 12:1:16 at location is current longitude is 72.5111766667 latitude is 42.3759783333 speed is 2.9281773936 direction is NE using 05 satellites (bus-host)
+00:13:46:93:4F:94
+12:02:12
+PVTA_3201 received 2919480 bytes from PVTA_3214 in 5140 ms on 10 5 2007 at 12:1:33 at location is current longitude is 72.510245 latitude is 42.3759416667 speed is 6.44199026442 direction is SE using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+12:04:40
+diesel received 118320 bytes from PVTA_3201 in 1418 ms on 10 5 2007 at 12:4:23 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+12:05:13
+PVTA_3202 received 15880 bytes from unknown in 41 ms on 10 5 2007 at 12:4:23 at location is current longitude is 72.5312966667 latitude is 42.32017 speed is 1.75690643666 direction is SE using 08 satellites (bus-bus)
+00:09:5B:B5:6E:71
+12:09:07
+PVTA_3204 received 1005096 bytes from PVTA_3213 in 2924 ms on 10 5 2007 at 12:7:5 at location is current longitude is 72.52414 latitude is 42.3881633333 speed is 8.78453218079 direction is NW using 08 satellites (bus-bus)
+00:09:5B:B5:6E:71
+12:13:35
+PVTA_3204 received 9835000 bytes from diesel in 20184 ms on 10 5 2007 at 12:13:13 at location is current longitude is 72.5261283333 latitude is 42.3937783333 speed is 1.75690643666 direction is SE using 06 satellites (bus-host)
+00:13:46:93:60:94
+12:23:40
+diesel received 6580000 bytes from PVTA_3202 in 61694 ms on 10 5 2007 at 12:23:35 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+12:26:51
+PVTA_3201 received 6868400 bytes from diesel in 20231 ms on 10 5 2007 at 12:26:23 at location is current longitude is 72.519875 latitude is 42.3774233333 speed is 0.585635479718 direction is 0 using 07 satellites (bus-host)
+00:13:46:93:4F:94
+12:33:15
+PVTA_3201 received 7119000 bytes from diesel in 20289 ms on 10 5 2007 at 12:32:51 at location is current longitude is 72.5261733333 latitude is 42.393915 speed is 0.0 direction is 0 using 06 satellites (bus-host)
+00:09:5B:B5:6E:71
+12:34:59
+PVTA_3204 received 7707000 bytes from diesel in 20079 ms on 10 5 2007 at 12:23:44 at location is current longitude is 72.5636316667 latitude is 42.4522383333 speed is 0.0 direction is 0 using 08 satellites (bus-host)
+00:13:46:93:60:94
+12:35:25
+PVTA_3202 received 252288 bytes from unknown in 619 ms on 10 5 2007 at 12:34:44 at location is current longitude is 72.5306183333 latitude is 42.3219183333 speed is 4.09944835303 direction is NE using 08 satellites (bus-bus)
+00:09:5B:B5:6E:71
+12:37:32
+PVTA_3204 received 108376 bytes from diesel in 2297 ms on 10 5 2007 at 12:37:19 at location is current longitude is 72.5769616667 latitude is 42.4590583333 speed is 7.02762574413 direction is SE using 09 satellites (bus-host)
+00:13:46:93:60:94
+12:37:43
+PVTA_3202 received 78640 bytes from diesel in 6780 ms on 10 5 2007 at 12:37:36 at location is current longitude is 72.5309466667 latitude is 42.3252666667 speed is 1.17127095694 direction is NE using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+12:38:41
+diesel received 147860 bytes from PVTA_3204 in 2765 ms on 10 5 2007 at 12:38:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+12:39:32
+PVTA_3202 received 117784 bytes from diesel in 2706 ms on 10 5 2007 at 12:39:2 at location is current longitude is 72.5309266667 latitude is 42.3252933333 speed is 1.17127095694 direction is SW using 09 satellites (bus-host)
+00:13:46:93:60:94
+12:41:41
+diesel received 3590 bytes from PVTA_3202 in 3691 ms on 10 5 2007 at 12:40:49 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+12:49:40
+PVTA_3201 received 19840 bytes from PVTA_3204 in 1421 ms on 10 5 2007 at 12:48:38 at location is current longitude is 72.52804 latitude is 42.3981866667 speed is 11.1270740947 direction is S using 07 satellites (bus-bus)
+00:13:46:93:5F:26
+12:50:22
+PVTA_3203 received 1585368 bytes from PVTA_3103 in 40565 ms on 10 5 2007 at 12:41:11 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:4F:94
+12:56:09
+PVTA_3201 received 2848 bytes from PVTA_3202 in 7 ms on 10 5 2007 at 12:55:56 at location is current longitude is 72.5196 latitude is 42.3794966667 speed is 12.8839805313 direction is SW using 08 satellites (bus-bus)
+00:13:46:93:4F:94
+12:58:41
+diesel received 1283648 bytes from PVTA_3201 in 19031 ms on 10 5 2007 at 12:57:53 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+12:59:21
+PVTA_3201 received 3482120 bytes from diesel in 11545 ms on 10 5 2007 at 12:59:13 at location is current longitude is 72.5193833333 latitude is 42.3755933333 speed is 0.0 direction is 0 using 07 satellites (bus-host)
+00:09:5B:B5:6E:71
+12:59:41
+diesel received 2848 bytes from PVTA_3204 in 51 ms on 10 5 2007 at 12:59:33 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+13:00:42
+PVTA_3201 received 182192 bytes from PVTA_3214 in 6563 ms on 10 5 2007 at 13:0:32 at location is current longitude is 72.51342 latitude is 42.375835 speed is 1.75690643666 direction is N using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+13:00:45
+PVTA_3201 received 3162032 bytes from diesel in 14985 ms on 10 5 2007 at 13:0:1 at location is current longitude is 72.5152833333 latitude is 42.3758216667 speed is 1.75690643666 direction is SE using 07 satellites (bus-host)
+00:13:46:93:4F:94
+13:02:41
+diesel received 338220 bytes from PVTA_3201 in 30418 ms on 10 5 2007 at 13:1:42 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+13:05:41
+diesel received 29760 bytes from PVTA_3202 in 542 ms on 10 5 2007 at 13:5:2 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+13:07:18
+PVTA_3028 received 286456 bytes from diesel in 5585 ms on 10 5 2007 at 13:7:11 at location is current longitude is 72.519575 latitude is 42.3756866667 speed is 0.585635479718 direction is 0 using 07 satellites (bus-host)
+00:09:5B:B3:52:B8
+13:14:20
+PVTA_3028 received 212912 bytes from diesel in 1197 ms on 10 5 2007 at 13:13:59 at location is current longitude is 72.5244133333 latitude is 42.3885383333 speed is 13.469616011 direction is NW using 08 satellites (bus-host)
+00:09:5B:B3:52:B8
+13:14:41
+diesel received 5145784 bytes from PVTA_3028 in 24448 ms on 10 5 2007 at 13:14:37 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+13:15:13
+PVTA_3202 received 221144 bytes from PVTA_3204 in 433 ms on 10 5 2007 at 13:13:11 at location is current longitude is 72.5202233333 latitude is 42.3669916667 speed is 50.9502866481 direction is S using 08 satellites (bus-bus)
+00:13:46:93:61:21
+13:15:41
+diesel received 122080 bytes from PVTA_3036 in 7821 ms on 10 5 2007 at 13:15:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+13:17:25
+PVTA_3202 received 10088 bytes from unknown in 47 ms on 10 5 2007 at 13:16:46 at location is current longitude is 72.5232683333 latitude is 42.33498 speed is 62.0773607428 direction is SW using 08 satellites (bus-bus)
+00:13:46:93:5F:26
+13:20:42
+diesel received 78104 bytes from PVTA_3203 in 361 ms on 10 5 2007 at 13:20:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+13:24:42
+diesel received 5361120 bytes from PVTA_3204 in 28980 ms on 10 5 2007 at 13:23:52 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+13:33:42
+diesel received 955824 bytes from PVTA_3119 in 26394 ms on 10 5 2007 at 13:33:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+13:35:42
+diesel received 72992 bytes from PVTA_3202 in 3595 ms on 10 5 2007 at 13:35:1 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+13:41:19
+PVTA_3201 received 5152440 bytes from diesel in 20173 ms on 10 5 2007 at 13:40:42 at location is current longitude is 72.5195733333 latitude is 42.379925 speed is 42.7513899445 direction is NE using 08 satellites (bus-host)
+00:13:46:93:4F:94
+13:45:23
+PVTA_3201 received 1693360 bytes from PVTA_3119 in 5314 ms on 10 5 2007 at 13:45:18 at location is current longitude is 72.5237316667 latitude is 42.3875766667 speed is 1.17127095694 direction is SE using 05 satellites (bus-bus)
+00:09:5B:B5:6E:75
+13:46:11
+PVTA_3119 received 963224 bytes from PVTA_3201 in 8860 ms on 10 5 2007 at 13:45:19 at location is current longitude is 72.5231833333 latitude is 42.38729 speed is 22.8397836691 direction is SE using 08 satellites (bus-bus)
+00:09:5B:B3:52:BA
+13:46:22
+PVTA_3037 received 357616 bytes from PVTA_3214 in 1221 ms on 10 5 2007 at 13:46:9 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:5F:26
+13:48:31
+PVTA_3203 received 57872 bytes from diesel in 3362 ms on 10 5 2007 at 13:47:51 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+13:50:18
+PVTA_3203 received 479568 bytes from diesel in 2279 ms on 10 5 2007 at 13:49:4 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+13:52:08
+PVTA_3203 received 6475000 bytes from diesel in 20523 ms on 10 5 2007 at 13:51:9 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+13:53:40
+PVTA_3202 received 1027600 bytes from diesel in 20559 ms on 10 5 2007 at 13:53:11 at location is current longitude is 72.5759033333 latitude is 42.2575633333 speed is 2.34254191638 direction is S using 07 satellites (bus-host)
+00:13:46:93:5F:26
+13:58:42
+diesel received 10976 bytes from PVTA_3203 in 1588 ms on 10 5 2007 at 13:58:13 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+13:58:58
+PVTA_3202 received 516992 bytes from diesel in 4987 ms on 10 5 2007 at 13:58:19 at location is current longitude is 72.539935 latitude is 42.287055 speed is 28.110502979 direction is NE using 07 satellites (bus-host)
+00:13:46:93:5F:26
+14:00:42
+diesel received 95872 bytes from PVTA_3203 in 4407 ms on 10 5 2007 at 14:0:42 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+14:02:36
+PVTA_3037 received 1976120 bytes from PVTA_3204 in 4315 ms on 10 5 2007 at 14:2:3 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:4F:94
+14:04:36
+PVTA_3201 received 6392400 bytes from diesel in 20721 ms on 10 5 2007 at 14:4:20 at location is current longitude is 72.5260383333 latitude is 42.3935466667 speed is 15.2265224477 direction is SE using 05 satellites (bus-host)
+00:13:46:93:4F:94
+14:05:37
+PVTA_3201 received 6321000 bytes from diesel in 20203 ms on 10 5 2007 at 14:5:9 at location is current longitude is 72.5258533333 latitude is 42.3932333333 speed is 0.0 direction is 0 using 04 satellites (bus-host)
+00:09:5B:B5:6E:75
+14:06:42
+diesel received 1733432 bytes from PVTA_3119 in 11524 ms on 10 5 2007 at 14:6:4 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+14:07:42
+diesel received 22500 bytes from PVTA_3202 in 3598 ms on 10 5 2007 at 14:7:1 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+14:11:43
+diesel received 9468 bytes from PVTA_3202 in 3756 ms on 10 5 2007 at 14:10:47 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+14:11:47
+PVTA_3119 received 20224 bytes from PVTA_3201 in 421 ms on 10 5 2007 at 14:10:2 at location is current longitude is 72.52392 latitude is 42.387855 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:13:46:93:4F:94
+14:13:15
+PVTA_3201 received 23120 bytes from PVTA_3119 in 2661 ms on 10 5 2007 at 14:10:2 at location is current longitude is 72.5238066667 latitude is 42.3877433333 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:13:46:93:4F:94
+14:13:55
+PVTA_3201 received 6872 bytes from diesel in 359 ms on 10 5 2007 at 14:13:44 at location is current longitude is 72.51996 latitude is 42.3778633333 speed is 1.17127095694 direction is NE using 06 satellites (bus-host)
+00:13:46:93:60:93
+14:15:43
+diesel received 658424 bytes from PVTA_3211 in 5163 ms on 10 5 2007 at 14:14:57 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+14:16:10
+PVTA_3201 received 6197800 bytes from diesel in 20086 ms on 10 5 2007 at 14:15:38 at location is current longitude is 72.5198466667 latitude is 42.3758333333 speed is 5.8563547872 direction is S using 06 satellites (bus-host)
+00:09:5B:B3:52:BA
+14:18:43
+diesel received 4032072 bytes from PVTA_3037 in 35854 ms on 10 5 2007 at 14:18:16 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+14:20:43
+diesel received 178976 bytes from PVTA_3204 in 19579 ms on 10 5 2007 at 14:20:30 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+14:23:43
+diesel received 1400 bytes from PVTA_3204 in 46 ms on 10 5 2007 at 14:23:12 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+14:25:57
+PVTA_3037 received 536120 bytes from PVTA_3028 in 26331 ms on 10 5 2007 at 14:25:45 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B3:52:B8
+14:26:08
+PVTA_3028 received 5521688 bytes from PVTA_3037 in 28355 ms on 10 5 2007 at 14:25:45 at location is current longitude is 72.52516 latitude is 42.39095 speed is 12.8839805313 direction is N using 06 satellites (bus-bus)
+00:09:5B:B3:52:B8
+14:28:43
+diesel received 5799608 bytes from PVTA_3028 in 51843 ms on 10 5 2007 at 14:28:42 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+14:33:16
+PVTA_3037 received 157744 bytes from PVTA_3204 in 2275 ms on 10 5 2007 at 14:33:5 at location is not current longitude is 0.0 latitude is 0.0 speed is 0.0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:5F:26
+14:33:56
+PVTA_3203 received 870800 bytes from diesel in 11471 ms on 10 5 2007 at 14:33:36 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+14:34:23
+PVTA_3028 received 505192 bytes from PVTA_3213 in 2493 ms on 10 5 2007 at 14:31:11 at location is current longitude is 72.5307616667 latitude is 42.4094516667 speed is 26.9392320221 direction is NW using 06 satellites (bus-bus)
+00:09:5B:B3:52:BC
+14:35:39
+PVTA_3032 received 2721712 bytes from diesel in 9994 ms on 10 5 2007 at 14:35:1 at location is current longitude is 72.52604 latitude is 42.3933816667 speed is 0.0 direction is 0 using 06 satellites (bus-host)
+00:09:5B:B3:52:BC
+14:35:43
+diesel received 2325056 bytes from PVTA_3032 in 30809 ms on 10 5 2007 at 14:35:39 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+14:37:43
+diesel received 6510 bytes from PVTA_3211 in 4983 ms on 10 5 2007 at 14:37:35 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+14:38:43
+diesel received 8240 bytes from PVTA_3202 in 2873 ms on 10 5 2007 at 14:37:50 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+14:41:43
+diesel received 74440 bytes from PVTA_3037 in 5351 ms on 10 5 2007 at 14:40:53 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+14:43:01
+PVTA_3028 received 143744 bytes from diesel in 5052 ms on 10 5 2007 at 14:42:33 at location is current longitude is 72.5814566667 latitude is 42.4576766667 speed is 4.09944835054 direction is NE using 06 satellites (bus-host)
+00:13:46:93:5F:26
+14:44:43
+diesel received 271248 bytes from PVTA_3203 in 11475 ms on 10 5 2007 at 14:44:28 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+14:46:15
+PVTA_3202 received 32728 bytes from PVTA_3211 in 460 ms on 10 5 2007 at 14:45:56 at location is current longitude is 72.5200833333 latitude is 42.3507883333 speed is 56.8066414328 direction is SE using 06 satellites (bus-bus)
+00:13:46:93:60:94
+14:46:44
+diesel received 16800 bytes from PVTA_3202 in 1256 ms on 10 5 2007 at 14:46:31 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+14:48:43
+PVTA_3032 received 2350064 bytes from PVTA_3214 in 36445 ms on 10 5 2007 at 14:46:45 at location is current longitude is 72.5200466667 latitude is 42.37786 speed is 2.34254191388 direction is NE using 05 satellites (bus-bus)
+00:13:46:93:60:93
+14:49:52
+PVTA_3211 received 340096 bytes from PVTA_3213 in 726 ms on 10 5 2007 at 14:47:52 at location is current longitude is 72.520055 latitude is 42.3685183333 speed is 52.7071930823 direction is N using 06 satellites (bus-bus)
+00:13:46:93:4F:94
+14:50:57
+PVTA_3201 received 126032 bytes from diesel in 5638 ms on 10 5 2007 at 14:50:26 at location is current longitude is 72.5013266667 latitude is 42.3728833333 speed is 4.09944835054 direction is NE using 06 satellites (bus-host)
+00:13:46:93:60:93
+14:52:44
+diesel received 470248 bytes from PVTA_3211 in 11149 ms on 10 5 2007 at 14:52:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+14:55:44
+diesel received 41032 bytes from PVTA_3119 in 557 ms on 10 5 2007 at 14:54:53 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+14:56:08
+PVTA_3201 received 94032 bytes from PVTA_3032 in 825 ms on 10 5 2007 at 14:54:42 at location is current longitude is 72.5108 latitude is 42.3758266667 speed is 0.0 direction is 0 using 06 satellites (bus-bus)
+00:13:46:93:60:93
+14:56:27
+PVTA_3211 received 3602968 bytes from PVTA_3119 in 27623 ms on 10 5 2007 at 14:56:23 at location is current longitude is 72.5223066667 latitude is 42.3858916667 speed is 1.17127095694 direction is SW using 05 satellites (bus-bus)
+00:09:5B:B5:6E:71
+14:58:44
+diesel received 25488 bytes from PVTA_3204 in 140 ms on 10 5 2007 at 14:58:25 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+14:59:44
+diesel received 4296 bytes from PVTA_3028 in 339 ms on 10 5 2007 at 14:59:28 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+14:59:56
+PVTA_3201 received 1808800 bytes from diesel in 20216 ms on 10 5 2007 at 14:59:32 at location is current longitude is 72.5199333333 latitude is 42.3775166667 speed is 1.17127095694 direction is SE using 06 satellites (bus-host)
+00:09:5B:B3:52:B8
+15:10:51
+PVTA_3028 received 96928 bytes from PVTA_3213 in 705 ms on 10 5 2007 at 15:10:43 at location is current longitude is 72.5265416667 latitude is 42.3944566667 speed is 15.8121579224 direction is SE using 07 satellites (bus-bus)
+00:09:5B:B3:52:BA
+15:11:44
+diesel received 5202024 bytes from PVTA_3037 in 23152 ms on 10 5 2007 at 15:11:11 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:21
+00:09:5B:B5:6E:71 received 1750920 bytes from 00:09:5B:B3:52:BC in 8897 ms on 10 5 2007 at 14:38:0 at location is current longitude is 72.52401 latitude is 42.38804 speed is 15.8121579249 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B5:6E:71
+15:13:24
+00:09:5B:B5:6E:71 received 600976 bytes from diesel in 4496 ms on 10 5 2007 at 14:56:34 at location is current longitude is 72.5817833333 latitude is 42.4609166667 speed is 49.7790156887 direction is SW using 07 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:27
+00:09:5B:B5:6E:71 received 207072 bytes from diesel in 2735 ms on 10 5 2007 at 14:51:5 at location is current longitude is 72.5523416667 latitude is 42.4430816667 speed is 57.9779123897 direction is NW using 06 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:30
+00:09:5B:B5:6E:71 received 1287152 bytes from diesel in 10463 ms on 10 5 2007 at 14:10:11 at location is current longitude is 72.5198733333 latitude is 42.3752766667 speed is 22.2541481918 direction is S using 07 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:33
+00:09:5B:B5:6E:71 received 1395392 bytes from diesel in 23949 ms on 10 5 2007 at 14:22:9 at location is current longitude is 72.528895 latitude is 42.348765 speed is 1.75690643666 direction is S using 06 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:36
+00:09:5B:B5:6E:71 received 111504 bytes from diesel in 3163 ms on 10 5 2007 at 14:50:23 at location is current longitude is 72.546455 latitude is 42.4357483333 speed is 66.762444573 direction is NW using 07 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:39
+00:09:5B:B5:6E:71 received 392328 bytes from diesel in 15183 ms on 10 5 2007 at 13:44:39 at location is current longitude is 72.5813616667 latitude is 42.4576633333 speed is 1.17127095694 direction is SE using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:42
+00:09:5B:B5:6E:71 received 197136 bytes from diesel in 9542 ms on 10 5 2007 at 14:58:3 at location is current longitude is 72.5813433333 latitude is 42.4576066667 speed is 2.9281773911 direction is NW using 06 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:45
+00:09:5B:B5:6E:71 received 2848 bytes from diesel in 539 ms on 10 5 2007 at 14:22:50 at location is current longitude is 72.5288866667 latitude is 42.3488966667 speed is 0.0 direction is 0 using 07 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:48
+00:09:5B:B5:6E:71 received 102096 bytes from 00:13:46:93:4F:94 in 4520 ms on 10 5 2007 at 12:48:36 at location is current longitude is 72.52804 latitude is 42.3980133333 speed is 11.1270740972 direction is S using 09 satellites (bus-bus)
+00:09:5B:B5:6E:71
+15:13:51
+00:09:5B:B5:6E:71 received 511760 bytes from diesel in 14758 ms on 10 5 2007 at 13:57:50 at location is current longitude is 72.5305766667 latitude is 42.40863 speed is 43.9226609015 direction is SE using 08 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:55
+00:09:5B:B5:6E:71 received 20224 bytes from diesel in 417 ms on 10 5 2007 at 14:12:25 at location is current longitude is 72.5198833333 latitude is 42.37002 speed is 43.922660904 direction is S using 06 satellites (bus-host)
+00:09:5B:B5:6E:71
+15:13:57
+00:09:5B:B5:6E:71 received 1199800 bytes from diesel in 19526 ms on 10 5 2007 at 14:16:3 at location is current longitude is 72.527435 latitude is 42.3501916667 speed is 21.6685127121 direction is S using 07 satellites (bus-host)
+00:13:46:93:5F:26
+15:14:44
+diesel received 5504 bytes from PVTA_3203 in 321 ms on 10 5 2007 at 15:14:6 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+15:15:26
+PVTA_3211 received 32728 bytes from PVTA_3215 in 541 ms on 10 5 2007 at 15:15:21 at location is current longitude is 72.5201583333 latitude is 42.34029 speed is 1.17127095944 direction is NW using 07 satellites (bus-bus)
+00:13:46:93:65:47
+15:16:09
+PVTA_3215 received 479272 bytes from PVTA_3211 in 2684 ms on 10 5 2007 at 15:15:21 at location is current longitude is 72.5729833333 latitude is 42.2580616667 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:21
+PVTA_3214 received 350240 bytes from diesel in 1093 ms on 10 5 2007 at 8:34:54 at location is current longitude is 72.5029833333 latitude is 42.37592 speed is 8.19889670107 direction is NE using 10 satellites (bus-host)
+00:09:5B:B3:51:71
+15:16:21
+PVTA_3214 received 306744 bytes from PVTA_3203 in 827 ms on 10 5 2007 at 13:6:32 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:21
+PVTA_3214 received 6850344 bytes from PVTA_3201 in 14567 ms on 10 5 2007 at 10:27:25 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:21
+PVTA_3214 received 977240 bytes from PVTA_3201 in 25382 ms on 10 5 2007 at 8:29:30 at location is current longitude is 72.5199783333 latitude is 42.37779 speed is 0.585635479718 direction is 0 using 10 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:21
+PVTA_3214 received 240472 bytes from PVTA_3037 in 6376 ms on 10 5 2007 at 9:35:37 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:21
+PVTA_3214 received 1114096 bytes from PVTA_3211 in 4835 ms on 10 5 2007 at 10:25:48 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:21
+PVTA_3214 received 1400808 bytes from PVTA_3201 in 18980 ms on 10 5 2007 at 11:29:17 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 3169448 bytes from PVTA_3202 in 7778 ms on 10 5 2007 at 10:3:11 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 225824 bytes from PVTA_3037 in 6807 ms on 10 5 2007 at 8:5:43 at location is current longitude is 72.52564 latitude is 42.3928283333 speed is 28.110502979 direction is NW using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 15880 bytes from PVTA_3211 in 59 ms on 10 5 2007 at 9:6:25 at location is current longitude is 72.51925 latitude is 42.3815666667 speed is 12.2983450516 direction is NW using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 3021848 bytes from diesel in 14329 ms on 10 5 2007 at 8:17:17 at location is current longitude is 72.53227 latitude is 42.4049483333 speed is 9.37016766051 direction is SE using 11 satellites (bus-host)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 1574224 bytes from PVTA_3213 in 7801 ms on 10 5 2007 at 13:16:37 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 4296 bytes from PVTA_3037 in 83 ms on 10 5 2007 at 9:36:2 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 67968 bytes from PVTA_3201 in 2288 ms on 10 5 2007 at 8:28:58 at location is current longitude is 72.519985 latitude is 42.3779183333 speed is 0.585635479718 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 4333000 bytes from diesel in 20215 ms on 10 5 2007 at 9:19:18 at location is current longitude is 72.529335 latitude is 42.4030366667 speed is 3.51381287082 direction is NE using 06 satellites (bus-host)
+00:09:5B:B3:51:71
+15:16:22
+PVTA_3214 received 11283976 bytes from PVTA_3201 in 47675 ms on 10 5 2007 at 14:53:6 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:23
+PVTA_3214 received 5136480 bytes from PVTA_3213 in 15958 ms on 10 5 2007 at 11:24:56 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:23
+PVTA_3214 received 18776 bytes from PVTA_3037 in 699 ms on 10 5 2007 at 13:46:9 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:23
+PVTA_3214 received 901304 bytes from PVTA_3213 in 2020 ms on 10 5 2007 at 12:35:36 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:23
+PVTA_3214 received 3318664 bytes from PVTA_3202 in 9778 ms on 10 5 2007 at 11:35:25 at location is current longitude is 72.5182883333 latitude is 42.3758116667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:23
+PVTA_3214 received 7297368 bytes from PVTA_3204 in 24306 ms on 10 5 2007 at 8:24:23 at location is current longitude is 72.5252716667 latitude is 42.3909066667 speed is 0.0 direction is 0 using 10 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:23
+PVTA_3214 received 2875736 bytes from PVTA_3204 in 9578 ms on 10 5 2007 at 9:8:1 at location is current longitude is 72.5235716667 latitude is 42.3877016667 speed is 0.585635479718 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:16:23
+PVTA_3214 received 7173184 bytes from PVTA_3201 in 21711 ms on 10 5 2007 at 8:29:57 at location is current longitude is 72.51997 latitude is 42.377405 speed is 21.0828772324 direction is S using 10 satellites (bus-bus)
+00:09:5B:B3:52:BA
+15:18:44
+diesel received 1010260 bytes from PVTA_3037 in 27571 ms on 10 5 2007 at 15:17:47 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+15:19:10
+PVTA_3028 received 292960 bytes from diesel in 6141 ms on 10 5 2007 at 15:18:20 at location is current longitude is 72.5203433333 latitude is 42.3826583333 speed is 32.2099513296 direction is SE using 07 satellites (bus-host)
+00:09:5B:B5:6E:75
+15:20:21
+PVTA_3119 received 1459096 bytes from PVTA_3028 in 5717 ms on 10 5 2007 at 15:17:40 at location is current longitude is 72.5227866667 latitude is 42.3860316667 speed is 5.27071930748 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:20:31
+PVTA_3214 received 297632 bytes from PVTA_3203 in 1627 ms on 10 5 2007 at 15:19:49 at location is current longitude is 72.5009966667 latitude is 42.3737216667 speed is 12.2983450541 direction is N using 07 satellites (bus-bus)
+00:09:5B:B5:6E:6A
+15:20:42
+PVTA_3035 received 879024 bytes from diesel in 8721 ms on 10 5 2007 at 15:20:13 at location is current longitude is 72.5197 latitude is 42.37964 speed is 19.3259707982 direction is NE using 04 satellites (bus-host)
+00:09:5B:B5:6E:75
+15:20:44
+diesel received 85384 bytes from PVTA_3119 in 6922 ms on 10 5 2007 at 15:20:3 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+15:20:44
+diesel received 3147200 bytes from PVTA_3028 in 60234 ms on 10 5 2007 at 15:20:29 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B8
+15:21:45
+diesel received 414160 bytes from PVTA_3028 in 11608 ms on 10 5 2007 at 15:21:22 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+15:22:55
+PVTA_3201 received 42336 bytes from PVTA_3037 in 4852 ms on 10 5 2007 at 15:22:37 at location is current longitude is 72.525895 latitude is 42.3934316667 speed is 0.585635477221 direction is 0 using 06 satellites (bus-bus)
+00:09:5B:B3:52:B8
+15:23:09
+PVTA_3028 received 3514000 bytes from diesel in 20997 ms on 10 5 2007 at 15:22:56 at location is current longitude is 72.5198716667 latitude is 42.3759433333 speed is 1.75690643666 direction is SW using 07 satellites (bus-host)
+00:09:5B:B3:52:BC
+15:25:18
+PVTA_3032 received 871464 bytes from diesel in 14874 ms on 10 5 2007 at 15:24:24 at location is current longitude is 72.406375 latitude is 42.2843566667 speed is 18.1546998388 direction is SE using 05 satellites (bus-host)
+00:09:5B:B3:52:B8
+15:26:30
+PVTA_3028 received 1214960 bytes from diesel in 13278 ms on 10 5 2007 at 15:24:22 at location is current longitude is 72.5197916667 latitude is 42.372255 speed is 1.17127095694 direction is SW using 06 satellites (bus-host)
+00:09:5B:B3:52:B8
+15:26:33
+PVTA_3028 received 4951800 bytes from diesel in 20195 ms on 10 5 2007 at 15:25:43 at location is current longitude is 72.51885 latitude is 42.373155 speed is 1.75690643416 direction is NW using 06 satellites (bus-host)
+00:13:46:93:4F:94
+15:27:37
+PVTA_3201 received 4914376 bytes from PVTA_3035 in 18468 ms on 10 5 2007 at 15:26:31 at location is current longitude is 72.52511 latitude is 42.3906366667 speed is 15.8121579249 direction is SE using 06 satellites (bus-bus)
+00:09:5B:B3:51:71
+15:29:12
+PVTA_3214 received 4103400 bytes from diesel in 20052 ms on 10 5 2007 at 15:27:2 at location is current longitude is 72.518015 latitude is 42.3758333333 speed is 0.585635477221 direction is 0 using 06 satellites (bus-host)
+00:09:5B:B3:51:71
+15:29:12
+PVTA_3214 received 2620800 bytes from diesel in 21111 ms on 10 5 2007 at 15:28:21 at location is current longitude is 72.518015 latitude is 42.3758333333 speed is 0.585635477221 direction is 0 using 06 satellites (bus-host)
+00:09:5B:B3:52:B8
+15:30:45
+diesel received 448424 bytes from PVTA_3028 in 4873 ms on 10 5 2007 at 15:29:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+15:30:45
+diesel received 5780 bytes from PVTA_3211 in 1044 ms on 10 5 2007 at 15:30:4 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+15:32:45
+diesel received 334352 bytes from PVTA_3032 in 7404 ms on 10 5 2007 at 15:32:2 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+15:35:18
+PVTA_3201 received 6832592 bytes from diesel in 19675 ms on 10 5 2007 at 15:35:10 at location is current longitude is 72.5186066667 latitude is 42.37569 speed is 4.09944835054 direction is NE using 07 satellites (bus-host)
+00:13:46:93:60:94
+15:37:12
+PVTA_3202 received 276216 bytes from PVTA_3028 in 700 ms on 10 5 2007 at 15:35:45 at location is current longitude is 72.5299383333 latitude is 42.32514 speed is 1.75690643666 direction is SW using 06 satellites (bus-bus)
+00:09:5B:B3:52:B8
+15:38:21
+PVTA_3028 received 50592 bytes from PVTA_3202 in 467 ms on 10 5 2007 at 15:35:45 at location is current longitude is 72.52927 latitude is 42.3251016667 speed is 0.585635479718 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B3:52:B8
+15:38:24
+PVTA_3028 received 174592 bytes from PVTA_3103 in 3617 ms on 10 5 2007 at 15:35:10 at location is current longitude is 72.5312816667 latitude is 42.3250983333 speed is 11.7127095719 direction is S using 07 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+15:38:45
+diesel received 64536 bytes from PVTA_3103 in 830 ms on 10 5 2007 at 15:38:31 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6A
+15:39:24
+PVTA_3035 received 11536 bytes from PVTA_3213 in 131 ms on 10 5 2007 at 15:38:18 at location is current longitude is 72.550475 latitude is 42.4415016667 speed is 54.4640995189 direction is NW using 05 satellites (bus-bus)
+00:13:46:93:4F:94
+15:39:58
+PVTA_3201 received 382328 bytes from diesel in 2563 ms on 10 5 2007 at 15:39:17 at location is current longitude is 72.50108 latitude is 42.37385 speed is 39.8232125534 direction is SW using 07 satellites (bus-host)
+00:09:5B:B3:52:BA
+15:40:45
+diesel received 127608 bytes from PVTA_3037 in 6216 ms on 10 5 2007 at 15:40:11 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+15:40:45
+diesel received 474856 bytes from PVTA_3214 in 15434 ms on 10 5 2007 at 15:40:27 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+15:40:45
+diesel received 1638464 bytes from PVTA_3201 in 14228 ms on 10 5 2007 at 15:40:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+15:41:45
+diesel received 108416 bytes from PVTA_3103 in 5028 ms on 10 5 2007 at 15:40:59 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+15:41:45
+diesel received 728576 bytes from PVTA_3119 in 3920 ms on 10 5 2007 at 15:41:43 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+15:42:45
+diesel received 1402960 bytes from PVTA_3037 in 39377 ms on 10 5 2007 at 15:42:0 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+15:42:48
+PVTA_3103 received 950600 bytes from diesel in 21166 ms on 10 5 2007 at 15:40:46 at location is current longitude is 72.53123 latitude is 42.3252666667 speed is 0.585635479718 direction is 0 using 06 satellites (bus-host)
+00:09:5B:B5:6E:6C
+15:42:51
+PVTA_3103 received 245454 bytes from diesel in 3293 ms on 10 5 2007 at 15:39:7 at location is current longitude is 72.531175 latitude is 42.32529 speed is 1.17127095694 direction is SW using 06 satellites (bus-host)
+00:09:5B:B5:6E:6C
+15:42:54
+PVTA_3103 received 145288 bytes from diesel in 9583 ms on 10 5 2007 at 15:40:10 at location is current longitude is 72.5311783333 latitude is 42.3252766667 speed is 0.0 direction is 0 using 06 satellites (bus-host)
+00:13:46:93:60:93
+15:43:45
+diesel received 2848 bytes from PVTA_3211 in 1120 ms on 10 5 2007 at 15:43:15 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+15:44:16
+PVTA_3202 received 1688448 bytes from PVTA_3103 in 11439 ms on 10 5 2007 at 15:41:19 at location is current longitude is 72.5311233333 latitude is 42.3249216667 speed is 12.8839805313 direction is SE using 07 satellites (bus-bus)
+00:09:5B:B3:52:BC
+15:45:27
+PVTA_3032 received 316976 bytes from PVTA_3201 in 1374 ms on 10 5 2007 at 15:45:9 at location is current longitude is 72.48831 latitude is 42.3624916667 speed is 31.6243158499 direction is NW using 05 satellites (bus-bus)
+00:13:46:93:4F:94
+15:45:53
+PVTA_3201 received 7192 bytes from PVTA_3032 in 611 ms on 10 5 2007 at 15:45:9 at location is current longitude is 72.4879516667 latitude is 42.362 speed is 38.0663061143 direction is SE using 06 satellites (bus-bus)
+00:09:5B:B3:52:BA
+15:49:45
+diesel received 161760 bytes from PVTA_3037 in 3088 ms on 10 5 2007 at 15:49:44 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+15:51:05
+PVTA_3202 received 2447176 bytes from diesel in 8522 ms on 10 5 2007 at 15:48:28 at location is current longitude is 72.5198633333 latitude is 42.369765 speed is 40.9944835104 direction is N using 07 satellites (bus-host)
+00:09:5B:B3:52:BC
+15:53:59
+PVTA_3032 received 2710 bytes from diesel in 1169 ms on 10 5 2007 at 15:53:29 at location is current longitude is 72.512105 latitude is 42.375995 speed is 1.75690643416 direction is SW using 06 satellites (bus-host)
+00:09:5B:B3:51:71
+15:54:52
+PVTA_3214 received 141440 bytes from PVTA_3204 in 1655 ms on 10 5 2007 at 15:54:31 at location is current longitude is 72.518015 latitude is 42.3758333333 speed is 0.585635477221 direction is 0 using 06 satellites (bus-bus)
+00:09:5B:B5:6E:71
+15:56:22
+PVTA_3204 received 806056 bytes from PVTA_3214 in 1759 ms on 10 5 2007 at 15:54:31 at location is current longitude is 72.5221 latitude is 42.3858283333 speed is 26.9392320221 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B3:52:B8
+15:56:46
+diesel received 345896 bytes from PVTA_3028 in 17225 ms on 10 5 2007 at 15:56:13 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+15:56:46
+diesel received 8240 bytes from PVTA_3203 in 4240 ms on 10 5 2007 at 15:56:16 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+15:58:12
+PVTA_3032 received 2064512 bytes from PVTA_3213 in 8694 ms on 10 5 2007 at 15:57:23 at location is current longitude is 72.5199666667 latitude is 42.376425 speed is 14.6408869655 direction is NE using 07 satellites (bus-bus)
+00:09:5B:B3:52:BC
+15:58:15
+PVTA_3032 received 8544200 bytes from diesel in 20083 ms on 10 5 2007 at 15:56:46 at location is current longitude is 72.5197033333 latitude is 42.3757533333 speed is 0.0 direction is 0 using 06 satellites (bus-host)
+00:09:5B:B5:6E:6A
+15:58:46
+diesel received 7192 bytes from PVTA_3035 in 1390 ms on 10 5 2007 at 15:58:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+16:01:02
+PVTA_3201 received 4296 bytes from PVTA_3037 in 238 ms on 10 5 2007 at 15:59:45 at location is current longitude is 72.4811883333 latitude is 42.35617 speed is 22.2541481893 direction is NW using 07 satellites (bus-bus)
+00:09:5B:B3:52:BC
+16:01:25
+PVTA_3032 received 692530 bytes from diesel in 7383 ms on 10 5 2007 at 16:0:48 at location is current longitude is 72.5207 latitude is 42.3832983333 speed is 28.6961384563 direction is NW using 06 satellites (bus-host)
+00:09:5B:B5:6E:75
+16:02:27
+PVTA_3119 received 6491800 bytes from diesel in 20994 ms on 10 5 2007 at 16:1:39 at location is current longitude is 72.5260116667 latitude is 42.3933716667 speed is 1.75690643666 direction is SE using 06 satellites (bus-host)
+00:09:5B:B5:6E:75
+16:04:42
+PVTA_3119 received 32728 bytes from PVTA_3203 in 500 ms on 10 5 2007 at 16:3:32 at location is current longitude is 72.52389 latitude is 42.3877866667 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B5:6E:75
+16:05:46
+diesel received 8077208 bytes from PVTA_3119 in 42997 ms on 10 5 2007 at 16:5:39 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+16:05:48
+PVTA_3032 received 4285400 bytes from diesel in 21122 ms on 10 5 2007 at 16:5:32 at location is current longitude is 72.5267883333 latitude is 42.3949066667 speed is 10.541438615 direction is NW using 06 satellites (bus-host)
+00:09:5B:B3:51:71
+16:07:35
+PVTA_3214 received 446320 bytes from diesel in 6704 ms on 10 5 2007 at 16:6:48 at location is current longitude is 72.518015 latitude is 42.3758333333 speed is 0.585635477221 direction is 0 using 06 satellites (bus-host)
+00:13:46:93:4F:94
+16:08:20
+PVTA_3201 received 1131200 bytes from diesel in 20569 ms on 10 5 2007 at 16:7:43 at location is current longitude is 72.5015333333 latitude is 42.3762483333 speed is 4.68508382776 direction is SW using 07 satellites (bus-host)
+00:13:46:93:60:94
+16:08:46
+diesel received 1065648 bytes from PVTA_3202 in 17163 ms on 10 5 2007 at 16:7:53 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+16:12:46
+diesel received 3350288 bytes from PVTA_3201 in 46677 ms on 10 5 2007 at 16:11:51 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+16:16:46
+diesel received 25488 bytes from PVTA_3211 in 579 ms on 10 5 2007 at 16:16:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+16:18:51
+PVTA_3036 received 465232 bytes from PVTA_3201 in 930 ms on 10 5 2007 at 16:18:6 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:4F:94
+16:19:14
+PVTA_3201 received 32728 bytes from PVTA_3036 in 395 ms on 10 5 2007 at 16:18:5 at location is current longitude is 72.5244116667 latitude is 42.3885366667 speed is 9.95580313773 direction is NW using 06 satellites (bus-bus)
+00:13:46:93:5F:26
+16:20:46
+diesel received 4261832 bytes from PVTA_3203 in 19185 ms on 10 5 2007 at 16:20:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+16:21:50
+PVTA_3037 received 997512 bytes from diesel in 10946 ms on 10 5 2007 at 16:21:30 at location is not current longitude is 72.5195483333 latitude is 42.3755066667 speed is 0.0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+16:21:53
+PVTA_3037 received 1724632 bytes from diesel in 11538 ms on 10 5 2007 at 16:20:47 at location is current longitude is 72.516455 latitude is 42.3757883333 speed is 0.585635479718 direction is 0 using 05 satellites (bus-host)
+00:13:46:93:4F:94
+16:22:46
+diesel received 422000 bytes from PVTA_3201 in 12108 ms on 10 5 2007 at 16:21:54 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+16:24:24
+PVTA_3119 received 30360 bytes from PVTA_3213 in 4435 ms on 10 5 2007 at 16:23:0 at location is current longitude is 72.5252766667 latitude is 42.3908616667 speed is 1.17127095694 direction is SE using 06 satellites (bus-bus)
+00:09:5B:B3:52:BA
+16:25:41
+PVTA_3037 received 52040 bytes from PVTA_3119 in 1744 ms on 10 5 2007 at 16:25:25 at location is current longitude is 72.5221733333 latitude is 42.3859816667 speed is 15.8121579249 direction is NW using 05 satellites (bus-bus)
+00:09:5B:B5:6E:75
+16:26:36
+PVTA_3119 received 137000 bytes from PVTA_3203 in 1326 ms on 10 5 2007 at 16:26:30 at location is current longitude is 72.5196083333 latitude is 42.3816533333 speed is 11.7127095744 direction is SE using 07 satellites (bus-bus)
+00:09:5B:B3:51:71
+16:32:06
+PVTA_3214 received 83504 bytes from diesel in 5314 ms on 10 5 2007 at 16:31:53 at location is current longitude is 72.499035 latitude is 42.3708233333 speed is 25.1823255829 direction is SW using 07 satellites (bus-host)
+00:09:5B:B3:51:71
+16:32:06
+PVTA_3214 received 214632 bytes from PVTA_3037 in 1187 ms on 10 5 2007 at 16:12:46 at location is current longitude is 72.518015 latitude is 42.3758333333 speed is 0.585635477221 direction is 0 using 06 satellites (bus-bus)
+00:13:46:93:60:93
+16:32:38
+PVTA_3211 received 1188080 bytes from PVTA_3118 in 2007 ms on 10 5 2007 at 16:30:52 at location is current longitude is 72.52497 latitude is 42.3898283333 speed is 18.7403353185 direction is NW using 07 satellites (bus-bus)
+00:13:46:93:60:93
+16:32:42
+PVTA_3211 received 53488 bytes from PVTA_3204 in 4383 ms on 10 5 2007 at 16:31:7 at location is current longitude is 72.5251216667 latitude is 42.3905016667 speed is 8.78453218079 direction is N using 07 satellites (bus-bus)
+00:13:46:93:60:93
+16:32:45
+PVTA_3211 received 1369248 bytes from PVTA_3204 in 7006 ms on 10 5 2007 at 16:31:20 at location is current longitude is 72.52526 latitude is 42.3912283333 speed is 18.7403353185 direction is N using 07 satellites (bus-bus)
+00:09:5B:B5:6E:71
+16:33:45
+PVTA_3204 received 10088 bytes from PVTA_3032 in 1974 ms on 10 5 2007 at 16:32:45 at location is current longitude is 72.5238566667 latitude is 42.3878066667 speed is 1.17127095944 direction is NE using 06 satellites (bus-bus)
+00:09:5B:B3:52:B8
+16:34:00
+PVTA_3028 received 5504 bytes from diesel in 29 ms on 10 5 2007 at 16:33:54 at location is current longitude is 72.519845 latitude is 42.3771366667 speed is 2.34254191388 direction is NW using 07 satellites (bus-host)
+00:09:5B:B5:6E:6C
+16:35:19
+PVTA_3103 received 160440 bytes from diesel in 9415 ms on 10 5 2007 at 16:12:51 at location is current longitude is 72.6266533333 latitude is 42.3218483333 speed is 18.1546998413 direction is NE using 07 satellites (bus-host)
+00:13:46:93:60:94
+16:35:26
+PVTA_3202 received 1956360 bytes from unknown in 10960 ms on 10 5 2007 at 16:34:19 at location is current longitude is 72.5344016667 latitude is 42.32051 speed is 19.9116062755 direction is S using 07 satellites (bus-bus)
+00:09:5B:B5:6E:71
+16:35:55
+PVTA_3204 received 621344 bytes from PVTA_3028 in 6027 ms on 10 5 2007 at 16:35:9 at location is current longitude is 72.5194166667 latitude is 42.3815683333 speed is 1.75690643666 direction is SE using 07 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+16:37:47
+diesel received 5483800 bytes from PVTA_3103 in 61916 ms on 10 5 2007 at 16:37:26 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:84
+16:38:06
+PVTA_3027 received 6417600 bytes from diesel in 20191 ms on 10 5 2007 at 16:37:44 at location is current longitude is 72.6345266667 latitude is 42.3176866667 speed is 1.17127095694 direction is NW using 06 satellites (bus-host)
+00:09:5B:B3:52:BC
+16:38:47
+diesel received 1400 bytes from PVTA_3032 in 654 ms on 10 5 2007 at 16:38:29 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+16:39:57
+PVTA_3103 received 2021600 bytes from diesel in 20085 ms on 10 5 2007 at 16:38:20 at location is current longitude is 72.53121 latitude is 42.3253566667 speed is 0.0 direction is 0 using 06 satellites (bus-host)
+00:13:46:93:4F:94
+16:40:21
+PVTA_3201 received 4232200 bytes from diesel in 20136 ms on 10 5 2007 at 16:40:18 at location is current longitude is 72.5198216667 latitude is 42.3757616667 speed is 2.34254191388 direction is S using 08 satellites (bus-host)
+00:13:46:93:5F:26
+16:41:06
+PVTA_3203 received 119144 bytes from PVTA_3211 in 2893 ms on 10 5 2007 at 16:27:7 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:5F:26
+16:41:09
+PVTA_3203 received 402664 bytes from PVTA_3214 in 1483 ms on 10 5 2007 at 15:19:48 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:5F:26
+16:41:12
+PVTA_3203 received 94032 bytes from PVTA_3119 in 2562 ms on 10 5 2007 at 16:3:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:5F:26
+16:41:16
+PVTA_3203 received 2604000 bytes from diesel in 20277 ms on 10 5 2007 at 16:25:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+16:41:19
+PVTA_3203 received 6423200 bytes from diesel in 20096 ms on 10 5 2007 at 16:28:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+16:41:22
+PVTA_3203 received 46440 bytes from diesel in 1451 ms on 10 5 2007 at 16:39:12 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:84
+16:42:19
+PVTA_3027 received 120400 bytes from diesel in 1906 ms on 10 5 2007 at 16:41:40 at location is current longitude is 72.6269783333 latitude is 42.3217233333 speed is 11.1270740947 direction is NE using 05 satellites (bus-host)
+00:13:46:93:4F:94
+16:45:47
+PVTA_3201 received 517904 bytes from diesel in 5124 ms on 10 5 2007 at 16:45:19 at location is current longitude is 72.501075 latitude is 42.3736833333 speed is 40.9944835104 direction is S using 08 satellites (bus-host)
+00:13:46:93:4F:94
+16:47:16
+PVTA_3201 received 785400 bytes from diesel in 22083 ms on 10 5 2007 at 16:46:35 at location is current longitude is 72.5012466667 latitude is 42.3725816667 speed is 33.381222284 direction is SW using 08 satellites (bus-host)
+00:09:5B:B5:6E:75
+16:47:24
+PVTA_3119 received 21240 bytes from diesel in 784 ms on 10 5 2007 at 16:46:18 at location is current longitude is 72.524185 latitude is 42.38819 speed is 16.9834288819 direction is SE using 06 satellites (bus-host)
+00:09:5B:B3:52:BA
+16:47:30
+PVTA_3037 received 1653400 bytes from diesel in 20646 ms on 10 5 2007 at 16:47:12 at location is current longitude is 72.5291083333 latitude is 42.4030316667 speed is 1.17127095694 direction is NW using 05 satellites (bus-host)
+00:09:5B:B5:6E:6C
+16:48:44
+PVTA_3103 received 78104 bytes from PVTA_3027 in 231 ms on 10 5 2007 at 16:48:21 at location is current longitude is 72.5779933333 latitude is 42.33211 speed is 27.5248674993 direction is NW using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+16:50:08
+PVTA_3214 received 1454600 bytes from diesel in 20274 ms on 10 5 2007 at 16:49:22 at location is current longitude is 72.5279116667 latitude is 42.397665 speed is 1.17127095694 direction is SE using 07 satellites (bus-host)
+00:13:46:93:4F:94
+16:50:24
+PVTA_3201 received 1320600 bytes from diesel in 4150 ms on 10 5 2007 at 16:49:25 at location is current longitude is 72.4954166667 latitude is 42.36858 speed is 40.9944835079 direction is SE using 08 satellites (bus-host)
+00:13:46:93:60:93
+16:54:47
+diesel received 94032 bytes from PVTA_3211 in 2006 ms on 10 5 2007 at 16:53:54 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BA
+16:55:47
+diesel received 1242822 bytes from PVTA_3037 in 47682 ms on 10 5 2007 at 16:55:41 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:84
+16:57:47
+diesel received 48320 bytes from PVTA_3027 in 1658 ms on 10 5 2007 at 16:57:9 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+17:02:47
+diesel received 29832 bytes from PVTA_3214 in 2180 ms on 10 5 2007 at 17:1:51 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+17:03:27
+PVTA_3203 received 4670400 bytes from diesel in 20934 ms on 10 5 2007 at 17:3:59 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+17:06:47
+diesel received 21144 bytes from PVTA_3032 in 365 ms on 10 5 2007 at 17:5:57 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+17:06:47
+diesel received 62176 bytes from PVTA_3202 in 2211 ms on 10 5 2007 at 17:6:31 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+17:06:52
+PVTA_3202 received 301616 bytes from PVTA_3211 in 1316 ms on 10 5 2007 at 17:6:38 at location is current longitude is 72.5280166667 latitude is 42.3191966667 speed is 0.585635477221 direction is 0 using 08 satellites (bus-bus)
+00:13:46:93:60:93
+17:07:58
+PVTA_3211 received 2848 bytes from PVTA_3202 in 1527 ms on 10 5 2007 at 17:6:42 at location is current longitude is 72.52812 latitude is 42.3192916667 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+17:08:47
+diesel received 1717680 bytes from PVTA_3103 in 20412 ms on 10 5 2007 at 17:8:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+17:08:53
+PVTA_3204 received 521808 bytes from PVTA_3213 in 1436 ms on 10 5 2007 at 17:8:38 at location is current longitude is 72.5243733333 latitude is 42.3885033333 speed is 25.7679610627 direction is NW using 09 satellites (bus-bus)
+00:13:46:93:5F:26
+17:08:56
+PVTA_3203 received 4352600 bytes from diesel in 20104 ms on 10 5 2007 at 17:8:39 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+17:08:56
+PVTA_3204 received 15333808 bytes from PVTA_3214 in 35249 ms on 10 5 2007 at 17:8:33 at location is current longitude is 72.524065 latitude is 42.3880933333 speed is 22.2541481893 direction is NW using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+17:09:28
+PVTA_3214 received 2632736 bytes from PVTA_3204 in 34715 ms on 10 5 2007 at 17:8:33 at location is current longitude is 72.5236633333 latitude is 42.3877033333 speed is 8.78453218079 direction is SE using 09 satellites (bus-bus)
+00:13:46:93:5F:26
+17:09:47
+diesel received 21920 bytes from PVTA_3203 in 1242 ms on 10 5 2007 at 17:9:16 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+17:09:48
+diesel received 8474152 bytes from PVTA_3119 in 32660 ms on 10 5 2007 at 17:9:41 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+17:10:48
+diesel received 25488 bytes from PVTA_3036 in 791 ms on 10 5 2007 at 17:10:14 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+17:13:40
+PVTA_3203 received 50592 bytes from PVTA_3119 in 367 ms on 10 5 2007 at 17:13:15 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:4F:94
+17:15:29
+PVTA_3201 received 50688 bytes from diesel in 2493 ms on 10 5 2007 at 17:14:29 at location is current longitude is 72.4880766667 latitude is 42.3620583333 speed is 26.9392320196 direction is NW using 09 satellites (bus-host)
+00:13:46:93:60:94
+17:18:24
+PVTA_3202 received 60824 bytes from unknown in 1355 ms on 10 5 2007 at 17:17:47 at location is current longitude is 72.5204783333 latitude is 42.3445883333 speed is 52.7071930823 direction is N using 09 satellites (bus-bus)
+00:13:46:93:5F:26
+17:20:48
+diesel received 5744 bytes from PVTA_3203 in 920 ms on 10 5 2007 at 17:20:41 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+17:21:48
+diesel received 11116 bytes from PVTA_3201 in 787 ms on 10 5 2007 at 17:20:50 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+17:23:48
+diesel received 1400 bytes from PVTA_3203 in 29 ms on 10 5 2007 at 17:22:52 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+17:25:24
+PVTA_3201 received 56768 bytes from PVTA_3035 in 4466 ms on 10 5 2007 at 17:25:19 at location is current longitude is 72.5196733333 latitude is 42.3756783333 speed is 0.585635479718 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+17:29:48
+diesel received 42772 bytes from PVTA_3103 in 6612 ms on 10 5 2007 at 17:29:30 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+17:30:37
+PVTA_3201 received 1588416 bytes from PVTA_3036 in 13325 ms on 10 5 2007 at 17:30:25 at location is current longitude is 72.5234366667 latitude is 42.3876366667 speed is 0.585635479718 direction is 0 using 07 satellites (bus-bus)
+00:13:46:93:60:94
+17:30:48
+diesel received 354290 bytes from PVTA_3202 in 8411 ms on 10 5 2007 at 17:29:51 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+17:30:48
+diesel received 18248 bytes from PVTA_3211 in 605 ms on 10 5 2007 at 17:30:30 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+17:31:48
+PVTA_3036 received 662976 bytes from PVTA_3119 in 3616 ms on 10 5 2007 at 17:31:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:5F:26
+17:34:48
+diesel received 1574528 bytes from PVTA_3203 in 8609 ms on 10 5 2007 at 17:34:23 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+17:35:08
+PVTA_3036 received 164496 bytes from PVTA_3203 in 10011 ms on 10 5 2007 at 17:33:49 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:61:21
+17:35:12
+PVTA_3036 received 68304 bytes from PVTA_3203 in 2766 ms on 10 5 2007 at 17:33:33 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B4:25:84
+17:37:48
+diesel received 569960 bytes from PVTA_3027 in 11059 ms on 10 5 2007 at 17:37:31 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+17:39:10
+PVTA_3032 received 6424600 bytes from diesel in 20121 ms on 10 5 2007 at 17:38:43 at location is current longitude is 72.52708 latitude is 42.39512 speed is 1.75690643666 direction is NE using 07 satellites (bus-host)
+00:13:46:93:4F:94
+17:40:48
+diesel received 21144 bytes from PVTA_3201 in 392 ms on 10 5 2007 at 17:40:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+17:41:48
+diesel received 17816 bytes from PVTA_3203 in 2162 ms on 10 5 2007 at 17:41:13 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+17:43:37
+PVTA_3202 received 5955600 bytes from diesel in 20291 ms on 10 5 2007 at 17:43:7 at location is current longitude is 72.5198266667 latitude is 42.3737216667 speed is 15.8121579249 direction is S using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+17:48:49
+diesel received 164240 bytes from PVTA_3214 in 9723 ms on 10 5 2007 at 17:48:14 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+17:50:49
+diesel received 2848 bytes from PVTA_3201 in 8 ms on 10 5 2007 at 17:50:27 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+17:51:09
+PVTA_3036 received 1404024 bytes from PVTA_3201 in 13069 ms on 10 5 2007 at 17:50:46 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:61:21
+17:51:12
+PVTA_3036 received 33656 bytes from diesel in 444 ms on 10 5 2007 at 17:50:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+17:51:29
+PVTA_3201 received 1387832 bytes from PVTA_3036 in 13043 ms on 10 5 2007 at 17:50:46 at location is current longitude is 72.52524 latitude is 42.3908 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B3:51:71
+17:52:38
+PVTA_3214 received 3721200 bytes from diesel in 20635 ms on 10 5 2007 at 17:50:35 at location is current longitude is 72.5012516667 latitude is 42.3726633333 speed is 0.585635479718 direction is 0 using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+17:52:41
+PVTA_3214 received 860168 bytes from diesel in 9948 ms on 10 5 2007 at 17:51:10 at location is current longitude is 72.5005783333 latitude is 42.375815 speed is 30.4530448929 direction is N using 10 satellites (bus-host)
+00:13:46:93:5F:26
+17:52:49
+diesel received 1186824 bytes from PVTA_3203 in 7216 ms on 10 5 2007 at 17:52:44 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+17:53:49
+diesel received 473000 bytes from PVTA_3214 in 2556 ms on 10 5 2007 at 17:53:13 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+17:54:27
+PVTA_3032 received 459184 bytes from PVTA_3214 in 2789 ms on 10 5 2007 at 17:53:36 at location is current longitude is 72.5118 latitude is 42.37582 speed is 0.585635477221 direction is 0 using 06 satellites (bus-bus)
+00:09:5B:B3:51:71
+17:54:46
+PVTA_3214 received 85056 bytes from diesel in 1843 ms on 10 5 2007 at 17:52:58 at location is current longitude is 72.5079433333 latitude is 42.3757966667 speed is 1.17127095694 direction is NW using 10 satellites (bus-host)
+00:09:5B:B3:51:71
+17:54:46
+PVTA_3214 received 500352 bytes from PVTA_3032 in 3807 ms on 10 5 2007 at 17:53:37 at location is current longitude is 72.5123516667 latitude is 42.37594 speed is 1.17127095694 direction is SW using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+17:56:35
+PVTA_3214 received 99336 bytes from PVTA_3211 in 8111 ms on 10 5 2007 at 17:56:16 at location is current longitude is 72.5181083333 latitude is 42.3758033333 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:13:46:93:60:93
+17:58:49
+diesel received 46544 bytes from PVTA_3211 in 2616 ms on 10 5 2007 at 17:58:20 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+18:01:49
+diesel received 34080 bytes from PVTA_3119 in 2341 ms on 10 5 2007 at 18:1:2 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+18:06:35
+PVTA_3214 received 147232 bytes from PVTA_3212 in 711 ms on 10 5 2007 at 18:3:22 at location is current longitude is 72.5181083333 latitude is 42.3758033333 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B4:25:84
+18:08:49
+diesel received 82448 bytes from PVTA_3027 in 776 ms on 10 5 2007 at 18:8:14 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+18:09:31
+PVTA_3202 received 874648 bytes from diesel in 5713 ms on 10 5 2007 at 18:9:8 at location is current longitude is 72.5719883333 latitude is 42.2646666667 speed is 51.5359221278 direction is S using 09 satellites (bus-host)
+00:13:46:93:60:93
+18:09:49
+diesel received 6310448 bytes from PVTA_3211 in 39621 ms on 10 5 2007 at 18:8:57 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+18:16:53
+PVTA_3211 received 22592 bytes from unknown in 47 ms on 10 5 2007 at 18:16:38 at location is current longitude is 72.5203066667 latitude is 42.339715 speed is 40.4088480306 direction is SW using 08 satellites (bus-bus)
+00:09:5B:B3:51:71
+18:17:49
+diesel received 388160 bytes from PVTA_3214 in 12783 ms on 10 5 2007 at 18:17:21 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:4F:94
+18:19:26
+PVTA_3201 received 551904 bytes from PVTA_3031 in 8110 ms on 10 5 2007 at 18:19:6 at location is current longitude is 72.5339733333 latitude is 42.3947516667 speed is 2.34254191388 direction is N using 08 satellites (bus-bus)
+00:13:46:93:60:94
+18:22:49
+diesel received 22320 bytes from PVTA_3202 in 775 ms on 10 5 2007 at 18:22:1 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+18:23:10
+PVTA_3203 received 94176 bytes from diesel in 2235 ms on 10 5 2007 at 18:23:6 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+18:23:50
+diesel received 136760 bytes from PVTA_3203 in 5777 ms on 10 5 2007 at 18:23:19 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:67
+18:27:06
+PVTA_3118 received 82016 bytes from PVTA_3213 in 1884 ms on 10 5 2007 at 13:47:18 at location is current longitude is 72.5238816667 latitude is 42.38783 speed is 8.78453218079 direction is SE using 08 satellites (bus-bus)
+00:09:5B:B5:6E:67
+18:27:10
+PVTA_3118 received 609376 bytes from PVTA_3213 in 4125 ms on 10 5 2007 at 13:48:15 at location is current longitude is 72.5238 latitude is 42.3877433333 speed is 0.0 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B5:6E:67
+18:27:12
+PVTA_3118 received 1565576 bytes from PVTA_3213 in 6494 ms on 10 5 2007 at 13:48:6 at location is current longitude is 72.5238 latitude is 42.387745 speed is 1.17127095694 direction is SE using 08 satellites (bus-bus)
+00:09:5B:B5:6E:67
+18:27:15
+PVTA_3118 received 610728 bytes from PVTA_3204 in 2957 ms on 10 5 2007 at 10:46:6 at location is current longitude is 72.526075 latitude is 42.393395 speed is 10.5414386175 direction is SE using 09 satellites (bus-bus)
+00:09:5B:B5:6E:67
+18:27:18
+PVTA_3118 received 6062528 bytes from PVTA_3213 in 27846 ms on 10 5 2007 at 13:47:51 at location is current longitude is 72.52382 latitude is 42.3877666667 speed is 0.585635479718 direction is 0 using 08 satellites (bus-bus)
+00:09:5B:B3:52:BC
+18:28:50
+diesel received 56144 bytes from PVTA_3032 in 2607 ms on 10 5 2007 at 18:27:53 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:B9
+18:29:00
+PVTA_3030 received 25617296 bytes from PVTA_3118 in 52179 ms on 10 5 2007 at 18:26:42 at location is current longitude is 72.5340066667 latitude is 42.3947066667 speed is 0.0 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B3:52:B9
+18:29:02
+PVTA_3030 received 2521840 bytes from PVTA_3118 in 55786 ms on 10 5 2007 at 18:25:36 at location is current longitude is 72.5340166667 latitude is 42.39471 speed is 0.585635479718 direction is 0 using 07 satellites (bus-bus)
+00:09:5B:B4:25:84
+18:30:16
+PVTA_3027 received 574912 bytes from diesel in 19392 ms on 10 5 2007 at 18:30:2 at location is current longitude is 72.6335266667 latitude is 42.317825 speed is 0.0 direction is 0 using 07 satellites (bus-host)
+00:13:46:93:60:93
+18:34:50
+diesel received 666200 bytes from PVTA_3211 in 8274 ms on 10 5 2007 at 18:34:21 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:61:21
+18:39:37
+PVTA_3036 received 1587880 bytes from PVTA_3035 in 46401 ms on 10 5 2007 at 18:39:23 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B3:52:BC
+18:40:15
+PVTA_3032 received 190976 bytes from PVTA_3214 in 756 ms on 10 5 2007 at 18:39:14 at location is current longitude is 72.4886666667 latitude is 42.362925 speed is 18.1546998388 direction is NW using 08 satellites (bus-bus)
+00:13:46:93:60:94
+18:44:41
+PVTA_3202 received 2047528 bytes from diesel in 6509 ms on 10 5 2007 at 18:44:26 at location is current longitude is 72.5198983333 latitude is 42.3699816667 speed is 49.7790156887 direction is N using 09 satellites (bus-host)
+00:13:46:93:60:94
+18:47:07
+PVTA_3202 received 23120 bytes from PVTA_3213 in 596 ms on 10 5 2007 at 18:46:48 at location is current longitude is 72.519835 latitude is 42.3736833333 speed is 40.4088480306 direction is N using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+18:47:50
+diesel received 218784 bytes from PVTA_3214 in 6389 ms on 10 5 2007 at 18:47:20 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+18:49:09
+PVTA_3032 received 154968 bytes from diesel in 6339 ms on 10 5 2007 at 18:48:51 at location is current longitude is 72.5183433333 latitude is 42.375785 speed is 0.585635479718 direction is 0 using 09 satellites (bus-host)
+00:13:46:93:5F:26
+18:52:50
+diesel received 1400 bytes from PVTA_3203 in 7 ms on 10 5 2007 at 18:52:21 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+18:52:50
+diesel received 5242648 bytes from PVTA_3032 in 40399 ms on 10 5 2007 at 18:52:36 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+18:55:11
+PVTA_3103 received 458310 bytes from diesel in 7636 ms on 10 5 2007 at 17:34:7 at location is current longitude is 72.5311766667 latitude is 42.32522 speed is 1.17127095694 direction is N using 08 satellites (bus-host)
+00:09:5B:B5:6E:6C
+18:55:14
+PVTA_3103 received 503198 bytes from diesel in 13081 ms on 10 5 2007 at 17:36:21 at location is current longitude is 72.5312666667 latitude is 42.3252783333 speed is 1.17127095694 direction is N using 06 satellites (bus-host)
+00:13:46:93:60:93
+18:57:14
+PVTA_3211 received 1003520 bytes from diesel in 5797 ms on 10 5 2007 at 18:56:41 at location is current longitude is 72.5398016667 latitude is 42.2871666667 speed is 24.5966901057 direction is NE using 09 satellites (bus-host)
+00:09:5B:B5:6E:75
+18:57:50
+diesel received 312352 bytes from PVTA_3119 in 2424 ms on 10 5 2007 at 18:57:7 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:65:51
+18:59:24
+PVTA_3212 received 20102264 bytes from PVTA_3027 in 42936 ms on 10 5 2007 at 18:58:39 at location is current longitude is 72.5339733333 latitude is 42.39469 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B5:6E:75
+18:59:50
+diesel received 7192 bytes from PVTA_3119 in 210 ms on 10 5 2007 at 18:59:27 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+19:05:43
+PVTA_3211 received 5744 bytes from PVTA_3103 in 635 ms on 10 5 2007 at 19:4:34 at location is current longitude is 72.5294566667 latitude is 42.3251766667 speed is 3.51381287332 direction is SW using 09 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+19:05:50
+diesel received 75112 bytes from PVTA_3103 in 3567 ms on 10 5 2007 at 19:5:47 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:71
+19:07:12
+PVTA_3204 received 3516064 bytes from PVTA_3032 in 15184 ms on 10 5 2007 at 19:6:19 at location is current longitude is 72.5329783333 latitude is 42.3943233333 speed is 13.469616011 direction is NW using 10 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+19:10:21
+PVTA_3103 received 56384 bytes from PVTA_3211 in 1351 ms on 10 5 2007 at 17:52:0 at location is current longitude is 72.5287183333 latitude is 42.3250933333 speed is 3.51381287332 direction is N using 08 satellites (bus-bus)
+00:13:46:93:60:93
+19:12:42
+PVTA_3211 received 674776 bytes from diesel in 3925 ms on 10 5 2007 at 19:9:49 at location is current longitude is 72.51989 latitude is 42.34987 speed is 56.2210059556 direction is N using 07 satellites (bus-host)
+00:13:46:93:60:93
+19:15:13
+PVTA_3211 received 1549584 bytes from diesel in 9991 ms on 10 5 2007 at 19:15:0 at location is current longitude is 72.5197 latitude is 42.3744916667 speed is 22.2541481893 direction is N using 09 satellites (bus-host)
+00:09:5B:B3:52:BC
+19:16:51
+diesel received 2802 bytes from PVTA_3032 in 94 ms on 10 5 2007 at 19:16:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+19:16:56
+PVTA_3211 received 3879112 bytes from diesel in 15630 ms on 10 5 2007 at 19:16:32 at location is current longitude is 72.5198433333 latitude is 42.3763816667 speed is 17.5690643616 direction is N using 09 satellites (bus-host)
+00:09:5B:B3:51:71
+19:18:51
+diesel received 1660504 bytes from PVTA_3214 in 10241 ms on 10 5 2007 at 19:18:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+19:25:51
+diesel received 4296 bytes from PVTA_3119 in 1812 ms on 10 5 2007 at 19:24:51 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+19:28:22
+PVTA_3203 received 597640 bytes from PVTA_3214 in 4570 ms on 10 5 2007 at 19:28:5 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:13:46:93:60:94
+19:30:54
+PVTA_3202 received 1762600 bytes from diesel in 20534 ms on 10 5 2007 at 19:30:25 at location is current longitude is 72.5721833333 latitude is 42.2563716667 speed is 8.19889670107 direction is S using 09 satellites (bus-host)
+00:09:5B:B5:6E:75
+19:31:51
+diesel received 5887368 bytes from PVTA_3119 in 24740 ms on 10 5 2007 at 19:31:3 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+19:34:58
+PVTA_3203 received 1879360 bytes from diesel in 5250 ms on 10 5 2007 at 19:34:16 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+19:41:51
+diesel received 60776 bytes from PVTA_3202 in 528 ms on 10 5 2007 at 19:41:50 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+19:44:51
+diesel received 1238128 bytes from PVTA_3202 in 8333 ms on 10 5 2007 at 19:43:59 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BC
+19:50:51
+diesel received 262600 bytes from PVTA_3032 in 6846 ms on 10 5 2007 at 19:50:3 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+19:51:01
+PVTA_3103 received 275360 bytes from PVTA_3202 in 788 ms on 10 5 2007 at 18:38:15 at location is current longitude is 72.5301 latitude is 42.3112283333 speed is 42.7513899445 direction is SE using 08 satellites (bus-bus)
+00:13:46:93:60:94
+19:51:33
+PVTA_3202 received 121064 bytes from PVTA_3103 in 933 ms on 10 5 2007 at 19:50:49 at location is current longitude is 72.530245 latitude is 42.3118916667 speed is 56.8066414353 direction is NW using 08 satellites (bus-bus)
+00:09:5B:B5:6E:75
+19:57:51
+diesel received 6656344 bytes from PVTA_3119 in 18796 ms on 10 5 2007 at 19:57:44 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+20:03:52
+diesel received 2465592 bytes from PVTA_3214 in 19097 ms on 10 5 2007 at 20:3:45 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+20:05:52
+diesel received 53608 bytes from PVTA_3202 in 3169 ms on 10 5 2007 at 20:5:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+20:07:52
+diesel received 766472 bytes from PVTA_3119 in 18477 ms on 10 5 2007 at 20:7:19 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:93
+20:09:27
+PVTA_3211 received 1175232 bytes from diesel in 14940 ms on 10 5 2007 at 20:9:20 at location is current longitude is 72.5722183333 latitude is 42.2561266667 speed is 18.1546998388 direction is SW using 10 satellites (bus-host)
+00:13:46:93:60:93
+20:09:30
+PVTA_3211 received 7192 bytes from PVTA_3103 in 276 ms on 10 5 2007 at 20:7:24 at location is current longitude is 72.57335 latitude is 42.2602383333 speed is 27.5248674993 direction is SW using 10 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+20:10:08
+PVTA_3103 received 274200 bytes from PVTA_3211 in 880 ms on 10 5 2007 at 18:54:49 at location is current longitude is 72.5728933333 latitude is 42.2608366667 speed is 39.2375770737 direction is NE using 07 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+20:10:11
+PVTA_3103 received 1035376 bytes from diesel in 6729 ms on 10 5 2007 at 18:55:30 at location is current longitude is 72.571555 latitude is 42.2662266667 speed is 45.6795673381 direction is N using 07 satellites (bus-host)
+00:13:46:93:5F:26
+20:19:12
+PVTA_3203 received 4445920 bytes from diesel in 20665 ms on 10 5 2007 at 20:18:54 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+20:19:44
+PVTA_3202 received 754696 bytes from PVTA_3032 in 1997 ms on 10 5 2007 at 20:17:33 at location is current longitude is 72.5217933333 latitude is 42.38527 speed is 28.6961384563 direction is SE using 11 satellites (bus-bus)
+00:13:46:93:60:94
+20:24:52
+diesel received 253384 bytes from PVTA_3202 in 12501 ms on 10 5 2007 at 20:23:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+20:25:52
+diesel received 4136 bytes from PVTA_3203 in 1239 ms on 10 5 2007 at 20:24:52 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+20:26:52
+diesel received 5022792 bytes from PVTA_3119 in 14356 ms on 10 5 2007 at 20:26:12 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+20:26:52
+diesel received 22592 bytes from PVTA_3103 in 707 ms on 10 5 2007 at 20:26:49 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+20:27:30
+PVTA_3203 received 290136 bytes from diesel in 2542 ms on 10 5 2007 at 20:27:9 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+20:27:56
+PVTA_3203 received 157888 bytes from diesel in 5236 ms on 10 5 2007 at 20:27:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+20:29:51
+PVTA_3202 received 608792 bytes from diesel in 2553 ms on 10 5 2007 at 20:28:45 at location is current longitude is 72.5200983333 latitude is 42.348235 speed is 60.9060897833 direction is S using 09 satellites (bus-host)
+00:13:46:93:5F:26
+20:30:52
+diesel received 37216 bytes from PVTA_3203 in 1082 ms on 10 5 2007 at 20:29:57 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+20:40:52
+diesel received 1993744 bytes from PVTA_3119 in 23645 ms on 10 5 2007 at 20:40:39 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+20:43:53
+diesel received 21120 bytes from PVTA_3202 in 2281 ms on 10 5 2007 at 20:43:19 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+20:45:53
+diesel received 956056 bytes from PVTA_3119 in 5882 ms on 10 5 2007 at 20:45:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+20:49:53
+diesel received 856848 bytes from PVTA_3214 in 24233 ms on 10 5 2007 at 20:49:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+20:55:53
+diesel received 446920 bytes from PVTA_3103 in 9773 ms on 10 5 2007 at 20:55:11 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+21:05:53
+diesel received 4296 bytes from PVTA_3202 in 1636 ms on 10 5 2007 at 21:5:8 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+21:10:54
+PVTA_3202 received 291400 bytes from PVTA_3103 in 1220 ms on 10 5 2007 at 21:10:36 at location is current longitude is 72.5286066667 latitude is 42.3050716667 speed is 39.2375770737 direction is NW using 08 satellites (bus-bus)
+00:09:5B:B5:6E:6C
+21:11:21
+PVTA_3103 received 291576 bytes from PVTA_3202 in 1358 ms on 10 5 2007 at 19:58:1 at location is current longitude is 72.528055 latitude is 42.3043616667 speed is 46.2652028178 direction is SE using 09 satellites (bus-bus)
+00:09:5B:B3:51:71
+21:12:53
+diesel received 4366600 bytes from PVTA_3214 in 61136 ms on 10 5 2007 at 21:12:41 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+21:19:53
+diesel received 6071740 bytes from PVTA_3214 in 31785 ms on 10 5 2007 at 21:19:35 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BD
+21:21:31
+PVTA_3029 received 492248 bytes from unknown in 2918 ms on 10 5 2007 at 21:21:2 at location is current longitude is 72.5627566667 latitude is 42.45145 speed is 2.34254191388 direction is SE using 04 satellites (bus-bus)
+00:09:5B:B3:52:BD
+21:22:53
+diesel received 4296 bytes from PVTA_3029 in 612 ms on 10 5 2007 at 21:22:0 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+21:23:53
+diesel received 310048 bytes from PVTA_3202 in 12779 ms on 10 5 2007 at 21:23:20 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BD
+21:25:09
+PVTA_3029 received 52040 bytes from PVTA_3214 in 444 ms on 10 5 2007 at 21:24:32 at location is current longitude is 72.5627566667 latitude is 42.45145 speed is 2.34254191388 direction is SE using 04 satellites (bus-bus)
+00:13:46:93:5F:26
+21:34:54
+diesel received 3666976 bytes from PVTA_3203 in 34314 ms on 10 5 2007 at 21:34:14 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+21:40:54
+diesel received 3217192 bytes from PVTA_3119 in 21120 ms on 10 5 2007 at 21:40:42 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+21:41:19
+PVTA_3202 received 2121816 bytes from diesel in 16313 ms on 10 5 2007 at 21:40:39 at location is current longitude is 72.5197966667 latitude is 42.37441 speed is 8.78453218079 direction is S using 10 satellites (bus-host)
+00:09:5B:B5:6E:6C
+21:42:54
+diesel received 57252 bytes from PVTA_3103 in 10849 ms on 10 5 2007 at 21:42:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+21:42:54
+diesel received 37448 bytes from PVTA_3202 in 1754 ms on 10 5 2007 at 21:42:53 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+21:44:59
+PVTA_3202 received 76200 bytes from diesel in 6504 ms on 10 5 2007 at 21:44:17 at location is current longitude is 72.5188316667 latitude is 42.3730883333 speed is 0.585635479718 direction is 0 using 08 satellites (bus-host)
+00:13:46:93:60:94
+21:45:54
+diesel received 1400 bytes from PVTA_3202 in 35 ms on 10 5 2007 at 21:45:10 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BD
+21:45:54
+diesel received 264902 bytes from PVTA_3029 in 22493 ms on 10 5 2007 at 21:45:25 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+21:57:22
+PVTA_3103 received 202776 bytes from diesel in 3204 ms on 10 5 2007 at 20:43:42 at location is current longitude is 72.6252316667 latitude is 42.32376 speed is 33.3812222865 direction is S using 10 satellites (bus-host)
+00:13:46:93:60:94
+21:57:26
+PVTA_3202 received 1409448 bytes from unknown in 3425 ms on 10 5 2007 at 21:55:39 at location is current longitude is 72.5310816667 latitude is 42.3252383333 speed is 0.0 direction is 0 using 11 satellites (bus-bus)
+00:13:46:93:5F:26
+21:57:54
+PVTA_3203 received 6112400 bytes from diesel in 20102 ms on 10 5 2007 at 21:57:17 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+22:00:54
+diesel received 218880 bytes from PVTA_3103 in 9333 ms on 10 5 2007 at 21:59:59 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+22:01:53
+PVTA_3203 received 3710000 bytes from diesel in 20147 ms on 10 5 2007 at 22:1:14 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+22:03:54
+diesel received 59280 bytes from PVTA_3202 in 3256 ms on 10 5 2007 at 22:3:50 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+22:09:31
+PVTA_3203 received 116432 bytes from diesel in 1033 ms on 10 5 2007 at 22:8:37 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+22:09:54
+diesel received 53440 bytes from PVTA_3119 in 842 ms on 10 5 2007 at 22:9:27 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+22:09:55
+diesel received 7541800 bytes from PVTA_3214 in 61857 ms on 10 5 2007 at 22:9:43 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+22:23:55
+diesel received 373936 bytes from PVTA_3214 in 6580 ms on 10 5 2007 at 22:23:10 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:90
+22:31:09
+PVTA_3115 received 2700072 bytes from 00:00:00:00:00:04 in 14022 ms on 10 2 2007 at 23:37:53 at location is current longitude is 72.5336883333 latitude is 42.3953033333 speed is 10.5414386175 direction is SW using 09 satellites (bus-bus)
+00:09:5B:B4:25:90
+22:31:12
+PVTA_3115 received 52184 bytes from diesel in 367 ms on 10 2 2007 at 23:32:31 at location is current longitude is 72.522545 latitude is 42.3869483333 speed is 25.7679610627 direction is NW using 10 satellites (bus-host)
+00:09:5B:B4:25:90
+22:31:16
+PVTA_3115 received 10200528 bytes from 00:00:00:00:00:01 in 25309 ms on 10 2 2007 at 23:35:46 at location is current longitude is 72.5265866667 latitude is 42.3945133333 speed is 35.1381287232 direction is NW using 10 satellites (bus-bus)
+00:09:5B:B4:25:90
+22:31:20
+PVTA_3115 received 560944 bytes from 00:00:00:00:00:03 in 7028 ms on 10 2 2007 at 23:17:24 at location is current longitude is 72.52541 latitude is 42.3919183333 speed is 40.9944835104 direction is N using 09 satellites (bus-bus)
+00:09:5B:B4:25:90
+22:31:55
+diesel received 81968 bytes from PVTA_3115 in 2374 ms on 10 5 2007 at 22:31:44 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+22:38:15
+PVTA_3202 received 2007872 bytes from unknown in 4907 ms on 10 5 2007 at 22:37:41 at location is current longitude is 72.5297666667 latitude is 42.32218 speed is 5.27071930997 direction is NE using 09 satellites (bus-bus)
+00:09:5B:B4:25:90
+22:38:19
+PVTA_3115 received 54936 bytes from PVTA_3029 in 427 ms on 10 5 2007 at 22:37:55 at location is current longitude is 72.5255216667 latitude is 42.39233 speed is 24.011054626 direction is NW using 09 satellites (bus-bus)
+00:09:5B:B3:52:BD
+22:40:42
+PVTA_3029 received 284672 bytes from PVTA_3214 in 3447 ms on 10 5 2007 at 22:39:23 at location is current longitude is 72.5627566667 latitude is 42.45145 speed is 2.34254191388 direction is SE using 04 satellites (bus-bus)
+00:09:5B:B5:6E:75
+22:40:55
+diesel received 54448 bytes from PVTA_3119 in 919 ms on 10 5 2007 at 22:39:55 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+22:40:55
+diesel received 280728 bytes from PVTA_3202 in 5037 ms on 10 5 2007 at 22:40:18 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BD
+22:43:55
+diesel received 28984 bytes from PVTA_3029 in 1128 ms on 10 5 2007 at 22:43:52 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:6C
+22:43:55
+diesel received 558744 bytes from PVTA_3103 in 3306 ms on 10 5 2007 at 22:43:53 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+22:44:41
+PVTA_3203 received 263584 bytes from diesel in 2743 ms on 10 5 2007 at 22:43:33 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B5:6E:75
+22:47:55
+diesel received 677304 bytes from PVTA_3119 in 5625 ms on 10 5 2007 at 22:46:58 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:90
+22:48:55
+diesel received 2740928 bytes from PVTA_3115 in 12133 ms on 10 5 2007 at 22:48:50 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:51:71
+22:58:56
+diesel received 11879000 bytes from PVTA_3214 in 60209 ms on 10 5 2007 at 22:58:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+22:59:05
+PVTA_3202 received 23120 bytes from PVTA_3203 in 1051 ms on 10 5 2007 at 22:57:58 at location is current longitude is 72.51937 latitude is 42.381605 speed is 1.17127095694 direction is S using 10 satellites (bus-bus)
+00:13:46:93:5F:26
+22:59:28
+PVTA_3203 received 18776 bytes from PVTA_3202 in 1227 ms on 10 5 2007 at 22:57:59 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-bus)
+00:09:5B:B3:51:71
+23:01:56
+diesel received 1192744 bytes from PVTA_3214 in 12726 ms on 10 5 2007 at 23:1:54 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B3:52:BD
+23:02:42
+PVTA_3029 received 260176 bytes from diesel in 4595 ms on 10 5 2007 at 23:2:34 at location is current longitude is 72.5627566667 latitude is 42.45145 speed is 2.34254191388 direction is SE using 04 satellites (bus-host)
+00:09:5B:B3:52:BD
+23:03:56
+diesel received 288642 bytes from PVTA_3029 in 7068 ms on 10 5 2007 at 23:3:8 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:60:94
+23:04:56
+diesel received 2768 bytes from PVTA_3202 in 1790 ms on 10 5 2007 at 23:4:9 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+23:05:37
+PVTA_3203 received 668984 bytes from diesel in 5347 ms on 10 5 2007 at 23:4:54 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:90
+23:06:34
+PVTA_3115 received 10140192 bytes from PVTA_3119 in 39548 ms on 10 5 2007 at 23:5:27 at location is current longitude is 72.5340616667 latitude is 42.3798066667 speed is 0.0 direction is 0 using 09 satellites (bus-bus)
+00:09:5B:B4:25:90
+23:13:56
+diesel received 308336 bytes from PVTA_3115 in 863 ms on 10 5 2007 at 23:13:6 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:90
+23:16:43
+PVTA_3115 received 1586984 bytes from diesel in 6521 ms on 10 5 2007 at 23:15:39 at location is current longitude is 72.5320783333 latitude is 42.3838583333 speed is 38.0663061168 direction is NW using 10 satellites (bus-host)
+00:13:46:93:5F:26
+23:20:56
+diesel received 9988368 bytes from PVTA_3203 in 26748 ms on 10 5 2007 at 23:20:39 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:90
+23:21:21
+PVTA_3115 received 11704 bytes from diesel in 196 ms on 10 5 2007 at 23:20:55 at location is current longitude is 72.52509 latitude is 42.3908266667 speed is 35.7237642004 direction is N using 08 satellites (bus-host)
+00:09:5B:B4:25:90
+23:22:56
+diesel received 3349032 bytes from PVTA_3115 in 20250 ms on 10 5 2007 at 23:22:32 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:90
+23:22:56
+diesel received 1146648 bytes from PVTA_3115 in 3027 ms on 10 5 2007 at 23:22:44 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:09:5B:B4:25:90
+23:29:24
+PVTA_3115 received 2568512 bytes from PVTA_3119 in 8418 ms on 10 5 2007 at 23:28:16 at location is current longitude is 72.5140966667 latitude is 42.3953116667 speed is 7.61326122136 direction is NW using 09 satellites (bus-bus)
+00:13:46:93:60:94
+23:32:07
+PVTA_3202 received 848584 bytes from diesel in 4848 ms on 10 5 2007 at 23:30:42 at location is current longitude is 72.57192 latitude is 42.2647616667 speed is 55.6353704759 direction is S using 10 satellites (bus-host)
+00:09:5B:B3:51:71
+23:36:56
+diesel received 2848 bytes from PVTA_3214 in 81 ms on 10 5 2007 at 23:36:9 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
+00:13:46:93:5F:26
+23:52:57
+diesel received 15280 bytes from PVTA_3203 in 988 ms on 10 5 2007 at 23:52:34 at location is not current longitude is 0 latitude is 0 speed is 0 direction is 0 using 0 satellites (bus-host)
