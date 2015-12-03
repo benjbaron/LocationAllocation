@@ -40,7 +40,7 @@ ProjectionDialog::ProjectionDialog(QWidget* parent, QString filename, QString pr
     // connect the combo boxes signals
     connect(ui->comboBox_projIn, &QComboBox::editTextChanged, this, &ProjectionDialog::projInEdited);
     connect(ui->comboBox_projOut, &QComboBox::editTextChanged, this, &ProjectionDialog::projOutEdited);
-    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(onAccepted()));
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ProjectionDialog::onAccepted);
 
     checkConsistency();
 }

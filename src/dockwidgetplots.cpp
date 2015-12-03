@@ -23,14 +23,18 @@ void DockWidgetPlots::showCellData(QPoint cell) {
     int visitCount = value->visits.size();
     double interVisitAvg = value->interVisitDurationDist.getAverage();
     double travelTimeAvg = value->travelTimes.getAverage();
+    double interVisitMed = value->interVisitDurationDist.getMedian();
+    double travelTimeMed = value->travelTimes.getMedian();
 
     ui->label1->setText(QString("Inter-visit times distribution")
-                        + "\nMean inter-visit " + QString::number(interVisitAvg));
+                        + "\nMean inter-visit " + QString::number(interVisitAvg)
+                        + "\nMedian inter-visit " + QString::number(interVisitMed));
     qDebug() << "Inter-visit times distribution";
     value->interVisitDurationDist.plot(ui->plot1);
 
     ui->label2->setText(QString("Travel time distribution")
-                        + "\nMean Travel time " + QString::number(travelTimeAvg));
+                        + "\nMean travel time " + QString::number(travelTimeAvg)
+                        + "\nMedian travel time " + QString::number(travelTimeMed));
     qDebug() << "Travel time distribution";
     value->travelTimes.plot(ui->plot2);
 
@@ -41,18 +45,31 @@ void DockWidgetPlots::showCellData(QPoint cell) {
     ui->label4->setText("Visit count " + QString::number(visitCount)
                         + "\nUnique nodes " + QString::number(value->nodes.size())
                         + "\nConnections " + QString::number(value->connections)
-                        + "\nScore " + QString::number(visitCount / interVisitAvg));
-
+                        + "\nScore " + QString::number(visitCount / interVisitAvg)
+                        + "\nScore (med) " + QString::number(value->medScore)
+                        + "\nScore (avg) " + QString::number(value->avgScore)
+                        + "\nIncoming Score (med) " + QString::number(value->medIncomingScore)
+                        + "\nIncoming Score (avg) " + QString::number(value->avgIncomingScore));
 }
 
 void DockWidgetPlots::showLinkData(QPoint cell1, QPoint cell2)
 {
     CellMatrixValue* value = _spatialStats->getValue(cell1, cell2);
-    ui->label1->setText("Inter-visit duration distribution");
-    qDebug() << "Inter-visit duration distribution";
+    int visitCount = value->visits.size();
+    double interVisitAvg = value->interVisitDurationDist.getAverage();
+    double travelTimeAvg = value->travelTimeDist.getAverage();
+    double interVisitMed = value->interVisitDurationDist.getMedian();
+    double travelTimeMed = value->travelTimeDist.getMedian();
+
+    ui->label1->setText(QString("Inter-visit times distribution")
+                        + "\nMean inter-visit " + QString::number(interVisitAvg)
+                        + "\nMedian inter-visit " + QString::number(interVisitMed));
+    qDebug() << "Inter-visit times distribution";
     value->interVisitDurationDist.plot(ui->plot1);
 
-    ui->label2->setText("Travel time distribution");
+    ui->label2->setText(QString("Travel time distribution")
+                        + "\nMean Travel time " + QString::number(travelTimeAvg)
+                        + "\nMedian travel time " + QString::number(travelTimeMed));
     qDebug() << "Travel time distribution";
     value->travelTimeDist.plot(ui->plot2);
 
@@ -62,7 +79,9 @@ void DockWidgetPlots::showLinkData(QPoint cell1, QPoint cell2)
 
     auto val = _spatialStats->getValue(cell1,cell2);
     ui->label4->setText("count " + QString::number(val->visits.size())
-                        + "\nmean inter-visit " + QString::number(val->interVisitDurationDist.getAverage()));
+                        + "\nScore " + QString::number(visitCount / interVisitAvg)
+                        + "\nScore (med) " + QString::number(value->medScore)
+                        + "\nScore (avg) " + QString::number(value->avgScore));
 
 }
 

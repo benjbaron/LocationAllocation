@@ -2,6 +2,7 @@
 #define TRACELAYER_H
 
 #include "layer.h"
+#include "utils.h"
 
 class TraceLayer: public Layer
 {
@@ -9,9 +10,10 @@ public:
     TraceLayer(MainWindow* parent = 0, QString name = 0):
         Layer(parent, name) { }
 
+    /* Adds successive points to the "_nodes" hash */
     void addPoint(QString node, long long ts, double lat, double lon) {
         if(!_nodes.contains(node)) {
-            // create the corresponding Map of successive posiitons
+            // create the corresponding Map of successive positions
             _nodes.insert(node, new QMap<long long, QPointF>());
         }
         // update the node position
@@ -26,6 +28,7 @@ public:
 
     QHash<QString, QMap<long long, QPointF>*> getNodes() const { return _nodes; }
     QMap<long long, QPointF>* const getNodeTrace(QString node) { return _nodes.value(node); }
+    double getAverageSpeed();
 
     void exportLayer(QString output);
     void exportLayerONE(QString output);
@@ -34,6 +37,7 @@ public:
 
 private:
     QHash<QString, QMap<long long, QPointF>*> _nodes;
+    Distribution _averageSpeeds;
 
 };
 

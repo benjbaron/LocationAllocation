@@ -135,6 +135,7 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     connect(ui->actionSpatial_Stats, &QAction::triggered, [=](bool checked) {
+        /// TODO Add the loader
         if(_traceLayer) {
             qDebug() << "Compute spatial Stats";
             if(!_spatialStats) {

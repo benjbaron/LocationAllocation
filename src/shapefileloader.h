@@ -7,7 +7,6 @@
 #include <QGraphicsItemGroup>
 #include <ogrsf_frmts.h>
 
-#include "progressdialog.h"
 #include "loader.h"
 #include "mainwindow.h"
 

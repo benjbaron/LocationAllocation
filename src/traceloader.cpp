@@ -32,6 +32,7 @@ bool TraceLoader::concurrentLoad()
             OSRMWrapper::getInstance().transformCoordinates(lat, lon, &x, &y);
 //            qDebug() << "adding node" << node << "(" << x << "," << y << "," << ts << ")";
             ((TraceLayer*)_layer)->addPoint(node, ts, x, y);
+            emit loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size());
         }
     }
     if(_filename.contains("cabspotting")) {

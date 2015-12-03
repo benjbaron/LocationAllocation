@@ -59,7 +59,8 @@ HEADERS  += mainwindow.h \
     spatialstats.h \
     intermediateposlayer.h \
     weightedallocationlayer.h \
-    allocationdialog.h
+    allocationdialog.h \
+    utils.h
 
 FORMS    += mainwindow.ui \
     progressdialog.ui \

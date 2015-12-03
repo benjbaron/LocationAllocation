@@ -85,6 +85,38 @@ OGRGeometryCollection *TraceLayer::getGeometry(long long startTime, long long en
     return collection;
 }
 
+double TraceLayer::getAverageSpeed()
+{
+    if(_averageSpeeds.isEmpty()) {
+        // compute the average speed for each node
+        for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
+            int count = 0;
+            double sum = 0.0;
+
+            auto jt = it.value()->begin();
+            long long prevTS = jt.key();
+            QPointF prevPos = jt.value();
+            for(jt++; jt != it.value()->end(); ++jt) {
+                long long curTS = jt.key();
+                QPointF curPos = jt.value();
+                double distance = qSqrt(qPow(prevPos.x() - curPos.x(), 2) + qPow(prevPos.y() - curPos.y(), 2));
+                long long timeDiff = curTS - prevTS;
+                sum += distance / timeDiff;
+                count++;
+//                qDebug() << prevPos << curPos << prevTS << curTS << distance << timeDiff << sum << count;
+                prevPos = curPos;
+                prevTS = curTS;
+            }
+
+            // add the average speed for the current node to the distribution
+            int value = (int) (sum / count);
+            _averageSpeeds.addValue(value);
+        }
+    }
+
+    return _averageSpeeds.getAverage();
+}
+
 void TraceLayer::exportLayer(QString output)
 {
     const char *pszDriverName = "ESRI Shapefile";

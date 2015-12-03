@@ -3,89 +3,13 @@
 
 #include "qcustomplot.h"
 #include "dockwidgetplots.h"
+#include "utils.h"
 
 #include "layer.h"
 
 #include "weightedallocationlayer.h"
 
 class TraceLayer;
-
-class Distribution
-{
-public:
-    Distribution() {}
-    void addValue(int v) {
-        _values[v]++;
-        _cummulativeSum += v;
-        _average = (_average * _count + v)/(_count+1);
-        _count++;
-    }
-
-    double probability(double x) {
-        if(x < 0) { return 0; }
-        auto it = _values.begin();
-        int sum = 0;
-        while(it != _values.end() && it.value() <= x) {
-            sum += it.key() * it.value();
-            it++;
-        }
-        return sum / _cummulativeSum;
-    }
-
-    double getAverage() { return _average; }
-
-    void plot(QCustomPlot* customPlot) {
-        customPlot->clearPlottables();
-        int vectorSize = _values.size();
-        if(vectorSize == 0)
-            return;
-
-        if(_values.firstKey() > 0) {
-            vectorSize++;
-            if(_values.firstKey()-1 != 0)
-                vectorSize++;
-        }
-
-        QVector<double> x(vectorSize), y(vectorSize);
-        int i = 0;
-        if(_values.firstKey() > 0) {
-            x[i] = y[i] = 0.0;
-            i++;
-            if(_values.firstKey()-1 != 0) {
-                x[i] = _values.firstKey()-1;
-                y[i] = 0.0;
-                i++;
-            }
-        }
-        double cummulativeValue = 0;
-        for(auto it = _values.begin(); it != _values.end(); ++it) {
-            x[i] = it.key();
-            cummulativeValue += (double) it.value() / _count;
-            y[i] = cummulativeValue;
-//            qDebug() << i << x[i] << y[i] << it.value() << _count;
-            i++;
-        }
-
-        // create graph and assign data to it:
-        customPlot->addGraph();
-        customPlot->graph(0)->setData(x, y);
-        // give the axes some labels:
-//        customPlot->xAxis->setLabel("x");
-//        customPlot->yAxis->setLabel("y");
-        // set axes ranges, so we see all data:
-        customPlot->xAxis->setAutoTicks(true);
-        customPlot->xAxis->setAutoTickLabels(true);
-        customPlot->xAxis->setRange(qMin(0,_values.firstKey()), _values.lastKey());
-        customPlot->yAxis->setRange(0, 1.0);
-        customPlot->replot();
-    }
-
-private:
-    QMap<int,int> _values; // order values
-    int _cummulativeSum = 0;
-    double _count = 0;
-    double _average = 0;
-};
 
 struct CellInfo {
     QPoint cellId;
@@ -175,6 +99,10 @@ struct CellValue {
     int connections = 0;
     qreal localStat;
     QColor color;
+    qreal medIncomingScore = 0.0; // sum of the score of the incoming edges (with median)
+    qreal avgIncomingScore = 0.0; // sum of the score of the incoming edges (with average)
+    qreal medScore = 0.0; // score with median of the inter-visit distribution
+    qreal avgScore = 0.0; // score with average of the inter-visit distribution
 };
 
 struct CellMatrixValue {
@@ -185,6 +113,8 @@ struct CellMatrixValue {
     QList<long long> visitFrequency; // timestamp of the begining of the visit
     QMultiMap<long long, long long> visits; // <start, end>
     QSet<QString> nodes; // nodes that visited the link
+    qreal medScore = 0.0; // score with median of the inter-visit distribution
+    qreal avgScore = 0.0; // score with average of the inter-visit distribution
 };
 
 
@@ -215,6 +145,8 @@ private:
 };
 
 
+
+
 class SpatialStats: public Layer
 {
     Q_OBJECT
@@ -242,11 +174,19 @@ public:
     bool isCellNull(QPoint cell) {
         return cell.x() == -1 && cell.y() == -1;
     }
+    double dist(QPointF a, QPointF b) {
+        return qSqrt(qPow(a.x() - b.x(),2) + qPow(a.y() - b.y(),2));
+    }
+    QPointF cellToCoords(QPoint cell) {
+        return QRect(cell.x()*_cellSize, cell.y()*_cellSize, _cellSize, _cellSize).center();
+    }
 
 private slots:
     void computeLocationAllocation();
     void computePageRank();
     void computeCentrality();
+    void computePercolationCentrality();
+    void computeKMeans();
 
 private:
     TraceLayer* _traceLayer;
@@ -254,14 +194,18 @@ private:
     QHash<QPoint, QHash<QPoint, CellMatrixValue*>* > _cellMatrix;
     QHash<QPoint, GraphicsCell*> _cellGraphics;
     QHash<QPoint, CellValue*> _cells;
-    int _cellSize = 50; // 50 x 50 square meters
+    int _cellSize = 100; // 100 x 100 square meters
     int _sampling = 1; // each 10 seconds
     long long _duration = 86400; // one day
     QPoint _selectedCell = QPoint(-1,-1);
     DockWidgetPlots* _plots = 0;
     QMenu* _statMenu = 0;
-    WeightedAllocationLayer* _locationAllocationLayer;
+    QList<WeightedAllocationLayer*> _allocationLayers;
 
+    /* Compute the page rank for the given set of cells */
+    bool pageRank(QHash<QPoint, double>& x, QSet<QPoint> cells, double alpha = 0.85, int maxIterations = 100, double tolerance = 1.0e-6);
+    /* Returns the cells from "cells" that are within distance "distance" and/or travel time "travelTime" of "cell" in "cellsWithinDistance", depending on "op" */
+    void cellsWithin(QSet<QPoint> &cellsWithin, QSet<QPoint> cells, QPoint cell, double distance = -1.0, double travelTime = -1.0, WithinOperator op = And, TravelTimeStat ts = Med);
 };
 
 

@@ -13,5 +13,6 @@ const int GRID_SIZE = 2000;
 
 const QColor CELL_COLOR = Qt::red;
 const double CELL_OPACITY = 0.5;
+const QColor ORANGE = QColor(255, 127, 0);
 
 #endif // CONSTANTS_H
