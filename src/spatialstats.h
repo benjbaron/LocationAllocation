@@ -1,74 +1,37 @@
 #ifndef SPATIALSTATS_H
 #define SPATIALSTATS_H
 
-#include "qcustomplot.h"
 #include "dockwidgetplots.h"
 #include "utils.h"
-
 #include "layer.h"
-
+#include "geometries.h"
+#include "computeallocation.h"
+#include "tracelayer.h"
 #include "weightedallocationlayer.h"
+#include "geometryindex.h"
+#include "restserver.h"
 
 class TraceLayer;
 
-struct CellInfo {
-    QPoint cellId;
-    long long startTime;         // start time of the contact in the cell
-    long long endTime;           // end time of the contact (regardless of the cell)
-};
-
 class MobileNode {
 public:
-    MobileNode(QString id = "", int cellSize = -1, int sampling = -1):
-        _id(id), _cellSize(cellSize), _sampling(sampling) { }
+    MobileNode(QString id = "", int sampling = -1, SpatialStats* spatialStats = 0):
+        _id(id), _sampling(sampling), _spatialStats(spatialStats) { }
 
+    void addPosition(long long time, double x, double y);
 
-    void addPosition(long long time, double x, double y) {
-        // assuming the positions are added sequencially
-        if(_prevPos.isNull() || time - _prevTime > 300) {
-            // restart the cell recording
-            QPoint gc((int)qFloor(x / _cellSize), (int)qFloor(y / _cellSize));
-            _prevCell = gc;
-            _startTimeCell = time;
-            _visitedCells.insert(time, qMakePair(gc, time));
-        } else {
-            QPointF pos(x,y);
-            int nbPos = qMax(1,(int) qCeil((time - _prevTime) / _sampling));
-            for(int i = 1; i <= nbPos; ++i) {
-                long long t = _prevTime + i*_sampling;
-                QPointF p = (time - t)*_prevPos + (t - _prevTime)*pos;
-                p /= (time - _prevTime);
+    QMap<long long, QHash<Geometry*,long long>*> getGeometries() { return _visitedGeometries; }
 
-                // get the corresponding visited cell
-                QPoint gc((int)qFloor(p.x() / _cellSize), (int)qFloor(p.y() / _cellSize));
-                // check if cell is different than the previous one
-                if(gc != _prevCell) {
-                    // add the new cell to the visited cells
-                    _visitedCells.insert(time, qMakePair(gc, time));
-                    _prevCell = gc;
-                    _startTimeCell = time;
-                } else {
-                    // update the end time of the current cell
-                    _visitedCells[_startTimeCell].second = time;
-                }
-            }
-        }
-        _prevPos = QPoint(x,y);
-        _prevTime = time;
-    }
-
-    QMap<long long,QPair<QPoint,long long>> getCells() { return _visitedCells; }
-
-    QMap<long long,QPair<QPoint,long long>> getCells(long long start, long long end) {
-        auto up = _visitedCells.lowerBound(start);
+    QMap<long long, QHash<Geometry*,long long>*> getCells(long long start, long long end) {
+        auto up = _visitedGeometries.lowerBound(start);
         auto it = up;
         if(up.key() != start)
             it = up-1;
-        if(up == _visitedCells.end())
-            return QMap<long long,QPair<QPoint,long long>>(); // reached the end
+        if(up == _visitedGeometries.end())
+            return QMap<long long, QHash<Geometry*,long long>*>(); // reached the end
 
-        QMap<long long,QPair<QPoint,long long>> res;
-        for(; it != _visitedCells.end() && it.key() <= end; ++it) {
+        QMap<long long, QHash<Geometry*,long long>*> res;
+        for(; it != _visitedGeometries.end() && it.key() <= end; ++it) {
             res.insert(it.key(), it.value());
         }
 
@@ -77,20 +40,20 @@ public:
 
 private:
     QString _id;
-    int _cellSize;
-    int _sampling;
-    QPoint _prevCell = QPoint();
-    long long _startTimeCell;
-    long long _prevTime = 0;
-    QPointF _prevPos = QPointF();
+    int _sampling;                  // linear interoplation at different times
+    QSet<Geometry*> _prevGeometries;
+    QHash<Geometry*, long long> _startTimeGeometries;   // record the start time of each geometry (reverse hash)
+    long long _prevTime = 0;        // node previous time of the point recording
+    QPointF _prevPos = QPointF();   // node previous position
+    SpatialStats* _spatialStats;
 
-    // start time, < cell id, duration >
-    QMap<long long,QPair<QPoint,long long>> _visitedCells;
+    // start time, < Geometry id, end time >
+    QMap<long long, QHash<Geometry*,long long>*> _visitedGeometries;
 };
 
-struct CellValue {
-    QPoint cell;
-    CellValue(QPoint c) { cell = c; }
+struct GeometryValue {
+    Geometry* cell;
+    GeometryValue(Geometry* c) { cell = c; }
     Distribution interVisitDurationDist;
     QList<long long> visitFrequency; // timestamp of the begining of the visit
     QMultiMap<long long, long long> visits; // <start, end>
@@ -105,9 +68,10 @@ struct CellValue {
     qreal avgScore = 0.0; // score with average of the inter-visit distribution
 };
 
-struct CellMatrixValue {
-    CellMatrixValue(QPoint c1, QPoint c2) { cell1 = c1; cell2 = c2; }
-    QPoint cell1, cell2;
+struct GeometryMatrixValue {
+    GeometryMatrixValue(Geometry* c1, Geometry* c2) { cell1 = c1; cell2 = c2; }
+    Geometry* cell1;
+    Geometry* cell2;
     Distribution travelTimeDist;
     Distribution interVisitDurationDist;
     QList<long long> visitFrequency; // timestamp of the begining of the visit
@@ -118,94 +82,71 @@ struct CellMatrixValue {
 };
 
 
-class GraphicsCell: public QObject, public QGraphicsRectItem
-{
-    Q_OBJECT
-public:
-    GraphicsCell():
-        QGraphicsRectItem(), _id(QPoint()) {}
-    GraphicsCell(qreal x, qreal y, qreal w, qreal h, QPoint id):
-        QGraphicsRectItem(x, y, w, h), _id(id) {}
-
-signals:
-    void mousePressedEvent(QPoint, bool);
-
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event)
-    {
-        if(event->button() == Qt::LeftButton) {
-            event->accept();
-            emit mousePressedEvent(_id, (event->modifiers() == Qt::ShiftModifier));
-        } else {
-            event->ignore();
-        }
-    }
-private:
-    QPoint _id;
-};
-
-
-
-
 class SpatialStats: public Layer
 {
     Q_OBJECT
 public:
-    SpatialStats(MainWindow* parent = 0, QString name = 0, TraceLayer* traceLayer = 0);
+    SpatialStats(MainWindow* parent = 0, QString name = 0, TraceLayer* traceLayer = 0,
+                 long long sampling = -1, long long startTime = -1, long long endTime = -1,
+                 GeometryIndex* geometryIndex = 0);
 
+    /* Populate nodes from the trace layer */
     void populateMobileNodes();
+    /* Compute spatial statistics */
     void computeStats();
-    CellValue* getValue(QPoint cell) {
-        if(_cells.contains(cell))
-            return _cells.value(cell);
-        return NULL;
-    }
-    CellMatrixValue* getValue(QPoint cell1, QPoint cell2) {
-        if(_cellMatrix.contains(cell1) && _cellMatrix.value(cell1)->contains(cell2))
-            return _cellMatrix.value(cell1)->value(cell2);
-        return NULL;
-    }
-    long long getDuration() { return _duration; }
-    QColor selectColorForLocalStat(qreal zScore);
-    qreal computeLocalStat(QPoint cell_i);
 
+    GeometryValue* getValue(Geometry* geom) {
+        if(_geometries.contains(geom))
+            return _geometries.value(geom);
+        return NULL;
+    }
+    GeometryMatrixValue* getValue(Geometry* geom1, Geometry* geom2) {
+        if(_geometryMatrix.contains(geom1) && _geometryMatrix.value(geom1)->contains(geom2))
+            return _geometryMatrix.value(geom1)->value(geom2);
+        return NULL;
+    }
+    QHash<Geometry*, GeometryValue*>* getGeometries() { return &_geometries; }
+    QColor selectColorForLocalStat(qreal zScore);
+    double getAverageSpeed() { return _traceLayer->getAverageSpeed(); }
+
+    /* Getis Ord G spatial stats
+     * TODO: compute the p-value
+    */
+    qreal computeLocalStat(Geometry *geom_i);
+
+    /* Draw the group of cells */
     QGraphicsItemGroup* draw();
-    QList<std::tuple<QPointF,double,double>> getPoints(int deadline = 0, long long startTime = 0, long long endTime = 0);
-    bool isCellNull(QPoint cell) {
-        return cell.x() == -1 && cell.y() == -1;
+    QList<std::tuple<QPointF,double,double>> getPoints(int deadline = 0,
+                                                       long long startTime = 0,
+                                                       long long endTime = 0);
+
+    /* Returns the Geometry that contains the point (x,y) */
+    QSet<Geometry*> containsPoint(double x, double y) {
+        return _geometryIndex->getGeometriesAt(x,y);
     }
-    double dist(QPointF a, QPointF b) {
-        return qSqrt(qPow(a.x() - b.x(),2) + qPow(a.y() - b.y(),2));
+    QSet<Geometry*> containsPoint(QPointF p) {
+        return containsPoint(p.x(), p.y());
     }
-    QPointF cellToCoords(QPoint cell) {
-        return QRect(cell.x()*_cellSize, cell.y()*_cellSize, _cellSize, _cellSize).center();
-    }
+    ComputeAllocation* getComputeAllocation() { return _computeAllocation; }
 
 private slots:
-    void computeLocationAllocation();
-    void computePageRank();
-    void computeCentrality();
-    void computePercolationCentrality();
-    void computeKMeans();
+    void exportContourFile();
 
 private:
     TraceLayer* _traceLayer;
     QHash<QString, MobileNode*> _mobileNodes;
-    QHash<QPoint, QHash<QPoint, CellMatrixValue*>* > _cellMatrix;
-    QHash<QPoint, GraphicsCell*> _cellGraphics;
-    QHash<QPoint, CellValue*> _cells;
-    int _cellSize = 100; // 100 x 100 square meters
-    int _sampling = 1; // each 10 seconds
-    long long _duration = 86400; // one day
-    QPoint _selectedCell = QPoint(-1,-1);
+    QHash<Geometry*, QHash<Geometry*, GeometryMatrixValue*>* > _geometryMatrix;
+    QHash<Geometry*, GeometryValue*> _geometries;
+    QHash<Geometry*, GeometryGraphics*> _geometryGraphics;
+    long long _sampling = 1; // each 1 second
+    long long _startTime;
+    long long _endTime;
+    Geometry* _selectedGeometry = NULL;
     DockWidgetPlots* _plots = 0;
     QMenu* _statMenu = 0;
-    QList<WeightedAllocationLayer*> _allocationLayers;
-
-    /* Compute the page rank for the given set of cells */
-    bool pageRank(QHash<QPoint, double>& x, QSet<QPoint> cells, double alpha = 0.85, int maxIterations = 100, double tolerance = 1.0e-6);
-    /* Returns the cells from "cells" that are within distance "distance" and/or travel time "travelTime" of "cell" in "cellsWithinDistance", depending on "op" */
-    void cellsWithin(QSet<QPoint> &cellsWithin, QSet<QPoint> cells, QPoint cell, double distance = -1.0, double travelTime = -1.0, WithinOperator op = And, TravelTimeStat ts = Med);
+    GeometryIndex* _geometryIndex;
+    ComputeAllocation* _computeAllocation;
+    RESTServer* _restServer = 0;
 };
 
 

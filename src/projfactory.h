@@ -1,15 +1,5 @@
-#ifndef OSRMWRAPPER_H
-#define OSRMWRAPPER_H
-
-#include "../library/osrm.hpp"
-#include "../util/git_sha.hpp"
-#include "../util/json_renderer.hpp"
-#include "../util/routed_options.hpp"
-#include "../util/simple_logger.hpp"
-
-#include <osrm/json_container.hpp>
-#include <osrm/libosrm_config.hpp>
-#include <osrm/route_parameters.hpp>
+#ifndef PROJFACTORY_H
+#define PROJFACTORY_H
 
 #include "/usr/local/include/proj_api.h"
 
@@ -20,17 +10,15 @@
 #include <QMap>
 
 
-class OSRMWrapper
+class ProjFactory
 {
 public:
-    static OSRMWrapper& getInstance()
+    static ProjFactory & getInstance()
     {
-        static OSRMWrapper instance; // Guaranteed to be destroyed.
+        static ProjFactory instance; // Guaranteed to be destroyed.
                                      // Instantiated on first use.
         return instance;
     }
-
-    int computeRoute(QList<QPointF>* coordinates, QPointF start, QPointF end);
 
     void revertCoordinates(double x, double y, double* lat, double* lon);
     void transformCoordinates(double lat, double lon, double* x, double* y);
@@ -54,14 +42,11 @@ public:
     }
 
 private:
-    OSRMWrapper(QString projIn = 0, QString projOut = 0);
-    OSRMWrapper(OSRMWrapper const&)     = delete;
-    void operator=(OSRMWrapper const&)  = delete;
-    int startUp();
+    ProjFactory(QString projIn = 0, QString projOut = 0);
+    ProjFactory(ProjFactory const&)     = delete;
+    void operator=(ProjFactory const&)  = delete;
 
-    OSRM* _routingMachine;
     projPJ _projIn = 0, _projOut = 0;
-    int _isStarted;
 };
 
-#endif // OSRMWRAPPER_H
+#endif // PROJFACTORY_H

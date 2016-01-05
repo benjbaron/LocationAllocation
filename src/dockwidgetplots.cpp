@@ -17,8 +17,8 @@ DockWidgetPlots::~DockWidgetPlots()
     delete ui;
 }
 
-void DockWidgetPlots::showCellData(QPoint cell) {
-    CellValue* value = _spatialStats->getValue(cell);
+void DockWidgetPlots::showNodeData(Geometry* geom) {
+    GeometryValue* value = _spatialStats->getValue(geom);
 
     int visitCount = value->visits.size();
     double interVisitAvg = value->interVisitDurationDist.getAverage();
@@ -52,9 +52,9 @@ void DockWidgetPlots::showCellData(QPoint cell) {
                         + "\nIncoming Score (avg) " + QString::number(value->avgIncomingScore));
 }
 
-void DockWidgetPlots::showLinkData(QPoint cell1, QPoint cell2)
+void DockWidgetPlots::showLinkData(Geometry *geom1, Geometry *geom2)
 {
-    CellMatrixValue* value = _spatialStats->getValue(cell1, cell2);
+    GeometryMatrixValue* value = _spatialStats->getValue(geom1, geom2);
     int visitCount = value->visits.size();
     double interVisitAvg = value->interVisitDurationDist.getAverage();
     double travelTimeAvg = value->travelTimeDist.getAverage();
@@ -77,7 +77,7 @@ void DockWidgetPlots::showLinkData(QPoint cell1, QPoint cell2)
     qDebug() << "Visit frequency";
     plotFrequencies(value->visitFrequency, ui->plot3, 60);
 
-    auto val = _spatialStats->getValue(cell1,cell2);
+    auto val = _spatialStats->getValue(geom1, geom2);
     ui->label4->setText("count " + QString::number(val->visits.size())
                         + "\nScore " + QString::number(visitCount / interVisitAvg)
                         + "\nScore (med) " + QString::number(value->medScore)

@@ -3,8 +3,22 @@
 
 #include "qcustomplot.h"
 
-enum WithinOperator { And, Or, None };
-enum TravelTimeStat { Med, Avg };
+enum WithinOperator { And, Or, NoneWithin };
+enum TravelTimeStat { NoneTT, Med, Avg };
+enum DistanceStat   { NoneD, Auto, FixedD };
+
+
+/* Define the names of the different allocations */
+const QString LOCATION_ALLOCATION_MEHTOD_NAME = "Location allocation";
+const QString PAGE_RANK_MEHTOD_NAME = "Page Rank";
+const QString K_MEANS_MEHTOD_NAME = "k-means";
+
+static double euclideanDistance(double x1, double y1, double x2, double y2) {
+    return qSqrt(qPow(x1 - x2,2) + qPow(y1 - y2,2));
+}
+static double euclideanDistance(QPointF a, QPointF b) {
+    return euclideanDistance(a.x(), a.y(), b.x(), b.y());
+}
 
 class Distribution
 {
@@ -114,36 +128,37 @@ private:
 };
 
 
+class Geometry;
 struct Allocation {
-    Allocation(): point(QPointF()), weight(0.0), demands(QHash<QPointF, double>()), deletedCandidates(QSet<QPointF>()) { }
-    Allocation(QPoint p, double w, QHash<QPoint, double>& d, QSet<QPoint>& c, int cellSize) {
-        // convert the cells into points
-        point = QPointF(QRectF(p.x()*cellSize, p.y()*cellSize, cellSize, cellSize).center());
-        weight = w;
-        for(auto it = d.begin(); it != d.end(); ++it) {
-            QPoint k = it.key();
-            QPointF k1(QRectF(k.x()*cellSize, k.y()*cellSize, cellSize, cellSize).center());
-            demands.insert(k1,it.value());
-        }
+    Allocation(): geom(NULL), weight(0.0), demands(QHash<Geometry*, double>()), deletedCandidates(QSet<Geometry*>()) { }
+    Allocation(Geometry* p, double w, QHash<Geometry*, double>& d, QSet<Geometry*>& c, int rank) :
+        geom(p), weight(w), demands(d), deletedCandidates(c), rank(rank) { }
 
-        for(QPoint k : c) {
-            QPointF k1(QRectF(k.x()*cellSize, k.y()*cellSize, cellSize, cellSize).center());
-            deletedCandidates.insert(k1);
-        }
-    }
-    Allocation(QPointF p, double w, QHash<QPointF, double>& d, QSet<QPointF>& c) :
-        point(p), weight(w), demands(d), deletedCandidates(c) { }
-
-    QPointF point;
+    Geometry* geom;
     double weight;
-    QHash<QPointF, double> demands;  // demands assigned to the allocated point
-    QSet<QPointF> deletedCandidates; // candidates deleted
+    QHash<Geometry*, double> demands;  // demands assigned to the allocated point
+    QSet<Geometry*> deletedCandidates; // candidates deleted
+    int rank;
 };
 
 inline uint qHash(const QPointF &key)
 {
     return qHash(key.x()) ^ qHash(key.y());
 }
+
+static bool toggleBoldFont(QLineEdit *lineEdit, bool isValid)
+{
+    QFont prevFont(lineEdit->font()); // Get previous font
+    if(isValid) {
+        prevFont.setBold(false);
+        lineEdit->setFont(prevFont);
+    } else {
+        prevFont.setBold(true);
+        lineEdit->setFont(prevFont);
+    }
+    return isValid;
+}
+
 
 #endif // UTILS_H
 

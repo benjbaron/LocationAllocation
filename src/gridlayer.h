@@ -13,9 +13,9 @@ public:
     OGRGeometryCollection* getGeometry(long long startTime = 0, long long endTime = 0);
 
 private:
-    int _cellSize;
+    int _geometriesize;
     QPointF _topLeft;
-    QList<QPointF> _cells;
+    QList<QPointF> _geometries;
 
 };
 

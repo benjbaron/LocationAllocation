@@ -1,8 +1,7 @@
 #include "traceloader.h"
 
-#include <QString>
 #include "tracelayer.h"
-#include "osrmwrapper.h"
+#include "projfactory.h"
 
 TraceLoader::~TraceLoader() { }
 
@@ -22,14 +21,14 @@ bool TraceLoader::concurrentLoad()
 //            qDebug() << "line" << fields;
             QString node = fields.at(1);
             long long ts = (long long) fields.at(0).toDouble();
-            double lat   = fields.at(2).toDouble();
-            double lon   = fields.at(3).toDouble();
+            double lat   = fields.at(3).toDouble();
+            double lon   = fields.at(2).toDouble();
 //            qDebug() << "(" << node << "," << ts << "," << lat << "," << lon << ")";
             if(ts <= 0)
                 continue;
             // convert the points to the local projection
             double x, y;
-            OSRMWrapper::getInstance().transformCoordinates(lat, lon, &x, &y);
+            ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
 //            qDebug() << "adding node" << node << "(" << x << "," << y << "," << ts << ")";
             ((TraceLayer*)_layer)->addPoint(node, ts, x, y);
             emit loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size());
@@ -91,7 +90,7 @@ void TraceLoader::openNodeTrace(QString filename)
             continue;
         // convert the points to the local projection
         double x, y;
-        OSRMWrapper::getInstance().transformCoordinates(lat, lon, &x, &y);
+        ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
 //        qDebug() << "adding node" << node << "(" << x << "," << y << "," << ts << ")";
         ((TraceLayer*)_layer)->addPoint(node, ts, x, y);
     }
@@ -112,7 +111,7 @@ void TraceLoader::openDieselNetNodeTrace(QString filename, QString node)
 {
     // get the date
 //    qDebug() << "\tfile" << filename;
-    QRegExp rx("(\\d{4})\\-(\\d{2})\-(\\d{2})");  // date
+    QRegExp rx("(\\d{4})\\-(\\d{2})\\-(\\d{2})");  // date
     QRegExp rx1("(\\d{2})\\:(\\d{2})\\:(\\d{2})"); // time
     rx.indexIn(QFileInfo(filename).fileName());
     int year = rx.cap(1).toInt();
@@ -145,7 +144,7 @@ void TraceLoader::openDieselNetNodeTrace(QString filename, QString node)
             continue;
         // convert the points to the local projection
         double x, y;
-        OSRMWrapper::getInstance().transformCoordinates(lat, lon, &x, &y);
+        ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
 //        qDebug() << "\t\t" << year << month << day << hh << mm << ss << " / " << ts << QFileInfo(filename).fileName();
 //        qDebug() << "\t\tadding node" << node << "(" << x << "," << y << "," << d.toTime_t() << ")";
         ((TraceLayer*)_layer)->addPoint(node, d.toTime_t(), x, y);

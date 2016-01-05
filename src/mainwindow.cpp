@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <QTcpServer>
 
 #include "graphicsview.h"
 #include "projectiondialog.h"
@@ -11,15 +12,11 @@
 #include "tracelayer.h"
 #include "traceloader.h"
 #include "gridlayer.h"
-#include "allocationlayer.h"
-#include "layer.h"
 #include "layerpanel.h"
-#include "loader.h"
-#include "graphicsscene.h"
-#include "osrmwrapper.h"
-#include "locationallocationdialog.h"
+#include "projfactory.h"
 #include "spatialstats.h"
 #include "intermediateposlayer.h"
+#include "spatialstatsdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -52,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_layerPanel, &LayerPanel::closedEvent, this, &MainWindow::closedLayerPanel);
     connect(_layerPanel, &LayerPanel::reorderEvent, this, &MainWindow::changeLayerOrder);
     connect(ui->actionAdd_Grid, &QAction::triggered, this, &MainWindow::addGrid);
-    connect(ui->actionCompute_allocation, &QAction::triggered, this, &MainWindow::computeAllocation);
+
     connect(ui->actionExport_Trace_grid, &QAction::triggered, [=](bool checked) {
         if(_traceLayer) {
             QString filename = QFileDialog::getSaveFileName(0,
@@ -119,27 +116,23 @@ MainWindow::MainWindow(QWidget *parent) :
            _traceLayer->exportLayerONE(filename);
        }
     });
-    connect(ui->actionExport_facilities, &QAction::triggered, [=](bool checked){
-       if(_traceLayer) {
-           QString filename = QFileDialog::getSaveFileName(0,
-                                                           tr("Save the facility locations"),
-                                                           QString(),
-                                                           tr("Text file (*.txt)"));
-
-           if(filename.isEmpty())
-               return;
-
-           qDebug() << "Exporting facility locations" << filename;
-           _allocLayer->exportFacilities(filename);
-       }
-    });
 
     connect(ui->actionSpatial_Stats, &QAction::triggered, [=](bool checked) {
-        /// TODO Add the loader
         if(_traceLayer) {
             qDebug() << "Compute spatial Stats";
             if(!_spatialStats) {
-                _spatialStats = new SpatialStats(this, "Spatial Stats layer", _traceLayer);
+                SpatialStatsDialog spatialStatsDialog(this, _traceLayer);
+                int ret = spatialStatsDialog.exec(); // synchronous
+                if (ret == QDialog::Rejected) {
+                    return;
+                }
+                double sampling  = spatialStatsDialog.getSampling();
+                double startTime = spatialStatsDialog.getStartTime();
+                double endTime   = spatialStatsDialog.getEndTime();
+                GeometryIndex* geometryIndex = spatialStatsDialog.getGeometryIndex();
+
+                // TODO add loader
+                _spatialStats = new SpatialStats(this, "Spatial Stats layer", _traceLayer, sampling, startTime, endTime, geometryIndex);
             }
 
             _spatialStats->computeStats();
@@ -161,10 +154,12 @@ void MainWindow::addMenu(QMenu *menu) {
 void MainWindow::openShapefile()
 {
     QSettings settings;
+    qDebug() << "hello";
     QString filename = QFileDialog::getOpenFileName(this,
                                                     "Open a Shapefile",
-                                                    settings.value("defaultShapefilePath", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString(),
-                                                    tr("Shapefile (*.shp)"));
+                                                    settings.value("defaultShapefilePath",
+                                                                   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString(),
+                                                    "Shapefile (*.shp);;WKT files (*.wkt)");
     if(filename.isEmpty()) {
         return;
     }
@@ -236,17 +231,12 @@ void MainWindow::changeProjection(QString filename, QString projOut)
     }
     // Get the projections
     projectionDialog.getProjections(&_projIn, &_projOut);
-    OSRMWrapper::getInstance().setProj(_projIn, _projOut);
-}
-
-void MainWindow::addRoute()
-{
-
+    ProjFactory::getInstance().setProj(_projIn, _projOut);
 }
 
 void MainWindow::closedLayerPanel()
 {
-    // recieved a close event from the layer panel
+    // received a close event from the layer panel
     _showLayersAction->setText("Show Layers");
 }
 
@@ -266,31 +256,6 @@ void MainWindow::showLayerPanel() {
 void MainWindow::onMousePressEvent()
 {
 
-}
-
-void MainWindow::computeAllocation()
-{
-    // execute the compute location dialog
-    LocationAllocationDialog locAllDialog(this, "Location allocation", &_layers);
-    int ret = locAllDialog.exec(); // synchronous
-    if (ret == QDialog::Rejected) {
-        return;
-    }
-    // Get the candidate and demand layers
-    Layer* candidate;
-    Layer* demand;
-    int deadline, nbFacilities, cellSize;
-    long long startTime, endTime;
-    locAllDialog.getParameters(candidate, demand, &deadline, &startTime, &endTime, &nbFacilities, &cellSize);
-    qDebug() << "MainWindow" << (candidate ? candidate->getName() : "grid") << demand->getName() << deadline << startTime << endTime;
-
-    // run the Allocation layer
-    AllocationLayer* allocLayer = new AllocationLayer(this, "Allocation layer", candidate, demand, deadline, startTime, endTime, nbFacilities, cellSize);
-    allocLayer->computeAllocationGridTrace();
-
-    createLayer("Allocation", allocLayer);
-
-    _allocLayer = allocLayer;
 }
 
 void MainWindow::changeLayerOrder(int oldIndex, int newIndex)

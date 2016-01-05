@@ -1,6 +1,8 @@
 #include "layerpanel.h"
 #include "ui_layerpanel.h"
 
+#include <QStyle>
+
 #include "layer.h"
 
 LayerPanel::LayerPanel(MainWindow* parent, QList<Layer *>* layers) :
@@ -11,17 +13,22 @@ LayerPanel::LayerPanel(MainWindow* parent, QList<Layer *>* layers) :
     ui->setupUi(this);
     _listWidget = new ListWidget(this);
     ui->horizontalLayout->addWidget(_listWidget);
+    ui->layerLabel->setVisible(false);
     connect(_listWidget, &ListWidget::orderChanged, [=](int oldIndex, int newIndex) {
         emit reorderEvent(oldIndex, newIndex);
     });
     connect(_listWidget, &ListWidget::itemChanged, [=](QListWidgetItem* item) {
-        qDebug() << "item changed" << item->checkState() << item->data(1).value<Layer*>()->getName();;
         if(item->checkState() == Qt::Checked) {
             item->data(1).value<Layer*>()->setVisible(true);
         }
         if(item->checkState() == Qt::Unchecked) {
             item->data(1).value<Layer*>()->setVisible(false);
         }
+    });
+    connect(_listWidget, &ListWidget::currentItemChanged, [=](QListWidgetItem * current, QListWidgetItem * previous) {
+        Q_UNUSED(previous)
+        ui->layerLabel->setVisible(true);
+        ui->layerLabel->setText(current->data(1).value<Layer*>()->getInformation());
     });
 }
 
@@ -37,8 +44,5 @@ void LayerPanel::addLayer(Layer *layer)
     item->setData(1, QVariant::fromValue<Layer*>(layer));
     item->setFlags(item->flags() | Qt::ItemIsUserCheckable); // set checkable flag
     item->setCheckState(Qt::Unchecked); // AND initialize check state
-
-//    _listWidget->addItem(layer->getName());
-    qDebug() << "Size is" << _layers->size();
 }
 

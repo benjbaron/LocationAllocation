@@ -32,15 +32,14 @@
     <addaction name="actionSet_projection"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_Grid"/>
-    <addaction name="actionCompute_allocation"/>
     <addaction name="actionExport_Trace"/>
     <addaction name="actionExport_ONETrace"/>
     <addaction name="actionExport_Trace_grid"/>
     <addaction name="actionExport_Trace_txt"/>
-    <addaction name="actionExport_facilities"/>
     <addaction name="separator"/>
     <addaction name="actionSpatial_Stats"/>
     <addaction name="actionShow_intermediate_points"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -107,6 +106,11 @@
   <action name="actionShow_intermediate_points">
    <property name="text">
     <string>Show intermediate points</string>
+   </property>
+  </action>
+  <action name="actionLaunch_REST_server">
+   <property name="text">
+    <string>Launch REST server</string>
    </property>
   </action>
  </widget>

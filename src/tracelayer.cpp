@@ -4,7 +4,7 @@
 #include <QFile>
 #include <qmath.h>
 
-#include "osrmwrapper.h"
+#include "projfactory.h"
 
 QGraphicsItemGroup *TraceLayer::draw() {
     int radius = 10;
@@ -322,8 +322,8 @@ void TraceLayer::exportLayerONE(QString output)
             // time id xPos yPos
             out << QString::number(timestamp, 'f', 0) << " "
                 << QString::number(nodeID, 'f', 0) << " "
-                << QString::number(pos.x(), 'f', 0) << " "
-                << QString::number(pos.y(), 'f', 0) << " "
+                << QString::number(pos.x(), 'f', 4) << " "
+                << QString::number(pos.y(), 'f', 4) << " "
                 << (state ? "UP" : "DOWN") << "\n";
         }
     }
@@ -373,7 +373,7 @@ void TraceLayer::exportLayerGrid(QString output, int cellSize, long long duratio
     }
 
     OGRSpatialReference *srs = new OGRSpatialReference();
-    srs->importFromProj4(OSRMWrapper::getInstance().getOutputProj());
+    srs->importFromProj4(ProjFactory::getInstance().getOutputProj());
 
     OGRLayer *poLayerGrid;
     poLayerGrid = poDS->CreateLayer( "grid", srs, wkbPolygon, NULL );

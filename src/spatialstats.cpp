@@ -1,50 +1,42 @@
 #include "spatialstats.h"
-#include<QGraphicsItemGroup>
-#include <math.h>
 
+#include "restserver.h"
 #include "constants.h"
-#include "tracelayer.h"
-#include "allocationdialog.h"
 
-SpatialStats::SpatialStats(MainWindow *parent, QString name, TraceLayer *traceLayer):
-    Layer(parent, name), _traceLayer(traceLayer)
+SpatialStats::SpatialStats(MainWindow *parent, QString name, TraceLayer *traceLayer, long long sampling, long long startTime, long long endTime, GeometryIndex *geometryIndex):
+    Layer(parent, name), _traceLayer(traceLayer), _sampling(sampling), _startTime(startTime), _endTime(endTime), _geometryIndex(geometryIndex)
 {
-    _statMenu = new QMenu();
-    _statMenu->setTitle("Stat analysis");
-    QAction* action = _statMenu->addAction("Location allocation");
-    connect(action, &QAction::triggered, this, &SpatialStats::computeLocationAllocation);
-    action = _statMenu->addAction("PageRank");
-    connect(action, &QAction::triggered, this, &SpatialStats::computePageRank);
-    action = _statMenu->addAction("Betweeness centrality");
-    connect(action, &QAction::triggered, this, &SpatialStats::computeCentrality);
-    action = _statMenu->addAction("Percolation centrality");
-    connect(action, &QAction::triggered, this, &SpatialStats::computePercolationCentrality);
-    action = _statMenu->addAction("k-means");
-    connect(action, &QAction::triggered, this, &SpatialStats::computeKMeans);
-
-    _parent->addMenu(_statMenu);
-
     populateMobileNodes();
 }
 
 void SpatialStats::populateMobileNodes()
 {
+    qDebug() << "startTime" << _startTime << "endTime" << _endTime << "sampling" << _sampling;
     // add the successive point positions of the mobile nodes
     auto nodes = _traceLayer->getNodes();
 
     for(auto it = nodes.begin(); it != nodes.end(); ++it) {
         QString nodeId = it.key();
         if(!_mobileNodes.contains(nodeId) && it.value()->size() > 0) {
-            _mobileNodes.insert(nodeId, new MobileNode(nodeId, _cellSize, _sampling));
+            _mobileNodes.insert(nodeId, new MobileNode(nodeId, _sampling, this));
         }
         MobileNode* node = _mobileNodes.value(nodeId);
-        long long startTime = it.value()->firstKey();
-        for(auto jt = it.value()->begin(); jt != it.value()->end() && jt.key() - startTime < _duration; ++jt) {
+        auto jt = (_startTime == -1) ? it.value()->begin() : it.value()->lowerBound(_startTime);
+        for(; jt != it.value()->end(); ++jt) {
+            if(_endTime != -1 && jt.key() > _endTime) break;
             long long ts = jt.key();
             QPointF pos = jt.value();
             node->addPosition(ts, pos.x(), pos.y());
         }
     }
+
+    _computeAllocation = new ComputeAllocation(this);
+    _statMenu = new QMenu();
+    _statMenu->setTitle("Stat analysis");
+    QAction* action = _statMenu->addAction("Compute allocation");
+    connect(action, &QAction::triggered, _computeAllocation, &ComputeAllocation::computeAllocation);
+
+    _parent->addMenu(_statMenu);
 }
 
 void SpatialStats::computeStats()
@@ -52,61 +44,72 @@ void SpatialStats::computeStats()
     // compute the visiting matrix for the current set of mobile nodes
     int nbNodes = _mobileNodes.size();
     qDebug() << "number of mobile nodes" << nbNodes;
-    int nodeCounter = 0;
     for(auto it_mobileNode = _mobileNodes.begin(); it_mobileNode != _mobileNodes.end(); ++it_mobileNode) {
         MobileNode* mobileNode = it_mobileNode.value();
-        auto cells = mobileNode->getCells();
-        for(auto it = cells.begin(); it != cells.end(); ++it) {
-            QPoint cell1 = it.value().first;
+        auto geoms = mobileNode->getGeometries(); // get the geometries the node visits
+        for(auto it = geoms.begin(); it != geoms.end(); ++it) {
             long long start1 = it.key();
-            long long end1 = it.value().second;
-            
-            if(!_cells.contains(cell1)) _cells.insert(cell1, new CellValue(cell1));
-            CellValue* val = _cells.value(cell1);
-            val->visits.insert(start1, end1);
-            val->visitFrequency.append(start1);
-            val->nodes.insert(it_mobileNode.key());
-            
-            // examine the subsequent visited cells
-            QSet<QPoint> visitedCells;
-            for(auto jt = it+1; jt != cells.end(); ++jt) {
-                QPoint cell2 = jt.value().first;
-                long long start2 = jt.key();
-                long long end2 = jt.value().second;
 
-//                qDebug() << "cell1" << cell1 << "cell2" << cell2 << visitedCells;
+            // loop through the geometries visited at the same start time start1
+            for(auto kt = it.value()->begin(); kt != it.value()->end(); ++kt) {
+                Geometry* geom1 = kt.key();
+                long long end1  = kt.value();
 
-                if(cell1 == cell2) break; // stop when the node pass on the same stating cell
-                if(visitedCells.contains(cell2)){
-                    continue; // do not take account previously visited cells
-                }
-                
-                if(!_cellMatrix.contains(cell1)) {
-                    _cellMatrix.insert(cell1, new QHash<QPoint, CellMatrixValue*>());
-                }
-                if(!_cellMatrix.value(cell1)->contains(cell2)) {
-                    _cellMatrix.value(cell1)->insert(cell2, new CellMatrixValue(cell1, cell2));
-                }
+                // add the geomtery to the set of visited geometries
+                if(!_geometries.contains(geom1))
+                    _geometries.insert(geom1, new GeometryValue(geom1));
 
-                CellMatrixValue* val = _cellMatrix.value(cell1)->value(cell2);
-                val->travelTimeDist.addValue(qMax((long long) 0, start2-start1));
-                val->visitFrequency.append(start1);
+                // update the corresponding geometry value
+                GeometryValue* val = _geometries.value(geom1);
                 val->visits.insert(start1, end1);
+                val->visitFrequency.append(start1);
                 val->nodes.insert(it_mobileNode.key());
 
-                visitedCells.insert(cell2);
+                // examine the subsequent visited geometries
+                QSet<Geometry*> visitedGeometries; // remember the cells the node visited
+                                                   // to avoid accounting for them multiple times
+                for(auto jt = it+1; jt != geoms.end(); ++jt) {
+                    long long start2 = jt.key();
+
+                    // loop through the geometeries visited at the same start time start2
+                    for(auto lt = jt.value()->begin(); lt != jt.value()->end(); ++lt) {
+                        Geometry* geom2 = lt.key();
+                        long long end2  = lt.value();
+
+                        // stop when the node visits the same stating geometry again
+                        if(geom1 == geom2) break;
+
+                        // do not take account already visited geometries
+                        if(visitedGeometries.contains(geom2))
+                            continue;
+
+                        // add the geomtery to the matrix of visited geometries
+                        if(!_geometryMatrix.contains(geom1)) {
+                            _geometryMatrix.insert(geom1, new QHash<Geometry*, GeometryMatrixValue*>());
+                        }
+                        if(!_geometryMatrix.value(geom1)->contains(geom2)) {
+                            _geometryMatrix.value(geom1)->insert(geom2, new GeometryMatrixValue(geom1, geom2));
+                        }
+
+                        GeometryMatrixValue* val = _geometryMatrix.value(geom1)->value(geom2);
+                        val->travelTimeDist.addValue(qMax((long long) 0, start2-start1));
+                        val->visitFrequency.append(start1);
+                        val->visits.insert(start1, end1);
+                        val->nodes.insert(it_mobileNode.key());
+
+                        visitedGeometries.insert(geom2);
+                    }
+                }
             }
         }
-//        emit loadProgressChanged((qreal) nodeCounter++ / (qreal) nbNodes);
     }
-
-    qDebug() << "size of matrix" << _cellMatrix.size();
+    qDebug() << "size of the geomerty matrix" << _geometryMatrix.size();
 
     qDebug() << "compute the inter-visit durations / cells";
     // compute the inter-visit durations for the cells
-    for(auto it = _cells.begin(); it != _cells.end(); ++it) {
-        QPoint cell = it.key();
-        CellValue* val = it.value();
+    for(auto it = _geometries.begin(); it != _geometries.end(); ++it) {
+        Geometry* geom = it.key();
+        GeometryValue* val = it.value();
         auto visits = val->visits;
         long long prevStartTime = visits.firstKey();
         for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
@@ -116,18 +119,18 @@ void SpatialStats::computeStats()
                 prevStartTime = start;
             }
         }
-        val->localStat = computeLocalStat(cell);
+        val->localStat = computeLocalStat(geom);
         val->color = selectColorForLocalStat(val->localStat);
     }
 
     qDebug() << "compute the inter-visit durations / matrix";
     // compute the inter-visit durations for the matrix cells
-    for(auto it = _cellMatrix.begin(); it != _cellMatrix.end(); ++it) {
-        QPoint cell1 = it.key();
-        auto cells = it.value();
-        for(auto jt = cells->begin(); jt != cells->end(); ++jt) {
-            QPoint cell2 = jt.key();
-            CellMatrixValue* val = jt.value();
+    for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
+        Geometry* geom1 = it.key();
+        auto geoms = it.value();
+        for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
+            Geometry* geom2 = jt.key();
+            GeometryMatrixValue* val = jt.value();
             auto visits = val->visits;
             long long prevStartTime = visits.firstKey();
             for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
@@ -139,12 +142,12 @@ void SpatialStats::computeStats()
             }
 
             // update the connections counters
-            if(_cellMatrix.contains(cell2)) {
-                if(_cellMatrix.value(cell2)->contains(cell1)) {
-                    if(_cells.contains(cell2)) {
-                        _cells.value(cell2)->connections++;
-                        int travelTime = (int) qCeil(_cellMatrix.value(cell2)->value(cell1)->travelTimeDist.getAverage());
-                        _cells.value(cell2)->travelTimes.addValue(travelTime);
+            if(_geometryMatrix.contains(geom2)) {
+                if(_geometryMatrix.value(geom2)->contains(geom1)) {
+                    if(_geometries.contains(geom2)) {
+                        _geometries.value(geom2)->connections++;
+                        int travelTime = (int) qCeil(_geometryMatrix.value(geom2)->value(geom1)->travelTimeDist.getAverage());
+                        _geometries.value(geom2)->travelTimes.addValue(travelTime);
                     }
                 }
             }
@@ -152,36 +155,50 @@ void SpatialStats::computeStats()
     }
 
     qDebug() << "Compute scores";
-    for(auto it = _cellMatrix.begin(); it != _cellMatrix.end(); ++it) {
-        QPoint cell1 = it.key();
-        CellValue* cellVal = _cells.value(cell1);
-        double nodeAvg = cellVal->interVisitDurationDist.getAverage() > 0.0 ? cellVal->interVisitDurationDist.getAverage() : 1.0;
-        double nodeMed = cellVal->interVisitDurationDist.getMedian() > 0.0 ? cellVal->interVisitDurationDist.getMedian() : 1.0;
-        double nodeCount = (double) cellVal->visits.size();
+    for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
+        Geometry* geom1 = it.key();
+        GeometryValue* nodeVal = _geometries.value(geom1);
+        double nodeAvg = nodeVal->interVisitDurationDist.getAverage() > 0.0 ? nodeVal->interVisitDurationDist.getAverage() : 1.0;
+        double nodeMed = nodeVal->interVisitDurationDist.getMedian() > 0.0 ? nodeVal->interVisitDurationDist.getMedian() : 1.0;
+        double nodeCount = (double) nodeVal->visits.size();
         double nodeMedScore = nodeCount / nodeMed;
         double nodeAvgScore = nodeCount / nodeAvg;
-        if(cellVal) cellVal->medScore = nodeMedScore;
-        if(cellVal) cellVal->avgScore = nodeAvgScore;
+        if(nodeVal) nodeVal->medScore = nodeMedScore;
+        if(nodeVal) nodeVal->avgScore = nodeAvgScore;
 
-        auto cells = it.value();
-        for(auto jt = cells->begin(); jt != cells->end(); ++jt) {
-            QPoint cell2 = jt.key();
-            CellMatrixValue* edgeVal = jt.value();
+        auto geoms = it.value();
+        for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
+            Geometry* geom2 = jt.key();
+            GeometryMatrixValue* edgeVal = jt.value();
             double edgeAvg = edgeVal->interVisitDurationDist.getAverage() > 0.0 ? edgeVal->interVisitDurationDist.getAverage() : 1.0;
             double edgeMed = edgeVal->interVisitDurationDist.getMedian() > 0.0 ? edgeVal->interVisitDurationDist.getMedian() : 1.0;
             double edgeCount = (double) edgeVal->visits.size();
             double edgeMedScore = edgeCount / edgeMed;
             double edgeAvgScore = edgeCount / edgeAvg;
 
-            if(_cells.contains(cell2)) _cells.value(cell2)->medIncomingScore += edgeMedScore;
-            if(_cells.contains(cell2)) _cells.value(cell2)->avgIncomingScore += edgeAvgScore;
+            if(_geometries.contains(geom2)) _geometries.value(geom2)->medIncomingScore += edgeMedScore;
+            if(_geometries.contains(geom2)) _geometries.value(geom2)->avgIncomingScore += edgeAvgScore;
             edgeVal->medScore = edgeMedScore;
             edgeVal->avgScore = edgeAvgScore;
         }
     }
 
 
-    qDebug() << "[DONE] Compute stat";
+    qDebug() << "[DONE] Compute spatial stat";
+
+    // add action to the menu to export a contour file
+    QAction* action_export_contour = _statMenu->addAction("Export contour file");
+    connect(action_export_contour, &QAction::triggered, this, &SpatialStats::exportContourFile);
+
+    QAction* action_rest_server = _statMenu->addAction("Start REST server");
+    connect(action_rest_server, &QAction::triggered, this, [=](bool checked) {
+        if(!_restServer) {
+            _restServer = new RESTServer(10, 0, _computeAllocation);
+            _restServer->setTimeOut(500);
+            _restServer->listen(8080);
+            qDebug() << "REST Server listening on port 8080";
+        }
+    });
 }
 
 QColor SpatialStats::selectColorForLocalStat(qreal zScore)
@@ -193,14 +210,14 @@ QColor SpatialStats::selectColorForLocalStat(qreal zScore)
     else return QColor("#cccccc");
 }
 
-qreal SpatialStats::computeLocalStat(QPoint cell_i)
+qreal SpatialStats::computeLocalStat(Geometry* geom_i)
 {
     qreal sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0, sum5 = 0.0;
-    int n = _cells.size();
-    for(auto it = _cells.begin(); it != _cells.end(); ++it) {
+    int n = _geometries.size();
+    for(auto it = _geometries.begin(); it != _geometries.end(); ++it) {
         int count_j = it.value()->visits.size();
-        QPoint cell_j = it.key();
-        int weight = 1.0 / (0.01 + (qreal) qSqrt(qPow(cell_i.x() - cell_j.x(), 2) + qPow(cell_i.y() - cell_j.y(), 2)));
+        Geometry* geom_j = it.key();
+        int weight = 1.0 / (0.01 + (qreal) qSqrt(qPow(geom_i->getCenter().x() - geom_j->getCenter().x(), 2) + qPow(geom_i->getCenter().y() - geom_j->getCenter().y(), 2)));
         sum1 += weight * count_j;
         sum2 += weight;
         sum3 += qPow(weight,2);
@@ -220,23 +237,29 @@ QGraphicsItemGroup* SpatialStats::draw()
     _groupItem = new QGraphicsItemGroup();
     _groupItem->setHandlesChildEvents(false);
 
-    for(auto it = _cellMatrix.begin(); it != _cellMatrix.end(); ++it) {
-        GraphicsCell* item = new GraphicsCell(it.key().x()*_cellSize, it.key().y()*_cellSize, _cellSize, _cellSize, it.key());
-        item->setBrush(QBrush(_cells[it.key()]->color));
+    for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
+        Geometry* geom = it.key();
+        GeometryGraphics* item;
+        if(geom->getGeometryType() == CircleType)
+            item = new CircleGraphics(static_cast<Circle*>(geom));
+        else if(geom->getGeometryType() == CellType)
+            item = new CellGraphics(static_cast<Cell*>(geom));
+
+        item->setBrush(QBrush(_geometries[it.key()]->color));
         item->setPen(Qt::NoPen);
         item->setOpacity(CELL_OPACITY);
         addGraphicsItem(item);
-        _cellGraphics.insert(it.key(), item);
+        _geometryGraphics.insert(it.key(), item);
 
         // add behavior on mousepress
-        connect(item, &GraphicsCell::mousePressedEvent, [=](QPoint cell, bool mod){
-            if(!_cells.contains(cell) || !_cellMatrix.contains(cell)) return;
+        connect(item, &GeometryGraphics::mousePressedEvent, [=](Geometry* geom, bool mod){
+            if(!_geometries.contains(geom) || !_geometryMatrix.contains(geom)) return;
 
-            qDebug() << "Clicked on cell" << cell << mod;
-            // select all the reachable cells
-            // restore the paramters for the previously selected cell
-            if(!isCellNull(_selectedCell) && mod) {
-                if(!_cellMatrix[_selectedCell]->contains(cell)) return;
+            qDebug() << "Clicked on geometry" << geom->toString() << mod;
+            // select all the reachable geometries
+            // restore the paramters for the previously selected geometry
+            if(_selectedGeometry && mod) {
+                if(!_geometryMatrix[_selectedGeometry]->contains(geom)) return;
 
                 if(!_plots) {
                     _plots = new DockWidgetPlots(_parent, this); // see to dock the widget on the mainwindow
@@ -244,60 +267,51 @@ QGraphicsItemGroup* SpatialStats::draw()
                 if(_parent)
                     _parent->addDockWidget(Qt::RightDockWidgetArea, _plots);
                 _plots->show();
-                _plots->showLinkData(_selectedCell, cell);
+                _plots->showLinkData(_selectedGeometry, geom);
+
             } else {
-                if(!isCellNull(_selectedCell)) {
+                if(_selectedGeometry) {
                     qDebug() << "hello";
                     // restore the "normal" opacity
-                    _cellGraphics[_selectedCell]->setOpacity(CELL_OPACITY);
-                    // restore the "normal" colors for the neighbor cells
-                    auto cells = _cellMatrix[_selectedCell];
-                    for(auto jt = cells->begin(); jt != cells->end(); ++jt) {
-                        QPoint c = jt.key();
-                        if(_cellGraphics.contains(c)) {
-                            _cellGraphics[c]->setBrush(QBrush(_cells[c]->color));
+                    _geometryGraphics[_selectedGeometry]->setOpacity(CELL_OPACITY);
+                    // restore the "normal" colors for the neighbor geometries
+                    auto geoms = _geometryMatrix[_selectedGeometry];
+                    for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
+                        Geometry* g = jt.key();
+                        if(_geometryGraphics.contains(g)) {
+                            _geometryGraphics[g]->setBrush(QBrush(_geometries[g]->color));
+                            _geometryGraphics[g]->update();
                         }
                     }
 
-                    if(_selectedCell == cell) {
-                        _selectedCell = QPoint(-1,-1);
-                        qDebug() << "clicked on same cell";
+                    if(_selectedGeometry == geom) {
+                        _geometryGraphics[_selectedGeometry]->setBrush(_geometries[_selectedGeometry]->color);
+                        _selectedGeometry = NULL;
+                        qDebug() << "clicked on same geometry";
                         return;
                     }
                 }
 
-                auto cells = _cellMatrix[cell];
+                auto geoms = _geometryMatrix[geom];
                 double maxWeight = 0.0;
-                for(auto jt = cells->begin(); jt != cells->end(); ++jt) {
-                    if(jt.key() == cell) continue;
-//                    double avg = jt.value()->travelTimeDist.getAverage();
-                    auto val = jt.value();
-                    double interVisitAvg = val->interVisitDurationDist.getAverage();
-                    int visitCount = val->visits.size();
-                    if(interVisitAvg <= 0 || visitCount <= 1) continue;
-                    double avg = visitCount / interVisitAvg;
-                    if(avg > maxWeight) maxWeight = avg;
+                for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
+                    if(jt.key() == geom) continue;
+                    double score = jt.value()->avgScore;
+                    if(score > maxWeight) maxWeight = score;
                 }
-                _cellGraphics[cell]->setOpacity(1.0);
-                _cellGraphics[cell]->setBrush(CELL_COLOR);
-                for(auto jt = cells->begin(); jt != cells->end(); ++jt) {
-                    QPoint c = jt.key();
-                    if(c == cell) continue;
+                _geometryGraphics[geom]->setOpacity(1.0);
+                _geometryGraphics[geom]->setBrush(CELL_COLOR);
+                for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
+                    Geometry* g = jt.key();
+                    if(g == geom) continue;
                     auto val = jt.value();
-                    double interVisitAvg = val->interVisitDurationDist.getAverage();
-                    int visitCount = val->visits.size();
+                    double score = val->avgScore;
+                    int factor = (int) (50.0 + 150.0 * score / maxWeight);
+                    qDebug() << score << maxWeight << factor;
 
-                    double factor;
-                    if(interVisitAvg <= 0 || visitCount <= 1) {
-                        factor = 0.0;
-                    } else {
-                        double avg = visitCount / interVisitAvg;
-//                        qDebug() << avg << maxWeight << val->visits.size() << val->interVisitDurationDist.getAverage() << avg / maxWeight;
-                        factor = (int) (50.0 + 150.0 * avg / maxWeight);
-                    }
-
-                    if(_cellGraphics.contains(c)) {
-                        _cellGraphics[c]->setBrush(CELL_COLOR.darker(factor));
+                    if(_geometryGraphics.contains(g)) {
+                        _geometryGraphics[g]->setBrush(CELL_COLOR.darker(factor));
+                        _geometryGraphics[g]->update();
                     }
                 }
 
@@ -307,9 +321,9 @@ QGraphicsItemGroup* SpatialStats::draw()
                 if(_parent)
                     _parent->addDockWidget(Qt::RightDockWidgetArea, _plots);
                 _plots->show();
-                _plots->showCellData(cell);
+                _plots->showNodeData(geom);
 
-                _selectedCell = cell;
+                _selectedGeometry = geom;
             }
         });
     }
@@ -317,468 +331,149 @@ QGraphicsItemGroup* SpatialStats::draw()
     return _groupItem;
 }
 
-QList<std::tuple<QPointF, double, double> > SpatialStats::getPoints(int deadline, long long startTime, long long endTime)
+QList<std::tuple<QPointF,double,double>> SpatialStats::getPoints(int deadline, long long startTime, long long endTime)
 {
-    
+    return QList<std::tuple<QPointF,double,double>>();
 }
 
-void SpatialStats::computeLocationAllocation()
-{
-    qDebug() << "Compute location allocation";
 
-    AllocationDialog diag(_parent);
-    int ret = diag.exec();
-    if (ret == QDialog::Rejected) {
+void MobileNode::addPosition(long long time, double x, double y) {
+    // assuming the positions are added sequencially
+    if(_prevPos.isNull() || time - _prevTime > 300) { // restart the cell recording
+        // get the list of geometries that contain the current position
+        QSet<Geometry*> geoms = _spatialStats->containsPoint(x,y);
+        _startTimeGeometries.clear();
+        // record all geometries
+        for(Geometry* geom : geoms) {
+            _startTimeGeometries.insert(geom, time);
+            if(!_visitedGeometries.contains(time))
+                _visitedGeometries.insert(time, new QHash<Geometry*,long long>());
+            _visitedGeometries.value(time)->insert(geom,time);
+        }
+    } else { // increase the end time of the current recorded geometries
+        QPointF pos(x,y); // position of the node
+        // number of intermediate positions (with the sampling)
+        int nbPos = qMax(1,(int) qCeil((time - _prevTime) / _sampling));
+        for(int i = 1; i <= nbPos; ++i) {
+            long long t = _prevTime + i*_sampling; // get the sampling time
+            QPointF p = (time - t)*_prevPos + (t - _prevTime)*pos;
+            p /= (time - _prevTime);
+
+            // get the corresponding visited Geometries
+            QSet<Geometry*> geoms = _spatialStats->containsPoint(p);
+
+            // start recording all the new geometries
+            QSet<Geometry*> newGeometries = geoms - _prevGeometries;
+            for(Geometry* geom : newGeometries) {
+                _startTimeGeometries.insert(geom, time);
+                if(!_visitedGeometries.contains(time))
+                    _visitedGeometries.insert(time, new QHash<Geometry*,long long>());
+                _visitedGeometries.value(time)->insert(geom,time);
+            }
+            // update the geometries that are currently being recorded
+            QSet<Geometry*> currentGeometries = geoms & _prevGeometries;
+            for(Geometry* geom : currentGeometries) {
+                long long startTimeGeom = _startTimeGeometries.value(geom);
+                _visitedGeometries.value(startTimeGeom)->insert(geom, time);
+            }
+        }
+    }
+    _prevPos = QPoint(x,y);
+    _prevTime = time;
+}
+
+void SpatialStats::exportContourFile() {
+    if(!_selectedGeometry) {
+        QMessageBox q(QMessageBox::Warning, "Error", "No geometry is selected", QMessageBox::Ok);
+        q.exec(); // synchronous
         return;
     }
 
-    // get the parameters
-    double maxTravelTime = -1.0, maxDist = -1.0;
+    // get output filename
+    QString filename = QFileDialog::getSaveFileName(0,
+                                                    tr("Export contour file"),
+                                                    QString(),
+                                                    tr("CSV file (*.csv)"));
+    if(filename.isEmpty())
+        return;
 
-    long long deadline = diag.getDeadline();
-    int nbStorageNodes = diag.getNbStorageNodes();
-    double deletionFactor = diag.getDeletionFactor();
-    WithinOperator op = diag.getWithinOperator();
-    TravelTimeStat ts = diag.getTravelTimeStat();
+    // compute the contour plot
+    qDebug() << "Export the contour plot file";
+    QFile file(filename);
+    if(!file.open(QFile::WriteOnly))
+    {
+        qDebug() << "Unable to write in file "<< filename;
+        return;
+    }
 
-    if(diag.isFixedTravelTime())
-        maxTravelTime = diag.getTravelTime();
-    else
-        maxTravelTime = deletionFactor * deadline;
+    Geometry* randomGeom = _geometries.keys().first();
+    double cellSize = randomGeom->getBounds().getQRectF().width();
+    QPointF topLeft = randomGeom->getBounds().getTopLeft();
+    QPointF bottomRight = randomGeom->getBounds().getBottomRight();
+    for(Geometry* geom : _geometries.keys()) {
+        QPointF tl = geom->getBounds().getTopLeft();
+        QPointF br = geom->getBounds().getBottomRight();
+        if(tl.x() < topLeft.x())
+            topLeft.setX(tl.x());
+        if(tl.y() < topLeft.y())
+            topLeft.setY(tl.y());
+        if(br.x() > bottomRight.x())
+            bottomRight.setX(br.x());
+        if(br.y() > bottomRight.y())
+            bottomRight.setY(br.y());
+    }
 
-    if(diag.isFixedDistance())
-        maxDist = diag.getDistance();
-    else
-        maxDist = deletionFactor * _traceLayer->getAverageSpeed() * deadline; // use the average speed of the mobile users
+    QTextStream out(&file);
+    // first line (header)
+    out << "x;y;z\n";
+//    out << QString::number(_selectedGeometry->getCenter().x(), 'f', 4) << ";"
+//        << QString::number(_selectedGeometry->getCenter().y(), 'f', 4) << ";"
+//        << QString::number(1e10, 'f', 4) << "\n";
 
-    qDebug() << deadline << nbStorageNodes << _traceLayer->getAverageSpeed() << maxDist << maxTravelTime;
-
-    // demands are the cells
-    // candidates are the cells
-
-    QSet<QPoint> demandsToCover(_cells.keys().toSet());
-    QSet<QPoint> candidatesToAllocate(_cells.keys().toSet());
-    // candidate index, <weight allocated, set of demands allocated>
-    QHash<QPoint, Allocation*> allocation;
-
-    // iterate for each storage node to allocate
-    for(int i = 0; i < nbStorageNodes && !demandsToCover.isEmpty(); ++i) {
-        qDebug() << "allocating demands for storage node" << i;
-        double maxCoverage = 0.0;
-        double maxBackendWeight = 0.0;
-        QPoint maxCoverageCell = QPoint(-1,-1);
-        QHash<QPoint, double> maxDemandsCovered; // <demand, weight of the demand>
-
-        // find the candidate that covers the most demands
-
-        foreach(QPoint k, candidatesToAllocate) {
-//            qDebug() << "\tcandidate" << k;
-
-            QHash<QPoint, double> demandsCovered; // <demand, weight of the demand>
-            double coverage = 0.0;
-
-            // compute the score for the previously allocated storage nodes
-            foreach(QPoint c, allocation.keys()) {
-                if(_cellMatrix.contains(c) && _cellMatrix.value(c)->contains(k)) {
-                    auto val = _cellMatrix.value(c)->value(k);
-                    double visitCount = val->visits.size();
-                    if(visitCount > 1) {
-                        coverage += val->avgScore;
-                    }
-//                    double interVisitTime = val->interVisitDurationDist.getAverage();
-//                    double visitCount = val->visits.size();
-//                    if(visitCount > 1) {
-//                        coverage += visitCount / interVisitTime;
-//                    }
-                }
-
-                if(_cellMatrix.contains(k) && _cellMatrix.value(k)->contains(c)) {
-                    auto val = _cellMatrix.value(k)->value(c);
-                    double visitCount = val->visits.size();
-                    if(visitCount > 1) {
-                        coverage += val->avgScore;
-                    }
-//                    double interVisitTime = val->interVisitDurationDist.getAverage();
-//                    double visitCount = val->visits.size();
-//                    if(visitCount > 1) {
-//                        coverage += visitCount / interVisitTime;
-//                    }
-                }
-            }
-
-            double backendWeight = coverage;
-
-            // Compute the covering score for the candidate
-            foreach(QPoint l, demandsToCover) {
-                if(_cellMatrix.contains(l) && _cellMatrix.value(l)->contains(k)) {
-                    auto val = _cellMatrix.value(l)->value(k);
-                    double medTravelTime = val->travelTimeDist.getMedian();
-                    if(medTravelTime <= deadline) {
-                        double visitCount = val->visits.size();
-                        if(visitCount > 1) {
-                            double score = val->avgScore;
-                            coverage += score; // weight of the demand
-                            demandsCovered.insert(l, score);
+    qDebug() << topLeft << bottomRight << cellSize << (bottomRight.x() - topLeft.x()) / cellSize << (bottomRight.y() - topLeft.y()) / cellSize;
+    auto cells = _geometryMatrix.value(_selectedGeometry);
+    for(double i = topLeft.x(); i < bottomRight.x(); i += 10) {
+        for(double j = topLeft.y(); j < bottomRight.y(); j += 10) {
+            QSet<Geometry*> geoms = _geometryIndex->getGeometriesAt(i, j);
+            bool foundRightGeom = false;
+            if(!geoms.isEmpty()) {
+                for(Geometry* geom : geoms) {
+                    if(geom->getGeometryType() == CellType) {
+                        // add the geometry to the output
+                        if(cells->contains(geom)) {
+                            GeometryMatrixValue* val = cells->value(geom);
+//                            double x = geom->getCenter().x();
+//                            double y = geom->getCenter().y();
+                            double z = 10 * val->avgScore;
+                            out << QString::number(i, 'f', 0) << ";"
+                                << QString::number(j, 'f', 0) << ";"
+                                << QString::number(z, 'f', 2) << "\n";
+                            foundRightGeom = true;
+                            break;
                         }
                     }
                 }
             }
-
-            if(coverage > maxCoverage) {
-                maxCoverage = coverage;
-                maxBackendWeight = backendWeight;
-                maxCoverageCell = k;
-                maxDemandsCovered = QHash<QPoint, double>(demandsCovered);
-            }
-
-            // TODO Substitution part of the algorithm
-            // tries to replace each facility one at a time with a
-            // facility at another "free" site
-        }
-        qDebug() << "candidate" << maxCoverageCell << "allocated" << maxCoverage << "with" << maxDemandsCovered.size() << "demands" << demandsToCover.size() << "demands to cover" << maxBackendWeight << "backend weight";
-
-        // reduce the set of the population to cover
-        if(!isCellNull(maxCoverageCell)) {
-            candidatesToAllocate.remove(maxCoverageCell); // remove the selected cell
-            demandsToCover.remove(maxCoverageCell);
-
-            // remove the candidate cells in the vicinty of the selected cell
-            QSet<QPoint> candidatesToRemove;
-            cellsWithin(candidatesToRemove, candidatesToAllocate, maxCoverageCell, maxDist, maxTravelTime, op, ts);
-            candidatesToAllocate.subtract(candidatesToRemove);
-
-            qDebug() << "\tcell" << maxCoverageCell << candidatesToRemove.size();
-
-            demandsToCover.subtract(maxDemandsCovered.keys().toSet());
-
-            // add the allocation
-            Allocation* alloc = new Allocation(maxCoverageCell, maxCoverage, maxDemandsCovered,candidatesToRemove,_cellSize);
-            allocation.insert(maxCoverageCell, alloc);
-        }
-    }
-
-    // print the result allocation
-    for(auto it = allocation.begin(); it != allocation.end(); ++it) {
-        qDebug() << "candidate" << it.key() << "allocated" << it.value()->weight << "with" << it.value()->demands.size() << "demands" << "deleted" << it.value()->deletedCandidates.size();
-    }
-
-    // create a new layer
-    QString layerName = "Location allocation";
-    WeightedAllocationLayer* layer = new WeightedAllocationLayer(_parent, layerName, allocation, _cellSize);
-    _allocationLayers.append(layer);
-    _parent->createLayer(layerName, layer);
-}
-
-bool SpatialStats::pageRank(QHash<QPoint, double> &x, QSet<QPoint> cells, double alpha, int maxIterations, double tolerance)
-{
-    int N = cells.size();
-    QHash<QPoint, double> xlast, danglingWeights, p;
-    for(auto n : cells) {
-        double v = 1.0/N;
-        x.insert(n, v);
-        danglingWeights.insert(n, v);
-        p.insert(n, v);
-    }
-
-    QSet<QPoint> danglingNodes = QSet<QPoint>(cells);
-    for(auto it = _cellMatrix.begin(); it != _cellMatrix.end(); ++it) {
-        // remove the nodes that have out-edges
-        if(it.value()->size() > 0)
-            danglingNodes.remove(it.key());
-    }
-
-    for(int i = 0; i < maxIterations; ++i) {
-        xlast = x;
-        xlast.detach(); // deep copy
-
-        for(auto it = x.begin(); it != x.end(); ++it) {
-            x[it.key()] = 0.0;
-        }
-
-        double dangleSum = 0.0;
-        for(QPoint node : danglingNodes) {
-            dangleSum += xlast[node];
-        }
-        dangleSum *= alpha;
-
-        for(auto it = x.begin(); it != x.end(); ++it) {
-            QPoint n = it.key(); // node
-            if(!_cellMatrix.contains(n)) continue;
-            auto neighbors = _cellMatrix.value(n);
-            double nbNeighbors = (double) neighbors->size(); // number of outbound links of n
-            for(auto jt = neighbors->begin(); jt != neighbors->end(); ++jt) {
-                QPoint nbr = jt.key(); // neighbor
-                auto val = jt.value(); // value for edge n -> nbr
-                double weight = val->medScore;
-//                double median = val->interVisitDurationDist.getMedian();
-//                double weight = median > 0 ? ((double) val->visits.size()) / median : ((double) val->visits.size());
-                double edgeWeight = nbNeighbors > 0 ? weight / nbNeighbors : 0.0;
-//                double before = x[nbr];
-                x[nbr] += alpha * xlast[n] * edgeWeight;
-//                qDebug() << "\t\t edge" << n << "->" << nbr << "/" << edgeWeight << xlast[n] << before << x[nbr] << nbNeighbors;
-            }
-            x[n] += dangleSum * danglingWeights[n] + (1.0 - alpha) * p[n];
-//            qDebug() << "\t node" << n << "/" << x[n] << dangleSum << danglingWeights[n] << p[n];
-        }
-
-        double err = 0.0;
-        for(auto n : x.keys()) {
-            err += qAbs(x[n] - xlast[n]);
-        }
-        qDebug() << "iteration" << (i+1) << x.size() << err;
-        if(err < N*tolerance)
-            return true;
-    }
-
-    // did not converge
-    return false;
-}
-
-void SpatialStats::cellsWithin(QSet<QPoint> &cellsWithin, QSet<QPoint> cells, QPoint cell, double distance, double travelTime,  WithinOperator op, TravelTimeStat ts)
-{
-    if(op == None) return;
-
-    QRectF cell1(cell.x()*_cellSize, cell.y()*+_cellSize, _cellSize, _cellSize);
-    foreach(QPoint k, cells) {
-        if(k == cell) continue; // skip the cell itself
-        bool distance_flag = false, travelTime_flag = false;
-        double dist, tt;
-        if(distance > 0.0) {
-            QRectF cell2(k.x()*_cellSize, k.y()*+_cellSize, _cellSize, _cellSize);
-            dist = qSqrt(qPow(cell1.center().x()-cell2.center().x(), 2) + qPow(cell1.center().y()-cell2.center().y(), 2));
-            if(islessequal(dist,distance)) {
-                distance_flag = true;
+            if(!foundRightGeom) {
+                // add the generic output
+                out << QString::number(i, 'f', 0) << ";"
+                    << QString::number(j, 'f', 0) << ";"
+                    << QString::number(0, 'f', 2) << "\n";
             }
         }
-        if(travelTime > 0.0) {
-            if(_cellMatrix.contains(k) && _cellMatrix.value(k)->contains(cell)) {
-                auto val = _cellMatrix.value(k)->value(cell);
-                if(ts == Avg)
-                    tt = val->travelTimeDist.getAverage();
-                else if(ts == Med)
-                    tt = val->travelTimeDist.getMedian();
-                if(islessequal(tt,travelTime)) {
-                    travelTime_flag = true;
-                }
-            }
-        }
-        if(op == Or  && (distance_flag || travelTime_flag)) {
-            qDebug() << "or / add" << k << dist << tt;
-            cellsWithin.insert(k);
-        }
-        if(op == And && (distance_flag && travelTime_flag)) {
-            qDebug() << "and / add" << k << dist << tt;
-            cellsWithin.insert(k);
-        }
     }
-}
+//    for(Geometry* geom : cells->keys()) {
+//        GeometryMatrixValue* val = cells->value(geom);
+//        double x = geom->getCenter().x();
+//        double y = geom->getCenter().y();
+//        double z = 100.0 * val->avgScore;
+//
+//        out << QString::number(x, 'f', 0) << ";"
+//            << QString::number(y, 'f', 0) << ";"
+//            << QString::number(z, 'f', 2) << "\n";
+//    }
 
+    file.close();
 
-void SpatialStats::computePageRank()
-{
-    qDebug() << "Compute page rank";
-
-    AllocationDialog diag(_parent);
-    int ret = diag.exec();
-    if (ret == QDialog::Rejected) {
-        return;
-    }
-
-    // get the parameters
-    double maxTravelTime = -1.0, maxDist = -1.0;
-
-    long long deadline = diag.getDeadline();
-    int nbStorageNodes = diag.getNbStorageNodes();
-    double deletionFactor = diag.getDeletionFactor();
-    WithinOperator op = diag.getWithinOperator();
-    TravelTimeStat ts = diag.getTravelTimeStat();
-
-    if(diag.isFixedTravelTime())
-        maxTravelTime = diag.getTravelTime();
-    else
-        maxTravelTime = deletionFactor * deadline;
-
-    if(diag.isFixedDistance())
-        maxDist = diag.getDistance();
-    else
-        maxDist = deletionFactor * _traceLayer->getAverageSpeed() * deadline; // use the average speed of the mobile users
-
-    qDebug() << deadline << nbStorageNodes << _traceLayer->getAverageSpeed() << maxDist << maxTravelTime;
-
-    // initialize the candidates
-    QSet<QPoint> candidatesToAllocate(_cells.keys().toSet());
-    QHash<QPoint, Allocation*> allocation; // resulting allocation of the cells
-
-    for(int i = 0; i < nbStorageNodes; ++i) {
-        // run pagerank with the current set of candidate cells
-        QHash<QPoint, double> x; // result array
-        bool pageRankRet = pageRank(x, candidatesToAllocate);
-
-        if(!pageRankRet) {
-            qDebug() << "PageRank did not converge";
-            break;
-        }
-
-        // Select the cell with the highest page rank
-        // sort the "x" QHash by value
-        QList<double> vals = x.values();
-        QList<QPoint> sortedCells; //to fill with the cells
-        qSort(vals);
-        for(double val : vals) {
-            QList<QPoint> keys = x.keys(val);
-            for(QPoint cell : keys) {
-                sortedCells.append(cell);
-            }
-        }
-        QPoint cell = sortedCells.last(); // cell with highest score
-        candidatesToAllocate.remove(cell); // remove the cell from the set of cells to allocate
-
-        // remove cells around the selected cell
-        QSet<QPoint> cellsToDelete;
-        cellsWithin(cellsToDelete,candidatesToAllocate,cell,maxDist,maxTravelTime,op,ts);
-        candidatesToAllocate.subtract(cellsToDelete); // remove the cells in the vicinity of the selected cell
-
-        qDebug() << "\tcell" << cell << cellsToDelete.size() << "score" << x[cell];
-
-        // add the cell to the allocated cells
-        QHash<QPoint, double> demandsAllocated;
-        Allocation* alloc = new Allocation(cell, x[cell], demandsAllocated, cellsToDelete, _cellSize);
-        allocation.insert(cell, alloc);
-    }
-
-    // print the allocation result
-    for(auto it = allocation.begin(); it != allocation.end(); ++it) {
-        qDebug() << "candidate" << it.key() << "allocated" << it.value()->weight << "with" << it.value()->demands.size() << "demands" << "deleted" << it.value()->deletedCandidates.size();
-    }
-
-    // create a new layer
-    QString layerName = "PageRank";
-    WeightedAllocationLayer* layer = new WeightedAllocationLayer(_parent, layerName, allocation, _cellSize);
-    _allocationLayers.append(layer);
-    _parent->createLayer(layerName, layer);
-}
-
-void SpatialStats::computeCentrality()
-{
-    qDebug() << "Compute centrality betweeness";
-}
-
-void SpatialStats::computePercolationCentrality()
-{
-    qDebug() << "Compute percolation centrality";
-}
-
-
-void SpatialStats::computeKMeans()
-
-{
-    qDebug() << "Compute K means";
-
-    AllocationDialog diag(_parent, true, false, false);
-    int ret = diag.exec();
-    if (ret == QDialog::Rejected) {
-        return;
-    }
-
-    // get the parameters
-    double maxTravelTime = -1.0, maxDist = -1.0;
-
-    int nbCentroids = diag.getNbStorageNodes();
-
-    double xmax = 0, ymax = 0, xmin = 1e20, ymin = 1e20;
-    int maxIterations = 100;
-    double tolerance = 1e-6;
-
-    QHash<QPointF, Allocation*> allocation; // resulting allocation of the centroids
-
-    // populate the points
-    QList<QPointF> points, x, xlast;
-    auto nodes = _traceLayer->getNodes();
-    for(auto it = nodes.begin(); it != nodes.end(); ++it) {
-        for(auto jt = it.value()->begin(); jt != it.value()->end(); ++jt) {
-            QPointF p = jt.value();
-            points.append(p);
-            if(p.x() > xmax) xmax = p.x();
-            if(p.x() < xmin) xmin = p.x();
-            if(p.y() > ymax) ymax = p.y();
-            if(p.y() < ymin) ymin = p.y();
-        }
-    }
-
-    int nbPoints = points.size();
-
-    // initialize the features randomly
-    for(int i = 0; i < nbCentroids; ++i) {
-        double p_x = xmin + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(xmax-xmin)));
-        double p_y = ymin + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(ymax-ymin)));
-        x.append(QPointF(p_x, p_y));
-    }
-
-    bool finished = false;
-    QList<QList<int>> c; // list of the points assigned per centroid
-    for(int i = 0; i < maxIterations; ++i) {
-        xlast = x;
-        xlast.detach(); // deep copy
-
-        // cluster assignment step
-        for(int j = 0; j < nbPoints; ++j) {
-            double minDist =  1e10;
-            int idx = -1;
-            for(int k = 0; k < nbCentroids; ++k) {
-                double d = dist(points[j],x[k]);
-                if(d < minDist) {
-                    minDist = d;
-                    idx = k;
-                }
-            }
-            // add point j to centroid k
-            c[idx].append(j);
-        }
-
-        // move centroids step
-        for(int k = 0; k < nbCentroids; ++k) {
-            QPointF avg = QPointF(0.0,0.0);
-            int count = c[k].size();
-            for(int j = 0; j < count; ++j) {
-                int idx = c[k][j];
-                avg +=  points[idx];
-            }
-            x[k] = avg / count;
-        }
-
-        // check error
-        double xerr = 0.0, yerr = 0.0;
-        for(int k = 0; k < nbCentroids; ++k) {
-            xerr += qAbs(x[k].x() - xlast[k].x());
-            yerr += qAbs(x[k].y() - xlast[k].y());
-        }
-
-        if(xerr < nbCentroids*tolerance && yerr < nbCentroids*tolerance) {
-            finished = true;
-            break;
-        }
-    }
-
-    if(!finished) {
-        qDebug() << "Did not converge";
-        return;
-    }
-
-    for(int k = 0; k < nbCentroids; ++k) {
-        QHash<QPointF, double> pointsAttached;
-        for(int j = 0; j < c[k].size(); ++j) {
-            int idx = c[k][j];
-            pointsAttached.insert(points[idx], 1.0);
-        }
-        QSet<QPointF> deletedCandidates;
-        Allocation* alloc = new Allocation(x[k], c[k].size(), pointsAttached, deletedCandidates);
-        allocation.insert(x[k], alloc);
-    }
-
-    // create a new layer
-    QString layerName = "kMeans";
-    WeightedAllocationLayer* layer = new WeightedAllocationLayer(_parent, layerName, allocation);
-    _allocationLayers.append(layer);
-    _parent->createLayer(layerName, layer);
-
+    qDebug() << "[DONE] export contour file";
 }

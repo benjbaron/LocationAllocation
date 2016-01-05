@@ -3,7 +3,7 @@
 
 #include <QDockWidget>
 class QCustomPlot;
-
+class Geometry;
 class SpatialStats;
 
 namespace Ui {
@@ -18,8 +18,8 @@ public:
     explicit DockWidgetPlots(QWidget *parent = 0, SpatialStats* spatialStats = 0);
     ~DockWidgetPlots();
 
-    void showCellData(QPoint cell);
-    void showLinkData(QPoint cell1, QPoint cell2);
+    void showNodeData(Geometry* geom);
+    void showLinkData(Geometry* geom1, Geometry* geom2);
     void plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlot, long long bins);
 
 private:

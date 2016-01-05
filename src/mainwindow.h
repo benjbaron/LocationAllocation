@@ -9,7 +9,6 @@ class Layer;
 class Loader;
 class LayerPanel;
 class TraceLayer;
-class AllocationLayer;
 class SpatialStats;
 
 namespace Ui {
@@ -43,11 +42,9 @@ private slots:
     void openTrace();
     void setProjection();
     void addGrid();
-    void addRoute();
     void showLayerPanel();
     void closedLayerPanel();
     void onMousePressEvent();
-    void computeAllocation();
     void changeLayerOrder(int oldIndex, int newIndex);
 
 private:
@@ -62,10 +59,8 @@ private:
     QMenu* _layerMenu = 0;
     QAction* _showLayersAction = 0;
     TraceLayer* _traceLayer = 0;
-    AllocationLayer* _allocLayer = 0;
     SpatialStats* _spatialStats = 0;
 
-    int _routeCounter = -1;
 };
 
 #endif // MAINWINDOW_H

@@ -18,6 +18,9 @@ public:
         }
         // update the node position
         _nodes.value(node)->insert(ts, QPoint(lat, lon));
+        // update the startTime and endTime
+        if(ts >= 0 && ts < _startTime) _startTime = ts;
+        if(ts >= 0 && ts > _endTime) _endTime = ts;
     }
 
     QGraphicsItemGroup* draw();
@@ -29,6 +32,28 @@ public:
     QHash<QString, QMap<long long, QPointF>*> getNodes() const { return _nodes; }
     QMap<long long, QPointF>* const getNodeTrace(QString node) { return _nodes.value(node); }
     double getAverageSpeed();
+    long long getStartTime() { return _startTime; }
+    long long getEndTime() { return _endTime; }
+
+    double getAverageSampling() {
+        if(_sampling < 0.0) {
+            // compute the sampling
+            long long sum = 0;
+            long long count = 0;
+            for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
+                auto jt = it.value()->begin();
+                long long prevTimeStamp = jt.key();
+                for(jt++; jt != it.value()->end(); ++jt) {
+                    long long curTimeStamp = jt.key();
+                    sum += (curTimeStamp - prevTimeStamp);
+                    count++;
+                    prevTimeStamp = curTimeStamp;
+                }
+            }
+            _sampling = ((double)sum) / ((double) count);
+        }
+        return _sampling;
+    }
 
     void exportLayer(QString output);
     void exportLayerONE(QString output);
@@ -38,7 +63,9 @@ public:
 private:
     QHash<QString, QMap<long long, QPointF>*> _nodes;
     Distribution _averageSpeeds;
-
+    long long _startTime = (long long) 1e20;
+    long long _endTime = -1;
+    double _sampling = -1;
 };
 
 #endif // TRACELAYER_H

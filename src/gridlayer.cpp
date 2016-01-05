@@ -3,7 +3,7 @@
 #include <QDebug>
 
 GridLayer::GridLayer(MainWindow* parent, QString name, int cellSize):
-    Layer(parent, name), _cellSize(cellSize)
+    Layer(parent, name), _geometriesize(cellSize)
 {
     // get the grid from the scene
     qDebug() << parent->getSceneRect() << parent->getSceneRect().left() << parent->getSceneRect().right() << parent->getSceneRect().bottomLeft() << parent->getSceneRect().bottom() << parent->getSceneRect().top();
@@ -12,24 +12,24 @@ GridLayer::GridLayer(MainWindow* parent, QString name, int cellSize):
     for(int i = 0; xCursor < parent->getSceneRect().right(); ++i) {
         double yCursor = parent->getSceneRect().top();
         for(int j = 0; yCursor < parent->getSceneRect().bottom(); ++j) {
-            _cells.append(QPointF(i,j));
-            yCursor += _cellSize;
+            _geometries.append(QPointF(i,j));
+            yCursor += _geometriesize;
         }
-        xCursor += _cellSize;
+        xCursor += _geometriesize;
     }
-    qDebug() << "cells size" << _cells.size();
+    qDebug() << "cells size" << _geometries.size();
 }
 
 QGraphicsItemGroup *GridLayer::draw()
 {
     _groupItem = new QGraphicsItemGroup();
 
-    for(int i = 0; i < _cells.size(); ++i) {
-        QPointF p(_cells.at(i));
-        qreal x = _topLeft.x() + p.x()*_cellSize;
-        qreal y = _topLeft.y() + p.y()*_cellSize;
-        qreal w = _cellSize;
-        qreal h = _cellSize;
+    for(int i = 0; i < _geometries.size(); ++i) {
+        QPointF p(_geometries.at(i));
+        qreal x = _topLeft.x() + p.x()*_geometriesize;
+        qreal y = _topLeft.y() + p.y()*_geometriesize;
+        qreal w = _geometriesize;
+        qreal h = _geometriesize;
         QGraphicsRectItem* item = new QGraphicsRectItem(x,y,w,h);
         item->setBrush(QBrush(QColor(255,0,0)));
         item->setOpacity(0.6);
@@ -48,10 +48,10 @@ QList<std::tuple<QPointF, double, double> > GridLayer::getPoints(int deadline, l
     Q_UNUSED(endTime)
 
     QList<std::tuple<QPointF,double,double>> res;
-    for(int i = 0; i < _cells.size(); ++i) {
-        double x = _topLeft.x() + _cells.at(i).x()*_cellSize;
-        double y = _topLeft.y() + _cells.at(i).y()*_cellSize;
-        QRectF cell(QPoint(x,y), QPoint(x+_cellSize, y+_cellSize));
+    for(int i = 0; i < _geometries.size(); ++i) {
+        double x = _topLeft.x() + _geometries.at(i).x()*_geometriesize;
+        double y = _topLeft.y() + _geometries.at(i).y()*_geometriesize;
+        QRectF cell(QPoint(x,y), QPoint(x+_geometriesize, y+_geometriesize));
         auto t = std::make_tuple(cell.center(), 1.0, -1.0);
         res.append(t);
     }
@@ -61,13 +61,13 @@ QList<std::tuple<QPointF, double, double> > GridLayer::getPoints(int deadline, l
 
 OGRGeometryCollection *GridLayer::getGeometry(long long startTime, long long endTime) {
     OGRGeometryCollection* collection = new OGRGeometryCollection();
-    for(int i = 0; i < _cells.size(); ++i) {
+    for(int i = 0; i < _geometries.size(); ++i) {
         OGRLinearRing  oRing;
         OGRPolygon oPoly;
 
-        double x = _topLeft.x() + _cells.at(i).x()*_cellSize;
-        double y = _topLeft.y() + _cells.at(i).y()*_cellSize;
-        QRectF cell(QPoint(x,y), QPoint(x+_cellSize, y+_cellSize));
+        double x = _topLeft.x() + _geometries.at(i).x()*_geometriesize;
+        double y = _topLeft.y() + _geometries.at(i).y()*_geometriesize;
+        QRectF cell(QPoint(x,y), QPoint(x+_geometriesize, y+_geometriesize));
 
         oRing.addPoint(cell.bottomLeft().x(),  cell.bottomLeft().y());
         oRing.addPoint(cell.bottomRight().x(), cell.bottomRight().y());

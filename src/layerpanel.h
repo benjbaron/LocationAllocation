@@ -6,11 +6,11 @@
 #include <QDropEvent>
 #include <QListWidget>
 #include <QMimeData>
+#include <QStyledItemDelegate>
 
 #include "layer.h"
 
 Q_DECLARE_METATYPE(Layer*)
-
 
 class ListWidget: public QListWidget
 {

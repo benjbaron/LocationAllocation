@@ -22,8 +22,38 @@ QGraphicsItemGroup *WeightedAllocationLayer::draw()
         qreal size = radius + radius * it.value()->weight / maxWeight;
 
         GraphicsPoint* item = new GraphicsPoint(p, size, p);
-        connect(item, &GraphicsPoint::mousePressedEvent, [=](QPointF id, bool mod) {
-            qDebug() << "Clicked on point" << id << mod;
+        connect(item, &GraphicsPoint::mousePressedEvent, [=](QPointF id, bool mod, bool doubleClicked) {
+            qDebug() << "Clicked on point" << id << mod << doubleClicked;
+
+            if(doubleClicked) {
+                // select all points
+                for(auto it = _points.begin(); it != _points.end(); ++it) {
+                    QPointF id = it.key();
+                    if(!_pointsGroups.contains(id)) {
+                        // add the points to the group
+                        QGraphicsItemGroup* group = new QGraphicsItemGroup();
+                        for(Geometry* rp : _points.value(id)->demands.keys()) {
+                            QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-demandRadius, rp->getCenter().y()-demandRadius, 2*demandRadius, 2*demandRadius);
+                            i->setBrush(QBrush(Qt::black));
+                            i->setPen(Qt::NoPen);
+                            group->addToGroup(i);
+                        }
+                        for(Geometry* rp : _points.value(id)->deletedCandidates) {
+                            QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-deletedCandiateRadius, rp->getCenter().y()-deletedCandiateRadius, 2*deletedCandiateRadius, 2*deletedCandiateRadius);
+                            i->setBrush(QBrush(ORANGE));
+                            i->setPen(Qt::NoPen);
+                            group->addToGroup(i);
+                        }
+                        _pointsGroups.insert(id, group);
+                        addGraphicsItem(group);
+                    }
+                    _pointsGroups.value(id)->setVisible(true);
+                    _selectedPoints.insert(id);
+                    _pointsGraphics.value(id)->setBrush(QBrush(selectedColor));
+                }
+                return;
+            }
+
             bool wasSelected = false;
             if(_selectedPoints.contains(id)) {
                 // remove teh point from the selected set
@@ -48,14 +78,14 @@ QGraphicsItemGroup *WeightedAllocationLayer::draw()
                 if(!_pointsGroups.contains(id)) {
                     // add the points to the group
                     QGraphicsItemGroup* group = new QGraphicsItemGroup();
-                    for(QPointF rp : _points.value(id)->demands.keys()) {
-                        QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp.x()-demandRadius, rp.y()-demandRadius, 2*demandRadius, 2*demandRadius);
+                    for(Geometry* rp : _points.value(id)->demands.keys()) {
+                        QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-demandRadius, rp->getCenter().y()-demandRadius, 2*demandRadius, 2*demandRadius);
                         i->setBrush(QBrush(Qt::black));
                         i->setPen(Qt::NoPen);
                         group->addToGroup(i);
                     }
-                    for(QPointF rp : _points.value(id)->deletedCandidates) {
-                        QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp.x()-deletedCandiateRadius, rp.y()-deletedCandiateRadius, 2*deletedCandiateRadius, 2*deletedCandiateRadius);
+                    for(Geometry* rp : _points.value(id)->deletedCandidates) {
+                        QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-deletedCandiateRadius, rp->getCenter().y()-deletedCandiateRadius, 2*deletedCandiateRadius, 2*deletedCandiateRadius);
                         i->setBrush(QBrush(ORANGE));
                         i->setPen(Qt::NoPen);
                         group->addToGroup(i);

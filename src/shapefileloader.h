@@ -19,6 +19,9 @@ public:
 
 private:
     bool concurrentLoad();
+
+    bool loadWKT();
+    bool loadShapefile();
 };
 
 #endif // SHAPEFILELOADER_H

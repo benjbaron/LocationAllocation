@@ -2,26 +2,56 @@
 #define SHAPEFILELAYER_H
 
 #include "layer.h"
+#include "PointLayer.h"
 #include <ogrsf_frmts.h>
+#include <QMenu>
 
 class ShapefileLayer: public Layer
 {
+    Q_OBJECT
 public:
     ShapefileLayer(MainWindow* parent = 0, QString name = 0):
-        Layer(parent, name) {}
+        Layer(parent, name)
+    {
+        // add the menu to compute the intersections of the shapefile
+        _shapefileMenu = new QMenu();
+        _shapefileMenu->setTitle("Shapefile");
+        QAction* action = _shapefileMenu->addAction("Compute intersections");
+        connect(action, &QAction::triggered, this, &ShapefileLayer::computeIntersections);
+        _parent->addMenu(_shapefileMenu);
+    }
 
     void addGeometry(OGRGeometry* geom) {
         _geometryItems.append(geom);
     }
-    int countGeomerties() { return _geometryItems.size(); }
+    int countGeometries() { return _geometryItems.size(); }
+    QString getInformation() {
+        QStringList fileSplits = _name.split(".", QString::SkipEmptyParts);
+        QString fileFormat = fileSplits.at(fileSplits.size()-1);
 
+        if(fileFormat == "shp")
+            return "Shapefile Layer: " + _name;
+        else if(fileFormat == "wkt")
+            return "WKT Layer: " + _name;
+        else return "Layer: " + _name;
+    }
 
     QGraphicsItemGroup* draw();
     QList<std::tuple<QPointF,double,double>> getPoints(int deadline = 0, long long startTime = 0, long long endTime = 0);
 
+private slots:
+    void computeIntersections();
+    void exportIntersectionPoints();
+
 private:
     QList<OGRGeometry*> _geometryItems;
+    PointLayer* _pointLayer;
+    QMenu* _shapefileMenu;
 
+    QSet<QPointF> getIntersections(double maxAngle = 10);
+    double getAngleAtIntersection(OGRLineString *ls1, OGRLineString *ls2, OGRPoint *pt);
+    bool getSubLineContainingPoint(OGRLineString *ls, OGRPoint *pt, OGRPoint *ptBefore, OGRPoint *ptAfter);
+    bool isOnLine(OGRPoint* a, OGRPoint* b, OGRPoint* c);
 };
 
 #endif // SHAPEFILELAYER_H

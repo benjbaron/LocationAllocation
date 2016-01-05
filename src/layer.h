@@ -19,18 +19,15 @@ public:
     void addGraphicsItem(QGraphicsItem* item) {
         _groupItem->addToGroup(item);
         _graphicsItems.append(item);
-//        _parent->addGraphicsItemToScene(item);
     }
     void setVisible(bool visible) {
-        qDebug() << "visible" << visible;
-//        for(auto item : _graphicsItems) {
-//            item->setVisible(visible);
-//        }
         _groupItem->setVisible(visible);
     }
     QString getName() { return _name; }
     void setZValue(qreal value) { _groupItem->setZValue(value); }
     qreal getZValue() { return _groupItem->zValue(); }
+    MainWindow* getParent() { return _parent; }
+   virtual QString getInformation() { return "Layer: " + _name; }
 
     // draw the layer objects
     virtual QGraphicsItemGroup* draw() = 0;
