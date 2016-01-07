@@ -34,9 +34,9 @@ We used the geometry elements as candidates and demands. To take into account al
 
 The project depends on the following libraries:
 
- - [Qt5.5](http://www.qt.io/qt5-5/)
- - [GDAL](http://www.gdal.org)
- - [Proj.4](https://github.com/OSGeo/proj.4)
+ - [Qt5.5](http://www.qt.io/qt5-5/): `brew install qt5`
+ - [GDAL](http://www.gdal.org) (Spatial library): `brew install gdal --enable-unsupported`
+ - [Proj.4](https://github.com/OSGeo/proj.4) (Projection library): `brew install proj`
  - [QHTTP](https://github.com/azadkuh/qhttp) (included in the project)
 
 I included a ``*.pro` file to build the framework in Qt Creator (file `Location-allocation.pro`), as well as a `*.cmake` file to build the framework using [CMake](https://cmake.org) (file `CMakeLists.txt`). You might need to change the include paths in either of these files to adapt to your configuration. I personally used Mac OSX El Capitan and [Homebrew](http://brew.sh).
@@ -46,3 +46,5 @@ I also tested the project on Debian Squeeze.
 ## Simulation with [The ONE](http://akeranen.github.io/the-one/)
 
 ## Batch processing with Python
+
+The project pipeline is done with a [single Python script](src/master/scripts/projectPipeline.py)
