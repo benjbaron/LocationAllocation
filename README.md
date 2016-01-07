@@ -47,4 +47,4 @@ I also tested the project on Debian Squeeze.
 
 ## Batch processing with Python
 
-The project pipeline is done with a [single Python script](src/master/scripts/projectPipeline.py)
+The project pipeline is done with a [single Python script](scripts/projectPipeline.py)
