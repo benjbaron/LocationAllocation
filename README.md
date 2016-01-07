@@ -41,13 +41,17 @@ The project depends on the following libraries:
 
 I included a ``*.pro` file to build the framework in Qt Creator (file `Location-allocation.pro`), as well as a `*.cmake` file to build the framework using [CMake](https://cmake.org) (file `CMakeLists.txt`). You might need to change the include paths in either of these files to adapt to your configuration. I personally used Mac OSX El Capitan and [Homebrew](http://brew.sh).
 
-I also tested the project on Debian Squeeze.
+I also tested the project on Debian Squeeze:
+
+Download the latest version of [cmake](https://cmake.org/download/)
+```
+cmake .
+make
+```
 
 ## Simulation with [The ONE](http://akeranen.github.io/the-one/)
 
 ## Batch processing with Python
-
-The project pipeline is done with a [single Python script](scripts/projectPipeline.py)
 
 ![Pipeline](https://docs.google.com/drawings/d/1_q_WWJcKD8aF9Pf2z6-T0sy_SF4RlOV5jdMZ3Tb-rzc/pub?w=960&h=224)
 
