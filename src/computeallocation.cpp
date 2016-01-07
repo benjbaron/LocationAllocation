@@ -117,7 +117,7 @@ void ComputeAllocation::geomWithin(QSet<Geometry*> &geomWithin,
         double dist, tt;
         if(ds != NoneD && distance > 0.0) {
             dist = g->distance(geom);
-            if(islessequal(dist,distance)) {
+            if(std::islessequal(dist,distance)) {
                 distance_flag = true;
             }
         }
@@ -128,7 +128,7 @@ void ComputeAllocation::geomWithin(QSet<Geometry*> &geomWithin,
                     tt = val->travelTimeDist.getAverage();
                 else if(ts == Med)
                     tt = val->travelTimeDist.getMedian();
-                if(islessequal(tt,travelTime)) {
+                if(std::islessequal(tt,travelTime)) {
                     travelTime_flag = true;
                 }
             }

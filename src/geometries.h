@@ -75,7 +75,7 @@ public:
     explicit Circle(const Circle &c): _center(c._center), _radius(c._radius) { }
     bool contains(double x, double y) {
         double distance = euclideanDistance(x,y,_center.x(),_center.y());
-        return islessequal(distance,_radius);
+        return std::islessequal(distance,_radius);
     }
     QPointF getCenter() { return _center; }
     Bounds getBounds() { return Bounds(_center.x()-_radius,_center.x()+_radius,_center.y()-_radius,_center.y()+_radius); }

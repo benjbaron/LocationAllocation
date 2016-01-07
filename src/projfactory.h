@@ -1,7 +1,7 @@
 #ifndef PROJFACTORY_H
 #define PROJFACTORY_H
 
-#include "/usr/local/include/proj_api.h"
+#include "proj_api.h"
 
 #include "constants.h"
 
