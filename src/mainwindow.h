@@ -53,14 +53,10 @@ private:
     Ui::MainWindow *ui;
     QString _projIn = 0, _projOut = 0;
     QList<Layer*> _layers;
-    QList<Loader*> _loaders;
     LayerPanel* _layerPanel = 0;
     GraphicsScene* _scene = 0;
     QMenu* _layerMenu = 0;
     QAction* _showLayersAction = 0;
-    TraceLayer* _traceLayer = 0;
-    SpatialStats* _spatialStats = 0;
-
 };
 
 #endif // MAINWINDOW_H

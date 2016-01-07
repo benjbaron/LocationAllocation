@@ -3,12 +3,23 @@
 
 #include "layer.h"
 #include "utils.h"
+#include "progressdialog.h"
+#include <QAction>
+
+class SpatialStats;
 
 class TraceLayer: public Layer
 {
+    Q_OBJECT
 public:
-    TraceLayer(MainWindow* parent = 0, QString name = 0):
-        Layer(parent, name) { }
+    TraceLayer(MainWindow* parent = 0, QString name = 0, QString filename = 0):
+        Layer(parent, name), _filename(filename)
+    {
+        addBarMenuItems();
+        hideMenu();
+    }
+
+    void addBarMenuItems();
 
     /* Adds successive points to the "_nodes" hash */
     void addPoint(QString node, long long ts, double lat, double lon) {
@@ -18,14 +29,13 @@ public:
         }
         // update the node position
         _nodes.value(node)->insert(ts, QPoint(lat, lon));
+
         // update the startTime and endTime
         if(ts >= 0 && ts < _startTime) _startTime = ts;
         if(ts >= 0 && ts > _endTime) _endTime = ts;
     }
 
     QGraphicsItemGroup* draw();
-
-    QList<std::tuple<QPointF,double,double>> getPoints(int weight = 0, long long startTime = 0, long long endTime = 0);
 
     OGRGeometryCollection *getGeometry(long long startTime = 0, long long endTime = 0);
 
@@ -55,17 +65,29 @@ public:
         return _sampling;
     }
 
+    /* Load functions */
+    bool load(Loader* loader);
+    void openNodeTrace(QString filename);
+    void openDieselNetNodeFolder(QString dirname);
+    void openDieselNetNodeTrace(QString filename, QString node);
+
+    /* Export functions */
     void exportLayer(QString output);
     void exportLayerONE(QString output);
     void exportLayerText(QString output, long long duration = 86400);
     void exportLayerGrid(QString output, int cellSize = 200, long long duration = 86400);
 
+signals:
+    void loadProgressChanged(qreal);
+
 private:
+    QString _filename;
     QHash<QString, QMap<long long, QPointF>*> _nodes;
     Distribution _averageSpeeds;
     long long _startTime = (long long) 1e20;
     long long _endTime = -1;
     double _sampling = -1;
+    SpatialStats* _spatialStats = 0;
 };
 
 #endif // TRACELAYER_H

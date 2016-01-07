@@ -38,11 +38,9 @@ set(SOURCE_FILES
         qcustomplot.cpp
         restserver.cpp
         shapefilelayer.cpp
-        shapefileloader.cpp
         spatialstats.cpp
         spatialstatsdialog.cpp
         tracelayer.cpp
-        traceloader.cpp
         weightedallocationlayer.cpp
         PointLayer.cpp
         NumberDialog.cpp)
@@ -75,11 +73,9 @@ set(HEADER_FILES
         qcustomplot.h
         restserver.h
         shapefilelayer.h
-        shapefileloader.h
         spatialstats.h
         spatialstatsdialog.h
         tracelayer.h
-        traceloader.h
         utils.h
         weightedallocationlayer.h
         PointLayer.h

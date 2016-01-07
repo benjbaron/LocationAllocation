@@ -2,6 +2,7 @@
 
 #include "restserver.h"
 #include "constants.h"
+#include "loader.h"
 
 SpatialStats::SpatialStats(MainWindow *parent, QString name, TraceLayer *traceLayer, long long sampling, long long startTime, long long endTime, GeometryIndex *geometryIndex):
     Layer(parent, name), _traceLayer(traceLayer), _sampling(sampling), _startTime(startTime), _endTime(endTime), _geometryIndex(geometryIndex)
@@ -18,7 +19,7 @@ void SpatialStats::populateMobileNodes()
     for(auto it = nodes.begin(); it != nodes.end(); ++it) {
         QString nodeId = it.key();
         if(!_mobileNodes.contains(nodeId) && it.value()->size() > 0) {
-            _mobileNodes.insert(nodeId, new MobileNode(nodeId, _sampling, this));
+            _mobileNodes.insert(nodeId, new MobileNode(nodeId, (int) _sampling, this));
         }
         MobileNode* node = _mobileNodes.value(nodeId);
         auto jt = (_startTime == -1) ? it.value()->begin() : it.value()->lowerBound(_startTime);
@@ -31,18 +32,20 @@ void SpatialStats::populateMobileNodes()
     }
 
     _computeAllocation = new ComputeAllocation(this);
-    _statMenu = new QMenu();
-    _statMenu->setTitle("Stat analysis");
-    QAction* action = _statMenu->addAction("Compute allocation");
+    _menu = new QMenu();
+    _menu->setTitle("Stat analysis");
+    QAction* action = _menu->addAction("Compute allocation");
     connect(action, &QAction::triggered, _computeAllocation, &ComputeAllocation::computeAllocation);
 
-    _parent->addMenu(_statMenu);
+    _parent->addMenu(_menu);
 }
 
-void SpatialStats::computeStats()
+void SpatialStats::computeStats(Loader* loader)
 {
+    loader->loadProgressChanged((qreal) 0.0); // initialize the load progress
     // compute the visiting matrix for the current set of mobile nodes
     int nbNodes = _mobileNodes.size();
+    int count = 0;
     qDebug() << "number of mobile nodes" << nbNodes;
     for(auto it_mobileNode = _mobileNodes.begin(); it_mobileNode != _mobileNodes.end(); ++it_mobileNode) {
         MobileNode* mobileNode = it_mobileNode.value();
@@ -55,7 +58,7 @@ void SpatialStats::computeStats()
                 Geometry* geom1 = kt.key();
                 long long end1  = kt.value();
 
-                // add the geomtery to the set of visited geometries
+                // add the geometry to the set of visited geometries
                 if(!_geometries.contains(geom1))
                     _geometries.insert(geom1, new GeometryValue(geom1));
 
@@ -71,7 +74,7 @@ void SpatialStats::computeStats()
                 for(auto jt = it+1; jt != geoms.end(); ++jt) {
                     long long start2 = jt.key();
 
-                    // loop through the geometeries visited at the same start time start2
+                    // loop through the geometries visited at the same start time start2
                     for(auto lt = jt.value()->begin(); lt != jt.value()->end(); ++lt) {
                         Geometry* geom2 = lt.key();
                         long long end2  = lt.value();
@@ -83,7 +86,7 @@ void SpatialStats::computeStats()
                         if(visitedGeometries.contains(geom2))
                             continue;
 
-                        // add the geomtery to the matrix of visited geometries
+                        // add the geometry to the matrix of visited geometries
                         if(!_geometryMatrix.contains(geom1)) {
                             _geometryMatrix.insert(geom1, new QHash<Geometry*, GeometryMatrixValue*>());
                         }
@@ -92,7 +95,7 @@ void SpatialStats::computeStats()
                         }
 
                         GeometryMatrixValue* val = _geometryMatrix.value(geom1)->value(geom2);
-                        val->travelTimeDist.addValue(qMax((long long) 0, start2-start1));
+                        val->travelTimeDist.addValue((int) qMax((long long) 0, start2-start1));
                         val->visitFrequency.append(start1);
                         val->visits.insert(start1, end1);
                         val->nodes.insert(it_mobileNode.key());
@@ -102,11 +105,15 @@ void SpatialStats::computeStats()
                 }
             }
         }
+        loader->loadProgressChanged(0.5 * ((qreal) ++count / (qreal) nbNodes));
     }
     qDebug() << "size of the geomerty matrix" << _geometryMatrix.size();
+    loader->loadProgressChanged((qreal) 0.5);
 
     qDebug() << "compute the inter-visit durations / cells";
     // compute the inter-visit durations for the cells
+    count = 0;
+    int size = _geometries.size();
     for(auto it = _geometries.begin(); it != _geometries.end(); ++it) {
         Geometry* geom = it.key();
         GeometryValue* val = it.value();
@@ -115,16 +122,20 @@ void SpatialStats::computeStats()
         for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
             long long start = kt.key();
             foreach(long long end, visits.values(start)) {
-                val->interVisitDurationDist.addValue(start-prevStartTime);
+                val->interVisitDurationDist.addValue((int) (start-prevStartTime));
                 prevStartTime = start;
             }
         }
         val->localStat = computeLocalStat(geom);
         val->color = selectColorForLocalStat(val->localStat);
+        loader->loadProgressChanged(0.5 + 0.16 * ((qreal) ++count / (qreal) size));
     }
+    loader->loadProgressChanged((qreal) 0.66);
 
     qDebug() << "compute the inter-visit durations / matrix";
     // compute the inter-visit durations for the matrix cells
+    count = 0;
+    size = _geometryMatrix.size();
     for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
         Geometry* geom1 = it.key();
         auto geoms = it.value();
@@ -136,7 +147,7 @@ void SpatialStats::computeStats()
             for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
                 long long start = kt.key();
                 foreach(long long end, visits.values(start)) {
-                    val->interVisitDurationDist.addValue(start-prevStartTime);
+                    val->interVisitDurationDist.addValue((int) (start-prevStartTime));
                     prevStartTime = start;
                 }
             }
@@ -152,9 +163,13 @@ void SpatialStats::computeStats()
                 }
             }
         }
+        loader->loadProgressChanged(0.66 + 0.16 *((qreal) ++count / (qreal) size));
     }
+    loader->loadProgressChanged((qreal) 0.82);
 
     qDebug() << "Compute scores";
+    count = 0;
+    size = _geometryMatrix.size();
     for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
         Geometry* geom1 = it.key();
         GeometryValue* nodeVal = _geometries.value(geom1);
@@ -181,16 +196,18 @@ void SpatialStats::computeStats()
             edgeVal->medScore = edgeMedScore;
             edgeVal->avgScore = edgeAvgScore;
         }
+        loader->loadProgressChanged(0.82 + 0.16 * ((qreal) ++count / (qreal) size));
     }
+    loader->loadProgressChanged((qreal) 0.98);
 
 
     qDebug() << "[DONE] Compute spatial stat";
 
     // add action to the menu to export a contour file
-    QAction* action_export_contour = _statMenu->addAction("Export contour file");
+    QAction* action_export_contour = _menu->addAction("Export contour file");
     connect(action_export_contour, &QAction::triggered, this, &SpatialStats::exportContourFile);
 
-    QAction* action_rest_server = _statMenu->addAction("Start REST server");
+    QAction* action_rest_server = _menu->addAction("Start REST server");
     connect(action_rest_server, &QAction::triggered, this, [=](bool checked) {
         if(!_restServer) {
             _restServer = new RESTServer(10, 0, _computeAllocation);
@@ -199,6 +216,8 @@ void SpatialStats::computeStats()
             qDebug() << "REST Server listening on port 8080";
         }
     });
+
+    loader->loadProgressChanged((qreal) 1.0);
 }
 
 QColor SpatialStats::selectColorForLocalStat(qreal zScore)
@@ -217,7 +236,8 @@ qreal SpatialStats::computeLocalStat(Geometry* geom_i)
     for(auto it = _geometries.begin(); it != _geometries.end(); ++it) {
         int count_j = it.value()->visits.size();
         Geometry* geom_j = it.key();
-        int weight = 1.0 / (0.01 + (qreal) qSqrt(qPow(geom_i->getCenter().x() - geom_j->getCenter().x(), 2) + qPow(geom_i->getCenter().y() - geom_j->getCenter().y(), 2)));
+        int weight = (int) (1.0 / (0.01 + (qreal) qSqrt(qPow(geom_i->getCenter().x() - geom_j->getCenter().x(), 2) +
+                                                        qPow(geom_i->getCenter().y() - geom_j->getCenter().y(), 2))));
         sum1 += weight * count_j;
         sum2 += weight;
         sum3 += qPow(weight,2);
@@ -251,7 +271,7 @@ QGraphicsItemGroup* SpatialStats::draw()
         addGraphicsItem(item);
         _geometryGraphics.insert(it.key(), item);
 
-        // add behavior on mousepress
+        // add behavior on mouse press
         connect(item, &GeometryGraphics::mousePressedEvent, [=](Geometry* geom, bool mod){
             if(!_geometries.contains(geom) || !_geometryMatrix.contains(geom)) return;
 
@@ -271,7 +291,6 @@ QGraphicsItemGroup* SpatialStats::draw()
 
             } else {
                 if(_selectedGeometry) {
-                    qDebug() << "hello";
                     // restore the "normal" opacity
                     _geometryGraphics[_selectedGeometry]->setOpacity(CELL_OPACITY);
                     // restore the "normal" colors for the neighbor geometries
@@ -331,14 +350,8 @@ QGraphicsItemGroup* SpatialStats::draw()
     return _groupItem;
 }
 
-QList<std::tuple<QPointF,double,double>> SpatialStats::getPoints(int deadline, long long startTime, long long endTime)
-{
-    return QList<std::tuple<QPointF,double,double>>();
-}
-
-
 void MobileNode::addPosition(long long time, double x, double y) {
-    // assuming the positions are added sequencially
+    // assuming the positions are added sequentially
     if(_prevPos.isNull() || time - _prevTime > 300) { // restart the cell recording
         // get the list of geometries that contain the current position
         QSet<Geometry*> geoms = _spatialStats->containsPoint(x,y);
@@ -378,7 +391,7 @@ void MobileNode::addPosition(long long time, double x, double y) {
             }
         }
     }
-    _prevPos = QPoint(x,y);
+    _prevPos = QPointF(x,y);
     _prevTime = time;
 }
 
@@ -476,4 +489,9 @@ void SpatialStats::exportContourFile() {
     file.close();
 
     qDebug() << "[DONE] export contour file";
+}
+
+bool SpatialStats::load(Loader *loader) {
+    computeStats(loader);
+    return true;
 }

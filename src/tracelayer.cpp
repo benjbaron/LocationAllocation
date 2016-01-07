@@ -1,10 +1,9 @@
 #include "tracelayer.h"
 
-#include <QDebug>
-#include <QFile>
-#include <qmath.h>
-
 #include "projfactory.h"
+#include "intermediateposlayer.h"
+#include "spatialstatsdialog.h"
+#include "spatialstats.h"
 
 QGraphicsItemGroup *TraceLayer::draw() {
     int radius = 10;
@@ -12,10 +11,9 @@ QGraphicsItemGroup *TraceLayer::draw() {
 
     for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
         for(auto jt = it.value()->begin(); jt != it.value()->end(); ++jt) {
-            int x = jt.value().x();
-            int y = jt.value().y();
+            double x = jt.value().x();
+            double y = jt.value().y();
 
-//            qDebug() << "node" << it.key() << "(" << jt.key() << "," << x << "," << y << ")";
             QGraphicsEllipseItem* item = new QGraphicsEllipseItem(x-radius, y-radius, radius*2, radius*2);
 //            item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
@@ -27,43 +25,6 @@ QGraphicsItemGroup *TraceLayer::draw() {
     }
 
     return _groupItem;
-}
-
-QList<std::tuple<QPointF, double, double> > TraceLayer::getPoints(int deadline, long long startTime, long long endTime)
-{
-    // check endTime value
-    if(endTime == 0) {
-        // set to max
-        endTime = std::numeric_limits<qlonglong>::max();
-    }
-
-    QList<std::tuple<QPointF,double,double>> res;
-    for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
-        // compute the average speed for each node
-        double spd = 0.0;
-        auto jt_start = it.value()->lowerBound(startTime);
-        long long prevTS = jt_start.key();
-        QPointF prevPoint = jt_start.value();
-        for(auto jt = jt_start; jt != it.value()->end() && jt.key() <= endTime; ++jt) {
-            long long curTS = jt.key();
-            QPointF curPoint = jt.value();
-            int timeDiff = curTS - prevTS;
-            if(timeDiff > 0) {
-                spd += QLineF(prevPoint, curPoint).length() / timeDiff;
-            }
-            prevTS = curTS;
-            prevPoint = curPoint;
-        }
-        spd = spd / it.value()->size();
-        qDebug() << "node" << it.key() << "speed" << spd << deadline * spd;
-        // add the demand points
-        for(auto jt = jt_start; jt != it.value()->end() && jt.key() <= endTime; ++jt) {
-            auto t = std::make_tuple(jt.value(), 1.0, deadline * spd);
-            res.append(t);
-        }
-    }
-
-    return res;
 }
 
 OGRGeometryCollection *TraceLayer::getGeometry(long long startTime, long long endTime)
@@ -117,8 +78,154 @@ double TraceLayer::getAverageSpeed()
     return _averageSpeeds.getAverage();
 }
 
+bool TraceLayer::load(Loader* loader)
+{
+    if(_filename.contains("test")) {
+        QFile* file = new QFile(_filename);
+        if(!file->open(QFile::ReadOnly | QFile::Text))
+        {
+            return 0;
+        }
+        while(!file->atEnd())
+        {
+            QString line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+            QStringList fields = line.split(";");
+            QString node = fields.at(1);
+            long long ts = (long long) fields.at(0).toDouble();
+            double lat   = fields.at(3).toDouble();
+            double lon   = fields.at(2).toDouble();
+//            qDebug() << "(" << node << "," << ts << "," << lat << "," << lon << ")";
+            if(ts <= 0)
+                continue;
+            // convert the points to the local projection
+            double x, y;
+            ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
+//            qDebug() << "adding node" << node << "(" << x << "," << y << "," << ts << ")";
+            addPoint(node, ts, x, y);
+            emit loader->loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size());
+        }
+    }
+    if(_filename.contains("cabspotting")) {
+        // "filename" is the repertory of the files
+        QDirIterator it(_filename, QStringList() << "new_*.txt", QDir::Files, QDirIterator::Subdirectories);
+        int count = 0;
+        QList<QString> filenames;
+        while (it.hasNext()) {
+            filenames.append(it.next());
+            count++;
+        }
+        for(int i = 0; i < count; ++i) {
+            openNodeTrace(filenames.at(i));
+            emit loader->loadProgressChanged((qreal) i / (qreal) count);
+        }
+    } else if(_filename.contains("gps_logs")) {
+        QDirIterator it(_filename, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+        int count = 0;
+        QList<QString> nodeNames;
+        while (it.hasNext()) {
+            QString folder = it.next();
+            nodeNames.append(folder);
+            count++;
+        }
+        for(int i = 0; i < count; ++i) {
+            openDieselNetNodeFolder(nodeNames.at(i));
+            emit loader->loadProgressChanged((qreal) i / (qreal) count);
+        }
+    }
+    qDebug() << "[DONE] loading file";
+    emit loader->loadProgressChanged((qreal)1.0);
+    return 1;
+}
+
+void TraceLayer::openNodeTrace(QString filename)
+{
+    // opens a node trace of format
+    // [latitude (double), longitude (double), occupancy (int), time (long long)]
+    QFile* file = new QFile(filename);
+//    QRegExp rx("^new\\_(.*?)\\.txt$");
+    QRegExp rx("new\\_(\\w+).txt");
+    rx.indexIn(QFileInfo(filename).fileName());
+    QString node = rx.cap(1);
+
+    if(!file->open(QFile::ReadOnly | QFile::Text))
+    {
+        return;
+    }
+    while(!file->atEnd())
+    {
+        QString line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+        QStringList fields = line.split(" ");
+        double lat = fields.at(0).toDouble();
+        double lon = fields.at(1).toDouble();
+        long long ts = fields.at(3).toLongLong();
+        if(ts <= 0)
+            continue;
+        // convert the points to the local projection
+        double x, y;
+        ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
+//        qDebug() << "adding node" << node << "(" << x << "," << y << "," << ts << ")";
+        addPoint(node, ts, x, y);
+    }
+}
+
+void TraceLayer::openDieselNetNodeFolder(QString dirname)
+{
+    // read the files of the directory
+//    qDebug() << "folder" << dirname;
+    QDirIterator it(dirname, QStringList() << "*", QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    QString node = QDir(dirname).dirName();
+    while (it.hasNext()) {
+        openDieselNetNodeTrace(it.next(), node);
+    }
+}
+
+void TraceLayer::openDieselNetNodeTrace(QString filename, QString node)
+{
+    // get the date
+//    qDebug() << "\tfile" << filename;
+    QRegExp rx("(\\d{4})\\-(\\d{2})\\-(\\d{2})");  // date
+    QRegExp rx1("(\\d{2})\\:(\\d{2})\\:(\\d{2})"); // time
+    rx.indexIn(QFileInfo(filename).fileName());
+    int year = rx.cap(1).toInt();
+    int month = rx.cap(2).toInt();
+    int day = rx.cap(3).toInt();
+
+    // read the content of the file
+    QFile* file = new QFile(filename);
+    if(!file->open(QFile::ReadOnly | QFile::Text))
+    {
+        return;
+    }
+    while(!file->atEnd())
+    {
+        QString line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+        QStringList fields = line.split(" ");
+        QString ts = fields.at(0);
+        double lat = fields.at(1).toDouble();
+        double lon = fields.at(2).toDouble();
+
+        rx1.indexIn(ts);
+        int hh = rx1.cap(1).toInt();
+        int mm = rx1.cap(2).toInt();
+        int ss = rx1.cap(3).toInt();
+
+        QDateTime d(QDate(year, month, day), QTime(hh, mm, ss));
+        long long timestamp = (long long) d.toTime_t();
+
+        if(timestamp <= 0 || lat == 0 || lon == 0)
+            continue;
+        // convert the points to the local projection
+        double x, y;
+        ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
+//        qDebug() << "\t\t" << year << month << day << hh << mm << ss << " / " << ts << QFileInfo(filename).fileName();
+//        qDebug() << "\t\tadding node" << node << "(" << x << "," << y << "," << d.toTime_t() << ")";
+        addPoint(node, d.toTime_t(), x, y);
+    }
+}
+
 void TraceLayer::exportLayer(QString output)
 {
+    emit loadProgressChanged((qreal) 0.0);
     const char *pszDriverName = "ESRI Shapefile";
     OGRSFDriver *poDriver;
 
@@ -130,6 +237,7 @@ void TraceLayer::exportLayer(QString output)
     if( poDriver == NULL )
     {
         printf( "%s driver not available.\n", pszDriverName );
+        emit loadProgressChanged((qreal) 1.0);
         exit( 1 );
     }
 
@@ -176,12 +284,11 @@ void TraceLayer::exportLayer(QString output)
         qWarning() <<  "Creating Node field failed.";
     }
 
-//    QList<std::tuple<QPointF, double, double> > points = getPoints();
-//    QMap<QString, QMap<long long, QPointF>*> _nodes;
+    int count = 0, size = _nodes.size();
     for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
         const char* node = it.key().toLatin1().data();
         for(auto jt = it.value()->begin(); jt != it.value()->end(); jt++) {
-            int timestamp = jt.key();
+            int timestamp = (int) jt.key();
             QPointF pt = jt.value();
 
             OGRFeature *poFeature = OGRFeature::CreateFeature( poLayerTrace->GetLayerDefn() );
@@ -198,15 +305,17 @@ void TraceLayer::exportLayer(QString output)
                qWarning() << "Failed to create feature in shapefile.";
             }
             OGRFeature::DestroyFeature( poFeature );
-
         }
+        emit loadProgressChanged((qreal) ++count / (qreal) size);
     }
+    emit loadProgressChanged((qreal) 1.0);
     qDebug() << "[Writing] DONE";
     OGRDataSource::DestroyDataSource( poDS );
 }
 
 void TraceLayer::exportLayerONE(QString output)
 {
+    emit loadProgressChanged((qreal) 0.0);
     // <timestamp, <node id, positions, state(UP|DOWN)>
     QMap<long long, QMap<int, QPair<QPointF,bool>>> points;
     QMap<int,QPair<QPointF,long long>> initPos;
@@ -219,8 +328,8 @@ void TraceLayer::exportLayerONE(QString output)
     double minY = 1e10;
     double maxY = 0;
 
-    qDebug() << "[START] Writting in file" << output;
-
+    qDebug() << "[START] Writing in file" << output;
+    int size = _nodes.size();
     for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
         auto jt = it.value()->begin();
         long long currentTimestamp = jt.key();
@@ -234,16 +343,10 @@ void TraceLayer::exportLayerONE(QString output)
         if(currentPoint.y() < minY) minY = currentPoint.y();
         if(currentPoint.y() > maxY) maxY = currentPoint.y();
 
-        qDebug() << nodeCounter << currentTimestamp << currentPoint;
-
         jt++;
         for(; jt != it.value()->end(); ++jt) {
             long long nextTimestamp = jt.key();
             QPointF nextPoint = jt.value();
-
-            if(nextTimestamp <= 1000) {
-                qDebug() << "we have" << nodeCounter << nextTimestamp << currentTimestamp;
-            }
 
             // determine state
             bool state = true; // UP
@@ -274,12 +377,15 @@ void TraceLayer::exportLayerONE(QString output)
         points[currentTimestamp][nodeCounter] = qMakePair(currentPoint, false);
 
         nodeCounter++;
+        emit loadProgressChanged(0.5 * ((qreal) nodeCounter / (qreal) size));
     }
+    emit loadProgressChanged((qreal) 0.5);
 
     QFile file(output);
     if(!file.open(QFile::WriteOnly))
     {
         qDebug() << "Unable to write in file "<< output;
+        emit loadProgressChanged((qreal) 1.0);
         return;
     }
 
@@ -306,11 +412,12 @@ void TraceLayer::exportLayerONE(QString output)
             << QString::number(pos.x(), 'f', 0) << " "
             << QString::number(pos.y(), 'f', 0) << " "
             << ((timestamp == firstTimestamp) ? "UP" : "DOWN") << "\n";
-        qDebug() << nodeID << firstTimestamp << timestamp;
     }
     it++;
 
-    // iterate throught the timestamps
+    // iterate through the timestamps
+    int count = 0;
+    size = points.size();
     for(; it != points.end(); ++it) {
         long long timestamp = it.key();
         for(auto jt = it.value().begin(); jt != it.value().end(); ++jt) {
@@ -326,31 +433,36 @@ void TraceLayer::exportLayerONE(QString output)
                 << QString::number(pos.y(), 'f', 4) << " "
                 << (state ? "UP" : "DOWN") << "\n";
         }
+        emit loadProgressChanged(0.5 + ((qreal) ++count / (qreal) size));
     }
+    emit loadProgressChanged((qreal) 1.0);
     file.close();
-
-    qDebug() << "[DONE] finished writting in file" << output;
+    qDebug() << "[DONE] finished writing in file" << output;
 }
 
 void TraceLayer::exportLayerGrid(QString output, int cellSize, long long duration)
 {
+    emit loadProgressChanged((qreal) 0.0);
     // populate the cells
     QHash<QPoint, int> cells;
+    int count = 0, size = cells.size();
     for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
         auto trace = it.value();
         long long startTime = trace->firstKey();
         for(auto jt = trace->begin(); jt != trace->end() && jt.key() - startTime <= duration; ++jt) {
             QPointF p(jt.value());
-            QPoint cell((int)qFloor(p.x() / cellSize), (int)qFloor(p.y() / cellSize));
+            QPoint cell(qFloor(p.x() / cellSize), qFloor(p.y() / cellSize));
             if(!cells.contains(cell)) {
                 cells.insert(cell, 0);
             }
             cells[cell]++;
         }
+        emit loadProgressChanged(0.5 * ((qreal) ++count / (qreal) size));
     }
-    
+    emit loadProgressChanged((qreal) 0.5);
+
     // export the points with spatial bining
-    qDebug() << "[Writting] output grid cells";
+    qDebug() << "[Writing] output grid cells";
 
     const char *pszDriverName = "ESRI Shapefile";
     OGRSFDriver *poDriver;
@@ -363,6 +475,7 @@ void TraceLayer::exportLayerGrid(QString output, int cellSize, long long duratio
     if( poDriver == NULL )
     {
         printf( "%s driver not available.\n", pszDriverName );
+        emit loadProgressChanged((qreal) 1.0);
         exit( 1 );
     }
 
@@ -389,6 +502,8 @@ void TraceLayer::exportLayerGrid(QString output, int cellSize, long long duratio
         qWarning() <<  "Creating Count field failed.";
     }
 
+    int cellCount = 0;
+    cellSize = cells.size();
     for(auto it = cells.begin(); it != cells.end(); ++it) {
         QPoint p = it.key();
         int count = it.value();
@@ -415,10 +530,13 @@ void TraceLayer::exportLayerGrid(QString output, int cellSize, long long duratio
            qWarning() << "Failed to create feature in shapefile.";
         }
         OGRFeature::DestroyFeature( poFeature );
+        emit loadProgressChanged((qreal) ++cellCount / (qreal) cellSize);
     }
 
     OGRDataSource::DestroyDataSource( poDS );
-    qDebug() << "[Writing] DONE writting" << cells.size() << "cells.";
+    emit loadProgressChanged((qreal) 1.0);
+
+    qDebug() << "[Writing] DONE writing" << cells.size() << "cells.";
 }
 
 
@@ -431,13 +549,16 @@ void TraceLayer::exportLayerText(QString output, long long duration)
     double minY = 1e10;
     double maxY = 0;
 
+    emit loadProgressChanged((qreal) 0.0);
     QFile file(output);
     if(!file.open(QFile::WriteOnly))
     {
+        emit loadProgressChanged((qreal) 1.0);
         qDebug() << "Unable to write in file "<< output;
         return;
     }
     QTextStream out(&file);
+    int count = 0, size = _nodes.size();
     // loop for all the nodes to get the points within t0 (the begining of the trace) and t0 + duration
     for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
         auto trace = it.value();
@@ -450,13 +571,127 @@ void TraceLayer::exportLayerText(QString output, long long duration)
             if(p.y() < minY) minY = p.y();
             if(p.y() > maxY) maxY = p.y();
         }
+        emit loadProgressChanged((qreal) ++count / (qreal) size);
     }
     file.close();
-    qDebug() << "[DONE] finished writting in file" << output;
+    emit loadProgressChanged((qreal) 1.0);
+
+    qDebug() << "[DONE] finished writing in file" << output;
     qDebug() << "C("<<minX<<","<<maxX<<"), c("<<minY<<","<<maxY<<")";
 }
 
-inline uint qHash(const QPoint &key)
-{
-    return qHash(key.x()) ^ qHash(key.y());
+void TraceLayer::addBarMenuItems() {
+    _menu = new QMenu("Trace");
+    QAction* actionShowIntermediatePoints = _menu->addAction("Show intermediate points");
+    QAction* actionExportTraceTxt = _menu->addAction("Export trace (text)");
+    QAction* actionExportTraceShp = _menu->addAction("Export trace (shapefile)");
+    QAction* actionExportONETrace = _menu->addAction("Export trace (ONE)");
+    QAction* actionExportTraceGrid = _menu->addAction("Export trace grid");
+    _menu->addSeparator();
+    QAction* actionSpatialStats = _menu->addAction("Spatial statistics");
+
+    _parent->addMenu(_menu);
+
+    connect(actionShowIntermediatePoints, &QAction::triggered, [=](bool checked){
+        qDebug() << "Show intermediate points of" << getName();
+        QString name = "Intermediate positions";
+        IntermediatePosLayer* layer   = new IntermediatePosLayer(_parent, name, this);
+        Loader loader(layer);
+        _parent->createLayer(name, layer, &loader);
+    });
+
+    connect(actionExportTraceTxt, &QAction::triggered, [=](bool checked){
+        QString filename = QFileDialog::getSaveFileName(0,
+                                                        tr("Save the Trace layer"),
+                                                        QString(),
+                                                        tr("CSV file (*.csv)"));
+
+        if(filename.isEmpty())
+            return;
+
+        qDebug() << "Exporting text of" << filename;
+        ProgressDialog progressDialog(_parent, "Writing text "+QFileInfo(filename).fileName());
+        connect(this, &TraceLayer::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
+        QtConcurrent::run([&](QString filename){
+            exportLayerText(filename);
+        }, filename);
+        progressDialog.exec();
+    });
+
+    connect(actionExportTraceShp, &QAction::triggered, [=](bool checked){
+        QString filename = QFileDialog::getSaveFileName(0,
+                                                        tr("Save the Trace layer"),
+                                                        QString(),
+                                                        tr("Shapefile file (*.shp)"));
+
+        if(filename.isEmpty())
+            return;
+
+        qDebug() << "Exporting trace shapefile" << filename;
+        ProgressDialog progressDialog(_parent, "Writing Shp "+QFileInfo(filename).fileName());
+        connect(this, &TraceLayer::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
+        QtConcurrent::run([&](QString filename){
+            exportLayer(filename);
+        }, filename);
+        progressDialog.exec();
+    });
+
+    connect(actionExportONETrace, &QAction::triggered, [=](bool checked){
+        QString filename = QFileDialog::getSaveFileName(0,
+                                                        tr("Save the Trace layer"),
+                                                        QString(),
+                                                        tr("Text file (*.txt)"));
+
+        if(filename.isEmpty())
+            return;
+
+        qDebug() << "Exporting ONE trace" << filename;
+        ProgressDialog progressDialog(_parent, "Writing ONE "+QFileInfo(filename).fileName());
+        connect(this, &TraceLayer::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
+        QtConcurrent::run([&](QString filename){
+            exportLayerONE(filename);
+        }, filename);
+        progressDialog.exec();
+    });
+
+    connect(actionExportTraceGrid, &QAction::triggered, [=](bool checked){
+        QString filename = QFileDialog::getSaveFileName(0,
+                                                        tr("Save the Trace layer"),
+                                                        QString(),
+                                                        tr("Shapefile file (*.shp)"));
+
+        if(filename.isEmpty())
+            return;
+
+        qDebug() << "Exporting shapefile grid of" << filename;
+        ProgressDialog progressDialog(_parent, "Writing grid "+QFileInfo(filename).fileName());
+        connect(this, &TraceLayer::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
+        QtConcurrent::run([&](QString filename){
+            exportLayerGrid(filename);
+        }, filename);
+        progressDialog.exec();
+    });
+
+    connect(actionSpatialStats, &QAction::triggered, [=](bool checked){
+        qDebug() << "Compute spatial Stats";
+        if(!_spatialStats) {
+            SpatialStatsDialog spatialStatsDialog(_parent, this);
+            int ret = spatialStatsDialog.exec(); // synchronous
+            if (ret == QDialog::Rejected) {
+                return;
+            }
+            double sampling  = spatialStatsDialog.getSampling();
+            double startTime = spatialStatsDialog.getStartTime();
+            double endTime   = spatialStatsDialog.getEndTime();
+            GeometryIndex* geometryIndex = spatialStatsDialog.getGeometryIndex();
+
+            _spatialStats = new SpatialStats(_parent, "Spatial Stats layer", this,
+                                             (int) sampling, (long long) startTime, (long long) endTime,
+                                             geometryIndex);
+        }
+
+        QString layerName = "Spatial Stats";
+        Loader* loader = new Loader(_spatialStats);
+        _parent->createLayer(layerName, _spatialStats, loader);
+    });
 }

@@ -1,24 +1,10 @@
 #include "gridlayer.h"
 
 #include <QDebug>
+#include "loader.h"
 
 GridLayer::GridLayer(MainWindow* parent, QString name, int cellSize):
-    Layer(parent, name), _geometriesize(cellSize)
-{
-    // get the grid from the scene
-    qDebug() << parent->getSceneRect() << parent->getSceneRect().left() << parent->getSceneRect().right() << parent->getSceneRect().bottomLeft() << parent->getSceneRect().bottom() << parent->getSceneRect().top();
-    _topLeft = parent->getSceneRect().topLeft();
-    double xCursor = parent->getSceneRect().left();
-    for(int i = 0; xCursor < parent->getSceneRect().right(); ++i) {
-        double yCursor = parent->getSceneRect().top();
-        for(int j = 0; yCursor < parent->getSceneRect().bottom(); ++j) {
-            _geometries.append(QPointF(i,j));
-            yCursor += _geometriesize;
-        }
-        xCursor += _geometriesize;
-    }
-    qDebug() << "cells size" << _geometries.size();
-}
+    Layer(parent, name), _geometriesize(cellSize) { }
 
 QGraphicsItemGroup *GridLayer::draw()
 {
@@ -39,24 +25,6 @@ QGraphicsItemGroup *GridLayer::draw()
     }
 
     return _groupItem;
-}
-
-QList<std::tuple<QPointF, double, double> > GridLayer::getPoints(int deadline, long long startTime, long long endTime)
-{
-    Q_UNUSED(deadline)
-    Q_UNUSED(startTime)
-    Q_UNUSED(endTime)
-
-    QList<std::tuple<QPointF,double,double>> res;
-    for(int i = 0; i < _geometries.size(); ++i) {
-        double x = _topLeft.x() + _geometries.at(i).x()*_geometriesize;
-        double y = _topLeft.y() + _geometries.at(i).y()*_geometriesize;
-        QRectF cell(QPoint(x,y), QPoint(x+_geometriesize, y+_geometriesize));
-        auto t = std::make_tuple(cell.center(), 1.0, -1.0);
-        res.append(t);
-    }
-
-    return res;
 }
 
 OGRGeometryCollection *GridLayer::getGeometry(long long startTime, long long endTime) {
@@ -80,4 +48,32 @@ OGRGeometryCollection *GridLayer::getGeometry(long long startTime, long long end
     }
 
     return collection;
+}
+
+bool GridLayer::load(Loader *loader) {
+    // get the grid from the scene
+    qDebug() << _parent->getSceneRect()
+             << _parent->getSceneRect().left()
+             << _parent->getSceneRect().right()
+             << _parent->getSceneRect().bottomLeft()
+             << _parent->getSceneRect().bottom()
+             << _parent->getSceneRect().top();
+
+    _topLeft = _parent->getSceneRect().topLeft();
+    double xCursor = _parent->getSceneRect().left();
+    int count = 0;
+    int size = (int) (_parent->getSceneRect().right() * _parent->getSceneRect().top());
+    for(int i = 0; xCursor < _parent->getSceneRect().right(); ++i) {
+        double yCursor = _parent->getSceneRect().top();
+        for(int j = 0; yCursor < _parent->getSceneRect().bottom(); ++j) {
+            _geometries.append(QPointF(i,j));
+            yCursor += _geometriesize;
+            emit loader->loadProgressChanged((qreal) count++ / (qreal) size);
+        }
+        xCursor += _geometriesize;
+    }
+    qDebug() << "cells size" << _geometries.size();
+
+    emit loader->loadProgressChanged((qreal) 1.0);
+    return true;
 }

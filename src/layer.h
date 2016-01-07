@@ -5,9 +5,12 @@
 #include <QGraphicsItemGroup>
 #include <QDebug>
 #include <tuple>
+#include <QMenu>
 #include <ogrsf_frmts.h>
+#include <qtconcurrentrun.h>
 
-#include "mainwindow.h"
+class MainWindow;
+class Loader;
 
 class Layer: public QObject
 {
@@ -27,13 +30,23 @@ public:
     void setZValue(qreal value) { _groupItem->setZValue(value); }
     qreal getZValue() { return _groupItem->zValue(); }
     MainWindow* getParent() { return _parent; }
-   virtual QString getInformation() { return "Layer: " + _name; }
+    virtual QString getInformation() { return "Layer: " + _name; }
+    void showMenu() {
+        if(_menu) {
+            _menu->setVisible(true);
+        }
+    }
+    void hideMenu() { if(_menu) _menu->setVisible(false); }
+
+    // load whatever has to load
+    virtual bool load(Loader* loader) = 0;
+
+    QFuture<bool> run(Loader* loader) {
+        return QtConcurrent::run(this, &Layer::load, loader);
+    }
 
     // draw the layer objects
     virtual QGraphicsItemGroup* draw() = 0;
-
-    // get the demand or candidate (point, weight, distance)
-    virtual QList<std::tuple<QPointF,double,double>> getPoints(int deadline = 0, long long startTime = 0, long long endTime = 0) = 0;
 
     // get the geometries
     virtual OGRGeometryCollection* getGeometry(long long startTime = 0, long long endTime = 0) { return NULL; }
@@ -43,6 +56,7 @@ protected:
     QString _name;
     QGraphicsItemGroup* _groupItem;
     QList<QGraphicsItem*> _graphicsItems;
+    QMenu* _menu;
 };
 
 #endif // LAYER_H

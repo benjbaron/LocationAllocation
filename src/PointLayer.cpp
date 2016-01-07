@@ -4,6 +4,7 @@
 
 #include "PointLayer.h"
 #include "geometries.h"
+#include "loader.h"
 
 QGraphicsItemGroup *PointLayer::draw() {
     int radius = 20;
@@ -18,4 +19,9 @@ QGraphicsItemGroup *PointLayer::draw() {
         addGraphicsItem(item);
     }
     return _groupItem;
+}
+
+bool PointLayer::load(Loader *loader) {
+    emit loader->loadProgressChanged((qreal) 1.0);
+    return false;
 }

@@ -1,5 +1,6 @@
 #include "weightedallocationlayer.h"
 #include "constants.h"
+#include "loader.h"
 
 QGraphicsItemGroup *WeightedAllocationLayer::draw()
 {
@@ -107,4 +108,17 @@ QGraphicsItemGroup *WeightedAllocationLayer::draw()
     }
 
     return _groupItem;
+}
+
+bool WeightedAllocationLayer::load(Loader *loader) {
+    int count = 0;
+    int size = _alloc->size();
+    for(auto it = _alloc->begin(); it != _alloc->end(); ++it) {
+        Geometry* g = it.key();
+        _points.insert(g->getCenter(), it.value());
+        emit loader->loadProgressChanged((qreal) count++ / (qreal) size);
+    }
+
+    emit loader->loadProgressChanged((qreal) 1.0);
+    return false;
 }

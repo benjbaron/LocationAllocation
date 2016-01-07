@@ -7,16 +7,12 @@
 #include "graphicsview.h"
 #include "projectiondialog.h"
 #include "progressdialog.h"
-#include "shapefileloader.h"
 #include "shapefilelayer.h"
 #include "tracelayer.h"
-#include "traceloader.h"
 #include "gridlayer.h"
 #include "layerpanel.h"
 #include "projfactory.h"
-#include "spatialstats.h"
-#include "intermediateposlayer.h"
-#include "spatialstatsdialog.h"
+#include "loader.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,97 +45,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_layerPanel, &LayerPanel::closedEvent, this, &MainWindow::closedLayerPanel);
     connect(_layerPanel, &LayerPanel::reorderEvent, this, &MainWindow::changeLayerOrder);
     connect(ui->actionAdd_Grid, &QAction::triggered, this, &MainWindow::addGrid);
-
-    connect(ui->actionExport_Trace_grid, &QAction::triggered, [=](bool checked) {
-        if(_traceLayer) {
-            QString filename = QFileDialog::getSaveFileName(0,
-                                                            tr("Save the Trace layer"),
-                                                            QString(),
-                                                            tr("Shapefile file (*.shp)"));
-
-            if(filename.isEmpty())
-                return;
-
-            qDebug() << "Exporting shapefile grid of" << filename;
-            _traceLayer->exportLayerGrid(filename);
-        }
-    });
-    connect(ui->actionShow_intermediate_points, &QAction::triggered, [=](bool checked) {
-        if(_traceLayer) {
-
-            qDebug() << "Show intermediate points of" << _traceLayer->getName();
-            QString name = "intermediate positions";
-            IntermediatePosLayer* layer   = new IntermediatePosLayer(this, name, _traceLayer);
-            createLayer(name, layer);
-        }
-    });
-
-    connect(ui->actionExport_Trace_txt, &QAction::triggered, [=](bool checked) {
-       if(_traceLayer) {
-           QString filename = QFileDialog::getSaveFileName(0,
-                                                           tr("Save the Trace layer"),
-                                                           QString(),
-                                                           tr("CSV file (*.csv)"));
-
-           if(filename.isEmpty())
-               return;
-
-           qDebug() << "Exporting text of" << filename;
-           _traceLayer->exportLayerText(filename);
-       }
-    });
-    connect(ui->actionExport_Trace, &QAction::triggered, [=](bool checked) {
-        if(_traceLayer) {
-            QString filename = QFileDialog::getSaveFileName(0,
-                                                            tr("Save the Trace layer"),
-                                                            QString(),
-                                                            tr("Shapefile file (*.shp)"));
-
-            if(filename.isEmpty())
-                return;
-
-            qDebug() << "Exporting" << filename;
-            _traceLayer->exportLayer(filename);
-        }
-    });
-    connect(ui->actionExport_ONETrace, &QAction::triggered, [=](bool checked){
-       if(_traceLayer) {
-           QString filename = QFileDialog::getSaveFileName(0,
-                                                           tr("Save the Trace layer"),
-                                                           QString(),
-                                                           tr("Text file (*.txt)"));
-
-           if(filename.isEmpty())
-               return;
-
-           qDebug() << "Exporting ONE trace" << filename;
-           _traceLayer->exportLayerONE(filename);
-       }
-    });
-
-    connect(ui->actionSpatial_Stats, &QAction::triggered, [=](bool checked) {
-        if(_traceLayer) {
-            qDebug() << "Compute spatial Stats";
-            if(!_spatialStats) {
-                SpatialStatsDialog spatialStatsDialog(this, _traceLayer);
-                int ret = spatialStatsDialog.exec(); // synchronous
-                if (ret == QDialog::Rejected) {
-                    return;
-                }
-                double sampling  = spatialStatsDialog.getSampling();
-                double startTime = spatialStatsDialog.getStartTime();
-                double endTime   = spatialStatsDialog.getEndTime();
-                GeometryIndex* geometryIndex = spatialStatsDialog.getGeometryIndex();
-
-                // TODO add loader
-                _spatialStats = new SpatialStats(this, "Spatial Stats layer", _traceLayer, sampling, startTime, endTime, geometryIndex);
-            }
-
-            _spatialStats->computeStats();
-            createLayer("Spatial Stats", _spatialStats);
-        }
-    });
-
 }
 
 MainWindow::~MainWindow()
@@ -154,12 +59,12 @@ void MainWindow::addMenu(QMenu *menu) {
 void MainWindow::openShapefile()
 {
     QSettings settings;
-    qDebug() << "hello";
     QString filename = QFileDialog::getOpenFileName(this,
-                                                    "Open a Shapefile",
-                                                    settings.value("defaultShapefilePath",
-                                                                   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString(),
-                                                    "Shapefile (*.shp);;WKT files (*.wkt)");
+                       "Open a Shapefile",
+                       settings.value("defaultShapefilePath",
+                                      QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString(),
+                       "Shapefile (*.shp);;WKT files (*.wkt)");
+
     if(filename.isEmpty()) {
         return;
     }
@@ -169,12 +74,13 @@ void MainWindow::openShapefile()
 
     changeProjection(name, _projOut);
 
-    // instanciate a new layer and a new loader
-    ShapefileLayer* layer = new ShapefileLayer(this, name);
-    ShapefileLoader* loader = new ShapefileLoader(this, filename, layer);
+    // instantiate a new layer and a new loader
+    ShapefileLayer* layer = new ShapefileLayer(this, name, filename);
+    Loader* loader = new Loader(layer);
 
     createLayer(name, layer, loader);
 
+    // TODO Export the following
     QMenu* menu = new QMenu();
     menu->setTitle("Shapefile");
     QAction* actionOpen_showShapefile = menu->addAction("Show shapefile");
@@ -201,12 +107,10 @@ void MainWindow::openTrace()
 
     changeProjection(name, _projOut);
 
-    // instanciate a new layer and a new loader
-    TraceLayer* layer   = new TraceLayer(this, name);
-    TraceLoader* loader = new TraceLoader(this, filename, layer);
-    _traceLayer = layer;
-
-    createLayer(name, layer, loader);
+    // instantiate a new layer and a new loader
+    TraceLayer* layer  = new TraceLayer(this, name, filename);
+    Loader loader(layer);
+    createLayer(name, layer, &loader);
 }
 
 void MainWindow::setProjection()
@@ -218,7 +122,8 @@ void MainWindow::addGrid()
 {
     QString name = "grid";
     GridLayer* layer = new GridLayer(this, name, GRID_SIZE);
-    createLayer(name, layer);
+    Loader loader(layer);
+    createLayer(name, layer, &loader);
 }
 
 void MainWindow::changeProjection(QString filename, QString projOut)
@@ -267,19 +172,16 @@ void MainWindow::changeLayerOrder(int oldIndex, int newIndex)
             Layer* layer = _layers.at(i+1);
             _layers.replace(i, layer);
             layer->setZValue((qreal) (nbLayers-1-i));
-            qDebug() << "layer" << layer->getName() << "z" << layer->getZValue();
         }
     } else if(newIndex < oldIndex) {
         for(int i = oldIndex; i > newIndex; --i) {
             Layer* layer = _layers.at(i-1);
             _layers.replace(i, layer);
             layer->setZValue((qreal) (nbLayers-1-i));
-            qDebug() << "layer" << layer->getName() << "z" << layer->getZValue();
         }
     }
     _layers.replace(newIndex, tmp);
     tmp->setZValue((qreal) (nbLayers-1-newIndex));
-    qDebug() << "layer" << tmp->getName() << "z" << tmp->getZValue();
     _scene->update();
 }
 
@@ -288,7 +190,8 @@ void MainWindow::createLayer(QString name, Layer* layer, Loader* loader)
     if(loader) {
         ProgressDialog* progressDiag = new ProgressDialog(this, "Loading "+name);
         connect(loader, &Loader::loadProgressChanged, progressDiag, &ProgressDialog::updateProgress);
-        loader->load();
+
+        loader->load(layer);
         progressDiag->exec();
     }
 

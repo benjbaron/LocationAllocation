@@ -3,6 +3,7 @@
 #include "constants.h"
 #include "utils.h"
 #include "NumberDialog.h"
+#include "loader.h"
 
 QGraphicsItemGroup* ShapefileLayer::draw()
 {
@@ -40,25 +41,6 @@ QGraphicsItemGroup* ShapefileLayer::draw()
     }
 
     return _groupItem;
-}
-
-QList<std::tuple<QPointF, double, double> > ShapefileLayer::getPoints(int deadline, long long startTime, long long endTime)
-{
-    Q_UNUSED(deadline)
-    Q_UNUSED(startTime)
-    Q_UNUSED(endTime)
-
-    QList<std::tuple<QPointF, double, double> > res;
-    for(int i = 0; i < _geometryItems.size(); ++i) {
-        OGRGeometry* geom = _geometryItems.at(i);
-        OGRPoint* point;
-        geom->Centroid(point);
-        QPointF p(point->getX(), point->getY());
-        auto t = std::make_tuple(p, 1.0, -1.0);
-        res.append(t);
-    }
-
-    return res;
 }
 
 QSet<QPointF> ShapefileLayer::getIntersections(double maxAngle) {
@@ -168,7 +150,7 @@ void ShapefileLayer::computeIntersections() {
     getParent()->createLayer(layerName, _pointLayer);
 
     // add an action to the menu
-    QAction* action = _shapefileMenu->addAction("Export intersection points");
+    QAction* action = _menu->addAction("Export intersection points");
     connect(action, &QAction::triggered, this, &ShapefileLayer::exportIntersectionPoints);
 }
 
@@ -234,4 +216,115 @@ void ShapefileLayer::exportIntersectionPoints() {
     file.close();
 
     qDebug() << "[DONE] export intersection points";
+}
+
+bool ShapefileLayer::load(Loader *loader) {
+
+    // get the format of the file to load - either *.wkt or *.shp
+    QStringList fileSplits = _name.split(".", QString::SkipEmptyParts);
+    QString fileFormat = fileSplits.at(fileSplits.size()-1);
+
+    if(fileFormat == "shp") {
+        return loadShapefile(loader);
+    } else if(fileFormat == "wkt") {
+        return loadWKT(loader);
+    } else {
+        emit loader->loadProgressChanged((qreal)1.0);
+        return false;
+    }
+}
+
+bool ShapefileLayer::loadWKT(Loader *loader)
+{
+    // see http://gdal.org/1.11/ogr/ogr_apitut.html
+    QFile* file = new QFile(_filename);
+    if(!file->open(QFile::ReadOnly | QFile::Text))
+        return 0;
+
+    OGRSpatialReference *poTarget = new OGRSpatialReference();
+    poTarget->importFromProj4(_parent->getProjOut().toLatin1().data());
+
+    while(!file->atEnd()) {
+        QStringList line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
+        if(line.isEmpty()) continue;
+        char* wktLine = line.at(0).toLatin1().data();
+        OGRGeometry *poGeometry;
+        OGRGeometryFactory::createFromWkt(&wktLine, poTarget, &poGeometry);
+        addGeometry(poGeometry);
+        emit loader->loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size());
+    }
+
+    emit loader->loadProgressChanged((qreal)1.0);
+    qDebug() << "loaded wkt file" << QFileInfo(_filename).fileName() << "with" <<
+    countGeometries() << "features";
+    return true;
+}
+
+bool ShapefileLayer::loadShapefile(Loader* loader)
+{
+    OGRRegisterAll();
+    OGRDataSource *poDS;
+
+    poDS = OGRSFDriverRegistrar::Open(_filename.toStdString().c_str(), FALSE);
+    if( poDS == NULL )
+    {
+        qWarning() << "Open failed for " << _filename;
+        return false;
+    }
+
+    // Set the accepted featue fields
+    QSet<QString> acceptedHWFieldsSet = QSet<QString>();
+    acceptedHWFieldsSet << "primary_link" << "tertiary_link" << "trunk_link" << "motorway" << "road" <<  "secondary_link" << "tertiary" << "motorway_link" << "secondary" << "trunk" << "primary";
+
+    for(int i = 0; i < poDS->GetLayerCount(); ++i) {
+        OGRLayer  *poLayer = poDS->GetLayer(i);
+        qDebug() << "Loading layer" << QString::fromStdString(poLayer->GetName()) << "...";
+        OGRFeature *poFeature;
+        OGRSpatialReference *poTarget = new OGRSpatialReference();
+        poTarget->importFromProj4(_parent->getProjOut().toLatin1().data());
+
+        poLayer->ResetReading();
+        OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+        int hwIdx = poFDefn->GetFieldIndex("type");
+        if(hwIdx == -1)
+            hwIdx = poFDefn->GetFieldIndex("highway");
+
+
+        qDebug() << "highway field index" << hwIdx;
+        int nrofFeatures = 0;
+        while( (poFeature = poLayer->GetNextFeature()) != NULL )
+        {
+            QString HWFieldStr = QString::fromStdString(poFeature->GetFieldAsString(hwIdx));
+            if(acceptedHWFieldsSet.contains(HWFieldStr)) {
+                OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+                if( poGeometry != NULL
+                    && wkbFlatten(poGeometry->getGeometryType()) == wkbPoint)
+                {
+                    poGeometry->transformTo(poTarget);
+                    OGRPoint * pt = (OGRPoint *) poGeometry;
+                    addGeometry(pt);
+
+                }
+                else if (poGeometry != NULL
+                         && wkbFlatten(poGeometry->getGeometryType()) == wkbLineString)
+                {
+                    poGeometry->transformTo(poTarget);
+                    OGRLineString * ls = (OGRLineString *) poGeometry;
+                    addGeometry(ls);
+                }
+            }
+            if(nrofFeatures % 100 == 0)
+            {
+                qreal loadProgress = nrofFeatures / (qreal) poLayer->GetFeatureCount();
+                emit loader->loadProgressChanged(loadProgress);
+            }
+            nrofFeatures++;
+        }
+    }
+
+    emit loader->loadProgressChanged((qreal)1.0);
+    // Do not delete any structure as they will be used later
+    qDebug() << "loaded shapefile" << QFileInfo(_name).fileName() << "with" <<
+    countGeometries() << "features";
+    return true;
 }

@@ -93,7 +93,7 @@ public:
     /* Populate nodes from the trace layer */
     void populateMobileNodes();
     /* Compute spatial statistics */
-    void computeStats();
+    void computeStats(Loader* loader);
 
     GeometryValue* getValue(Geometry* geom) {
         if(_geometries.contains(geom))
@@ -116,9 +116,8 @@ public:
 
     /* Draw the group of cells */
     QGraphicsItemGroup* draw();
-    QList<std::tuple<QPointF,double,double>> getPoints(int deadline = 0,
-                                                       long long startTime = 0,
-                                                       long long endTime = 0);
+
+    virtual bool load(Loader* loader);
 
     /* Returns the Geometry that contains the point (x,y) */
     QSet<Geometry*> containsPoint(double x, double y) {
@@ -143,7 +142,6 @@ private:
     long long _endTime;
     Geometry* _selectedGeometry = NULL;
     DockWidgetPlots* _plots = 0;
-    QMenu* _statMenu = 0;
     GeometryIndex* _geometryIndex;
     ComputeAllocation* _computeAllocation;
     RESTServer* _restServer = 0;

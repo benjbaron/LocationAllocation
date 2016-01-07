@@ -3,6 +3,7 @@
 
 #include "layer.h"
 #include "PointLayer.h"
+#include "mainwindow.h"
 #include <ogrsf_frmts.h>
 #include <QMenu>
 
@@ -10,15 +11,16 @@ class ShapefileLayer: public Layer
 {
     Q_OBJECT
 public:
-    ShapefileLayer(MainWindow* parent = 0, QString name = 0):
-        Layer(parent, name)
+    ShapefileLayer(MainWindow* parent = 0, QString name = 0, QString filename = 0):
+        Layer(parent, name), _filename(filename)
     {
         // add the menu to compute the intersections of the shapefile
-        _shapefileMenu = new QMenu();
-        _shapefileMenu->setTitle("Shapefile");
-        QAction* action = _shapefileMenu->addAction("Compute intersections");
+        _menu = new QMenu();
+        _menu->setTitle("Shapefile");
+        QAction* action = _menu->addAction("Compute intersections");
         connect(action, &QAction::triggered, this, &ShapefileLayer::computeIntersections);
-        _parent->addMenu(_shapefileMenu);
+        _parent->addMenu(_menu);
+        hideMenu();
     }
 
     void addGeometry(OGRGeometry* geom) {
@@ -37,7 +39,11 @@ public:
     }
 
     QGraphicsItemGroup* draw();
-    QList<std::tuple<QPointF,double,double>> getPoints(int deadline = 0, long long startTime = 0, long long endTime = 0);
+    virtual bool load(Loader* loader);
+
+    /* Loader functions */
+    bool loadWKT(Loader *loader);
+    bool loadShapefile(Loader *loader);
 
 private slots:
     void computeIntersections();
@@ -46,7 +52,7 @@ private slots:
 private:
     QList<OGRGeometry*> _geometryItems;
     PointLayer* _pointLayer;
-    QMenu* _shapefileMenu;
+    QString _filename;
 
     QSet<QPointF> getIntersections(double maxAngle = 10);
     double getAngleAtIntersection(OGRLineString *ls1, OGRLineString *ls2, OGRPoint *pt);

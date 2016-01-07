@@ -34,11 +34,15 @@ public:
     }
 
     char* getOutputProj() const {
-        return pj_get_def(_projOut,0);
+        if(_projOut)
+            return pj_get_def(_projOut,0);
+        return (char*)"";
     }
 
     char* getInputProj() const {
-        return pj_get_def(_projIn,0);
+        if(_projIn)
+            return pj_get_def(_projIn,0);
+        return (char*)"";
     }
 
 private:

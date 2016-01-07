@@ -3,6 +3,7 @@
 #include "allocationdialog.h"
 #include "spatialstats.h"
 #include "geometries.h"
+#include "mainwindow.h"
 
 ComputeAllocation::ComputeAllocation(SpatialStats *spatialStats):
     _spatialStats(spatialStats)

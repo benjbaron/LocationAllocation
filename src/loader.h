@@ -8,33 +8,27 @@
 #include "mainwindow.h"
 
 // forward declaration
-class Layer;
+//class Layer;
+#include "layer.h"
 
 class Loader: public QObject
 {
     Q_OBJECT
 public:
-    Loader(MainWindow* parent = 0, QString filename = 0, Layer* layer = 0):
-        _parent(parent), _filename(filename), _layer(layer)
-    {
-        _projOut = parent->getProjOut();
-    }
+    Loader(Layer* layer = 0):
+            _layer(layer) { }
 
-    void load() {
-        _loadResult = QtConcurrent::run(this, &Loader::concurrentLoad);
+    void load(Layer* layer) {
+        _loadResult = layer->run(this);
+        _layer->showMenu();
     }
 
 signals:
     void loadProgressChanged(qreal);
 
 protected:
-    virtual bool concurrentLoad() = 0;
-
-    MainWindow* _parent;
-    QString _filename;
     QFuture<bool> _loadResult;
     Layer* _layer;
-    QString _projOut;
 };
 
 #endif // LOADER_H

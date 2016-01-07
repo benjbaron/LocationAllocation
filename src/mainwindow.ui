@@ -30,16 +30,7 @@
     <addaction name="actionOpen_Trace"/>
     <addaction name="actionOpen_Shapefile"/>
     <addaction name="actionSet_projection"/>
-    <addaction name="separator"/>
     <addaction name="actionAdd_Grid"/>
-    <addaction name="actionExport_Trace"/>
-    <addaction name="actionExport_ONETrace"/>
-    <addaction name="actionExport_Trace_grid"/>
-    <addaction name="actionExport_Trace_txt"/>
-    <addaction name="separator"/>
-    <addaction name="actionSpatial_Stats"/>
-    <addaction name="actionShow_intermediate_points"/>
-    <addaction name="separator"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>

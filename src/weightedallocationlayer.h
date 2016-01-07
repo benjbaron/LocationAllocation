@@ -48,24 +48,18 @@ class WeightedAllocationLayer: public Layer
     Q_OBJECT
 public:
     WeightedAllocationLayer(MainWindow* parent = 0, QString name = 0, const QHash<Geometry*,Allocation*>& alloc = QHash<Geometry*,Allocation*>()):
-        Layer(parent, name)
-    {
-        for(auto it = alloc.begin(); it != alloc.end(); ++it) {
-            Geometry* g = it.key();
-            _points.insert(g->getCenter(), it.value());
-        }
-    }
+        Layer(parent, name), _alloc(&alloc) { }
 
     QGraphicsItemGroup* draw();
     QList<std::tuple<QPointF,double,double>> getPoints(int weight = 0, long long startTime = 0, long long endTime = 0) { return QList<std::tuple<QPointF,double,double>>(); }
-
-    //!\\ TODO functionality to export the allocated points
+    virtual bool load(Loader* loader);
 
 private:
     QHash<QPointF, Allocation*> _points;
     QHash<QPointF, GraphicsPoint*> _pointsGraphics;
     QHash<QPointF, QGraphicsItemGroup*> _pointsGroups;
     QSet<QPointF> _selectedPoints;
+    const QHash<Geometry*,Allocation*>* _alloc;
 };
 
 #endif // WEIGHTEDALLOCATIONLAYER_H

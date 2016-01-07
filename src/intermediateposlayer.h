@@ -4,14 +4,13 @@
 #include "layer.h"
 #include "tracelayer.h"
 #include <qmath.h>
+#include "loader.h"
 
 class IntermediatePosLayer: public Layer
 {
 public:
     IntermediatePosLayer(MainWindow* parent = 0, QString name = 0, TraceLayer* traceLayer = 0):
-        Layer(parent, name), _traceLayer(traceLayer) {
-        populateNodes();
-    }
+        Layer(parent, name), _traceLayer(traceLayer) { }
 
     QGraphicsItemGroup* draw() {
         int radius;
@@ -22,8 +21,8 @@ public:
             for(auto jt = it.value()->begin(); jt != it.value()->end(); ++jt) {
                 QPointF pos = jt.value().first;
                 bool isWaypoint = jt.value().second;
-                int x = pos.x();
-                int y = pos.y();
+                double x = pos.x();
+                double y = pos.y();
 
     //            qDebug() << "node" << it.key() << "(" << jt.key() << "," << x << "," << y << ")";
                 if(isWaypoint) {
@@ -47,12 +46,17 @@ public:
         return _groupItem;
     }
 
-    QList<std::tuple<QPointF,double,double>> getPoints(int deadline = 0, long long startTime = 0, long long endTime = 0) {
-        return QList<std::tuple<QPointF,double,double>>();
+    virtual bool load(Loader* loader) {
+        qDebug() << "load()";
+        populateNodes(loader);
+        return true;
     }
 
-    void populateNodes() {
+
+    void populateNodes(Loader* loader) {
         auto nodes = _traceLayer->getNodes();
+        qDebug() << "populateNodes()" << nodes.size();
+        int count = 0, size = nodes.size();
         for(auto it = nodes.begin(); it != nodes.end(); ++it) {
             QString nodeId = it.key();
             auto trace = it.value();
@@ -78,7 +82,10 @@ public:
                 _prevPos = pos;
                 _prevTime = time;
             }
+            emit loader->loadProgressChanged((qreal) ++count / size);
         }
+
+        emit loader->loadProgressChanged((qreal) 1.0);
     }
 
 private:

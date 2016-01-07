@@ -4,6 +4,7 @@
 #include <QStyle>
 
 #include "layer.h"
+#include "mainwindow.h"
 
 LayerPanel::LayerPanel(MainWindow* parent, QList<Layer *>* layers) :
     QDockWidget(parent),

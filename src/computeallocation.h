@@ -3,6 +3,7 @@
 
 #include "weightedallocationlayer.h"
 
+class SpatialStats;
 class Geometry;
 
 class ComputeAllocation: public QObject
