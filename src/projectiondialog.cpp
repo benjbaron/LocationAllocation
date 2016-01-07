@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include <QSettings>
 
-#include "/usr/local/include/proj_api.h"
+#include "proj_api.h"
 
 ProjectionDialog::ProjectionDialog(QWidget* parent, QString filename, QString projOut) :
     QDialog(parent),
