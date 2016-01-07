@@ -147,11 +147,4 @@ private:
     RESTServer* _restServer = 0;
 };
 
-
-inline uint qHash(const QPoint &key)
-{
-    return qHash(key.x()) ^ qHash(key.y());
-}
-
-
 #endif // SPATIALSTATS_H

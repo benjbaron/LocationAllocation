@@ -19,9 +19,11 @@ public:
 
 public slots:
     void updateProgress(qreal value);
+    void changeText(QString text);
 
 private:
     Ui::ProgressDialog *ui;
+    QString _loadingText;
 
 };
 

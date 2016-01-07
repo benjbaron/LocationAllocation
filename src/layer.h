@@ -23,9 +23,8 @@ public:
         _groupItem->addToGroup(item);
         _graphicsItems.append(item);
     }
-    void setVisible(bool visible) {
-        _groupItem->setVisible(visible);
-    }
+    void setVisible(bool visible) { _groupItem->setVisible(visible); }
+    bool isVisible() { return _groupItem->isVisible(); }
     QString getName() { return _name; }
     void setZValue(qreal value) { _groupItem->setZValue(value); }
     qreal getZValue() { return _groupItem->zValue(); }
@@ -56,7 +55,7 @@ protected:
     QString _name;
     QGraphicsItemGroup* _groupItem;
     QList<QGraphicsItem*> _graphicsItems;
-    QMenu* _menu;
+    QMenu* _menu = 0;
 };
 
 #endif // LAYER_H

@@ -7,7 +7,33 @@
 SpatialStats::SpatialStats(MainWindow *parent, QString name, TraceLayer *traceLayer, long long sampling, long long startTime, long long endTime, GeometryIndex *geometryIndex):
     Layer(parent, name), _traceLayer(traceLayer), _sampling(sampling), _startTime(startTime), _endTime(endTime), _geometryIndex(geometryIndex)
 {
-    populateMobileNodes();
+    _computeAllocation = new ComputeAllocation(this);
+    _menu = new QMenu();
+    _menu->setTitle("Stat analysis");
+    _parent->addMenu(_menu);
+
+    // add action to compute the location allocation
+    QAction* action_compute_allocation = _menu->addAction("Compute allocation");
+    connect(action_compute_allocation, &QAction::triggered, _computeAllocation, &ComputeAllocation::computeAllocation);
+
+    // add action to the menu to export a contour file
+    QAction* action_export_contour = _menu->addAction("Export contour file");
+    connect(action_export_contour, &QAction::triggered, this, &SpatialStats::exportContourFile);
+
+    // add action to the menu to launch the REST server
+    QAction* action_rest_server = _menu->addAction("Start REST server");
+    connect(action_rest_server, &QAction::triggered, this, [=](bool checked) {
+        qDebug() << "Lauch REST server";
+        if(!_restServer) {
+            _restServer = new RESTServer(10, 0, _computeAllocation);
+            _restServer->setTimeOut(500);
+            _restServer->listen(8080);
+            qDebug() << "REST Server listening on port 8080";
+        }
+    });
+
+    _parent->addMenu(_menu);
+    hideMenu();
 }
 
 void SpatialStats::populateMobileNodes()
@@ -30,19 +56,16 @@ void SpatialStats::populateMobileNodes()
             node->addPosition(ts, pos.x(), pos.y());
         }
     }
-
-    _computeAllocation = new ComputeAllocation(this);
-    _menu = new QMenu();
-    _menu->setTitle("Stat analysis");
-    QAction* action = _menu->addAction("Compute allocation");
-    connect(action, &QAction::triggered, _computeAllocation, &ComputeAllocation::computeAllocation);
-
-    _parent->addMenu(_menu);
 }
 
 void SpatialStats::computeStats(Loader* loader)
 {
     loader->loadProgressChanged((qreal) 0.0); // initialize the load progress
+    loader->changeText("Populate the nodes");
+    populateMobileNodes();
+
+    loader->loadProgressChanged((qreal) 0.1);
+    loader->changeText("Compute visiting matrix");
     // compute the visiting matrix for the current set of mobile nodes
     int nbNodes = _mobileNodes.size();
     int count = 0;
@@ -94,21 +117,22 @@ void SpatialStats::computeStats(Loader* loader)
                             _geometryMatrix.value(geom1)->insert(geom2, new GeometryMatrixValue(geom1, geom2));
                         }
 
-                        GeometryMatrixValue* val = _geometryMatrix.value(geom1)->value(geom2);
-                        val->travelTimeDist.addValue((int) qMax((long long) 0, start2-start1));
-                        val->visitFrequency.append(start1);
-                        val->visits.insert(start1, end1);
-                        val->nodes.insert(it_mobileNode.key());
+                        GeometryMatrixValue* matVal = _geometryMatrix.value(geom1)->value(geom2);
+                        matVal->travelTimeDist.addValue((int) qMax((long long) 0, start2-start1));
+                        matVal->visitFrequency.append(start1);
+                        matVal->visits.insert(start1, end1);
+                        matVal->nodes.insert(it_mobileNode.key());
 
                         visitedGeometries.insert(geom2);
                     }
                 }
             }
         }
-        loader->loadProgressChanged(0.5 * ((qreal) ++count / (qreal) nbNodes));
+        loader->loadProgressChanged(0.1 + 0.4 * ((qreal) ++count / (qreal) nbNodes));
     }
-    qDebug() << "size of the geomerty matrix" << _geometryMatrix.size();
-    loader->loadProgressChanged((qreal) 0.5);
+    qDebug() << "size of the geometry matrix" << _geometryMatrix.size();
+    loader->loadProgressChanged((qreal) 0.4);
+    loader->changeText("Compute inter-visit durations (cells)");
 
     qDebug() << "compute the inter-visit durations / cells";
     // compute the inter-visit durations for the cells
@@ -131,6 +155,7 @@ void SpatialStats::computeStats(Loader* loader)
         loader->loadProgressChanged(0.5 + 0.16 * ((qreal) ++count / (qreal) size));
     }
     loader->loadProgressChanged((qreal) 0.66);
+    loader->changeText("Compute inter-visit durations (matrix)");
 
     qDebug() << "compute the inter-visit durations / matrix";
     // compute the inter-visit durations for the matrix cells
@@ -166,6 +191,7 @@ void SpatialStats::computeStats(Loader* loader)
         loader->loadProgressChanged(0.66 + 0.16 *((qreal) ++count / (qreal) size));
     }
     loader->loadProgressChanged((qreal) 0.82);
+    loader->changeText("Compute scores");
 
     qDebug() << "Compute scores";
     count = 0;
@@ -199,24 +225,10 @@ void SpatialStats::computeStats(Loader* loader)
         loader->loadProgressChanged(0.82 + 0.16 * ((qreal) ++count / (qreal) size));
     }
     loader->loadProgressChanged((qreal) 0.98);
+    loader->changeText("Done");
 
-
+    // load is complete
     qDebug() << "[DONE] Compute spatial stat";
-
-    // add action to the menu to export a contour file
-    QAction* action_export_contour = _menu->addAction("Export contour file");
-    connect(action_export_contour, &QAction::triggered, this, &SpatialStats::exportContourFile);
-
-    QAction* action_rest_server = _menu->addAction("Start REST server");
-    connect(action_rest_server, &QAction::triggered, this, [=](bool checked) {
-        if(!_restServer) {
-            _restServer = new RESTServer(10, 0, _computeAllocation);
-            _restServer->setTimeOut(500);
-            _restServer->listen(8080);
-            qDebug() << "REST Server listening on port 8080";
-        }
-    });
-
     loader->loadProgressChanged((qreal) 1.0);
 }
 

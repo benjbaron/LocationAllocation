@@ -79,12 +79,6 @@ void MainWindow::openShapefile()
     Loader* loader = new Loader(layer);
 
     createLayer(name, layer, loader);
-
-    // TODO Export the following
-    QMenu* menu = new QMenu();
-    menu->setTitle("Shapefile");
-    QAction* actionOpen_showShapefile = menu->addAction("Show shapefile");
-    connect(actionOpen_showShapefile, SIGNAL(triggered(bool)), this, SLOT(showShapefile()));
 }
 
 void MainWindow::openTrace()
@@ -188,11 +182,11 @@ void MainWindow::changeLayerOrder(int oldIndex, int newIndex)
 void MainWindow::createLayer(QString name, Layer* layer, Loader* loader)
 {
     if(loader) {
-        ProgressDialog* progressDiag = new ProgressDialog(this, "Loading "+name);
-        connect(loader, &Loader::loadProgressChanged, progressDiag, &ProgressDialog::updateProgress);
-
+        ProgressDialog progressDiag(this, "Loading "+name);
+        connect(loader, &Loader::loadProgressChanged, &progressDiag, &ProgressDialog::updateProgress);
+        connect(loader, &Loader::changeText, &progressDiag, &ProgressDialog::changeText);
         loader->load(layer);
-        progressDiag->exec();
+        progressDiag.exec();
     }
 
     if(layer) {

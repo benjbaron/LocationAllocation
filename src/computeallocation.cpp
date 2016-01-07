@@ -4,11 +4,55 @@
 #include "spatialstats.h"
 #include "geometries.h"
 #include "mainwindow.h"
+#include "loader.h"
 
 ComputeAllocation::ComputeAllocation(SpatialStats *spatialStats):
     _spatialStats(spatialStats)
 {
 
+}
+
+/*
+ * Compute the location allocation
+*/
+void ComputeAllocation::computeAllocation()
+{
+    qDebug() << "Compute location allocation";
+
+    AllocationDialog diag(_spatialStats->getParent());
+    int ret = diag.exec();
+    if (ret == QDialog::Rejected) {
+        return;
+    }
+
+    // get the parameters
+    double maxTravelTime = -1.0, maxDist = -1.0;
+
+    long long deadline = diag.getDeadline();
+    int nbStorageNodes = diag.getNbStorageNodes();
+    double deletionFactor = diag.getDeletionFactor();
+    TravelTimeStat ts = diag.getTravelTimeStat();
+    DistanceStat   ds = diag.getDistanceStat();
+    double travelTime = diag.getTravelTime();
+    double distance = diag.getDistance();
+    QString method = diag.getMethod();
+
+    QHash<Geometry*, Allocation*> allocation;
+    processAllocationMethod(method,nbStorageNodes,deadline,deletionFactor,ts,travelTime,ds,distance,allocation);
+
+    // print the result allocation
+    for(auto it = allocation.begin(); it != allocation.end(); ++it) {
+        qDebug() << "candidate" << it.key()->getCenter().x()
+                 << "allocated" << it.value()->weight << "with" << it.value()->demands.size()
+                 << "demands" << "deleted" << it.value()->deletedCandidates.size();
+    }
+
+    // create a new layer
+    QString layerName = "Location allocation";
+    WeightedAllocationLayer* layer = new WeightedAllocationLayer(_spatialStats->getParent(), layerName, allocation);
+    Loader loader(layer);
+    _allocationLayers.append(layer);
+    _spatialStats->getParent()->createLayer(layerName, layer, &loader);
 }
 
 void ComputeAllocation::processAllocationMethod(QString method,
@@ -38,12 +82,18 @@ void ComputeAllocation::processAllocationMethod(QString method,
 
         qDebug() << deadline << nbFacilities << _spatialStats->getAverageSpeed() << maxDist << maxTravelTime;
 
-        if(method == LOCATION_ALLOCATION_MEHTOD_NAME)
-            runLocationAllocation(nbFacilities,deadline,ttStat,travelTime,dStat,distance,allocation);
-        if(method == PAGE_RANK_MEHTOD_NAME)
+        if(method == LOCATION_ALLOCATION_MEHTOD_NAME) {
+            ProgressDialog progressDialog(_spatialStats->getParent(), "Computing location allocation ");
+            connect(this, &ComputeAllocation::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
+            connect(this, &ComputeAllocation::changeText, &progressDialog, &ProgressDialog::changeText);
+            QtConcurrent::run([&](){
+                runLocationAllocation(nbFacilities,deadline,ttStat,travelTime,dStat,distance,allocation);
+            });
+            progressDialog.exec();
+        } else if(method == PAGE_RANK_MEHTOD_NAME) {
             return;
 //            runPageRank(nbFacilities,ttStat,travelTime,dStat,distance,allocation);
-
+        }
     } else if(method == K_MEANS_MEHTOD_NAME) {
         return;
 //        runKMeans(nbFacilities,allocation);
@@ -85,7 +135,9 @@ void ComputeAllocation::geomWithin(QSet<Geometry*> &geomWithin,
         }
 
         if((ds != NoneD && distance_flag) || (ts != NoneTT && travelTime_flag)) {
-            qDebug() << "or / add" << geom << g->toString() << dist << distance << tt << ts << travelTime;
+            qDebug() << "or / add" << geom << g->toString()
+                     << "distance" << ds << dist << distance
+                     << "travelTime" << ts << tt << travelTime;
             geomWithin.insert(g);
         }
     }
@@ -100,6 +152,9 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
                                               double distance,
                                               QHash<Geometry*, Allocation*>& allocation)
 {
+    emit loadProgressChanged((qreal) 0.0);
+    emit changeText("Initialization");
+
     // demands are the geometries
     // candidates are the geometries
 
@@ -127,6 +182,7 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
 
     // iterate for each storage node to allocate
     for(int i = 0; i < nbFacilities && !demandsToCover.isEmpty(); ++i) {
+        emit changeText("Allocate for facility " + QString::number(i));
         qDebug() << "allocating demands for storage node" << i;
         double maxCoverage = 0.0;
         double maxBackendWeight = 0.0;
@@ -197,6 +253,7 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
 
         /* Substitution part of the algorithm */
         // -> tries to replace each facility one at a time with a facility at another "free" site
+        emit changeText("Substitution for facility " + QString::number(i));
         for(Geometry* k : allocation.keys()) {
             // get the demands already covered by the current candidate
 
@@ -298,49 +355,13 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
                                                maxDemandsCovered, candidatesToRemove, i);
             allocation.insert(maxCoverageGeometry, alloc);
         }
+        // update the progress
+        emit loadProgressChanged((qreal) i / (qreal) nbFacilities);
     }
+
+    emit changeText("Done");
+    emit loadProgressChanged((qreal) 1.0);
 }
-
-/*
- * Compute the location allocation
-*/
-void ComputeAllocation::computeAllocation()
-{
-    qDebug() << "Compute location allocation";
-
-    AllocationDialog diag(_spatialStats->getParent());
-    int ret = diag.exec();
-    if (ret == QDialog::Rejected) {
-        return;
-    }
-
-    // get the parameters
-    double maxTravelTime = -1.0, maxDist = -1.0;
-
-    long long deadline = diag.getDeadline();
-    int nbStorageNodes = diag.getNbStorageNodes();
-    double deletionFactor = diag.getDeletionFactor();
-    TravelTimeStat ts = diag.getTravelTimeStat();
-    DistanceStat   ds = diag.getDistanceStat();
-    double travelTime = diag.getTravelTime();
-    double distance = diag.getDistance();
-    QString method = diag.getMethod();
-
-    QHash<Geometry*, Allocation*> allocation;
-    processAllocationMethod(method,nbStorageNodes,deadline,deletionFactor,ts,travelTime,ds,distance,allocation);
-
-    // print the result allocation
-    for(auto it = allocation.begin(); it != allocation.end(); ++it) {
-        qDebug() << "candidate" << it.key()->getCenter().x() << "allocated" << it.value()->weight << "with" << it.value()->demands.size() << "demands" << "deleted" << it.value()->deletedCandidates.size();
-    }
-
-    // create a new layer
-    QString layerName = "Location allocation";
-    WeightedAllocationLayer* layer = new WeightedAllocationLayer(_spatialStats->getParent(), layerName, allocation);
-    _allocationLayers.append(layer);
-    _spatialStats->getParent()->createLayer(layerName, layer);
-}
-
 
 /*
  * PageRank function

@@ -19,6 +19,10 @@ public:
 public slots:
     void computeAllocation();
 
+signals:
+    void loadProgressChanged(qreal value);
+    void changeText(QString text);
+
 private:
     /* Compute the page rank for the given set of cells */
 //    bool pageRank(QHash<Geometry*, double>& x, QSet<Geometry*> cells, double alpha = 0.85, int maxIterations = 100, double tolerance = 1.0e-6);

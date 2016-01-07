@@ -2,8 +2,9 @@
 #include "ui_progressdialog.h"
 
 ProgressDialog::ProgressDialog(QWidget *parent, QString loadingText) :
-    QDialog(parent),
-    ui(new Ui::ProgressDialog)
+        QDialog(parent),
+        ui(new Ui::ProgressDialog),
+        _loadingText(loadingText)
 {
     ui->setupUi(this);
     ui->label->setText(loadingText);
@@ -29,4 +30,8 @@ void ProgressDialog::updateProgress(qreal value)
     if(value == 1.0) {
         accept();
     }
+}
+
+void ProgressDialog::changeText(QString text) {
+    ui->label->setText(_loadingText + "\n" + text);
 }

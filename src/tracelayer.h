@@ -19,8 +19,6 @@ public:
         hideMenu();
     }
 
-    void addBarMenuItems();
-
     /* Adds successive points to the "_nodes" hash */
     void addPoint(QString node, long long ts, double lat, double lon) {
         if(!_nodes.contains(node)) {
@@ -88,6 +86,8 @@ private:
     long long _endTime = -1;
     double _sampling = -1;
     SpatialStats* _spatialStats = 0;
+
+    void addBarMenuItems();
 };
 
 #endif // TRACELAYER_H

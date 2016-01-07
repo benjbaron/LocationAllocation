@@ -25,6 +25,7 @@ public:
 
 signals:
     void loadProgressChanged(qreal);
+    void changeText(QString);
 
 protected:
     QFuture<bool> _loadResult;
