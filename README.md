@@ -47,11 +47,9 @@ I also tested the project on Debian Squeeze.
 
 ## Batch processing with Python
 
-<<<<<<< HEAD
+The project pipeline is done with a [single Python script](scripts/projectPipeline.py)
+
 ![Pipeline](https://docs.google.com/drawings/d/1_q_WWJcKD8aF9Pf2z6-T0sy_SF4RlOV5jdMZ3Tb-rzc/pub?w=960&h=224)
 
 The project pipeline is done with a [single Python script](src/master/scripts/projectPipeline.py).
 The pipeline is multiprocessed to increase its speed. An initial trace (either synthetic or real) is fed to the Location Allocation framework (described above) through a REST server. The framework includes a REST JSON server to get the location allocation parameters (as input) and outputs the resulting location allocation in JSON format. The JSON result is turned into an allocation file by the Pyhton script and fed to the simulation file generation procedure. The simulation is then run through a process call by the Python script using the generated simulation (settings) file.
-=======
-The project pipeline is done with a [single Python script](scripts/projectPipeline.py)
->>>>>>> 17d2e874193d683f190642a56e22c644d5a65cfb
