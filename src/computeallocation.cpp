@@ -251,6 +251,27 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
             }
         }
 
+        // reduce the set of the population to cover
+        if(maxCoverageGeometry) {
+            candidatesToAllocate.remove(maxCoverageGeometry); // remove the selected cell
+            demandsToCover.remove(maxCoverageGeometry);
+
+            // remove the candidate cells in the vicinity of the selected cell
+            QSet<Geometry*> candidatesToRemove;
+            geomWithin(candidatesToRemove, candidatesToAllocate, maxCoverageGeometry,
+                       distance, travelTime, dStat, ttStat);
+            candidatesToAllocate.subtract(candidatesToRemove);
+
+            qDebug() << "\tcell" << maxCoverageGeometry->toString() << candidatesToRemove.size();
+
+            demandsToCover.subtract(maxDemandsCovered.keys().toSet());
+
+            // add the allocation
+            Allocation* alloc = new Allocation(maxCoverageGeometry, maxCoverage,
+                                               maxDemandsCovered, candidatesToRemove, i);
+            allocation.insert(maxCoverageGeometry, alloc);
+        }
+
         /* Substitution part of the algorithm */
         // -> tries to replace each facility one at a time with a facility at another "free" site
         emit changeText("Substitution for facility " + QString::number(i));
@@ -335,26 +356,6 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
                  << "allocated" << maxCoverage << "with" << maxDemandsCovered.size() << "demands"
                  << demandsToCover.size() << "demands to cover" << maxBackendWeight << "backend weight";
 
-        // reduce the set of the population to cover
-        if(maxCoverageGeometry) {
-            candidatesToAllocate.remove(maxCoverageGeometry); // remove the selected cell
-            demandsToCover.remove(maxCoverageGeometry);
-
-            // remove the candidate cells in the vicinity of the selected cell
-            QSet<Geometry*> candidatesToRemove;
-            geomWithin(candidatesToRemove, candidatesToAllocate, maxCoverageGeometry,
-                       distance, travelTime, dStat, ttStat);
-            candidatesToAllocate.subtract(candidatesToRemove);
-
-            qDebug() << "\tcell" << maxCoverageGeometry->toString() << candidatesToRemove.size();
-
-            demandsToCover.subtract(maxDemandsCovered.keys().toSet());
-
-            // add the allocation
-            Allocation* alloc = new Allocation(maxCoverageGeometry, maxCoverage,
-                                               maxDemandsCovered, candidatesToRemove, i);
-            allocation.insert(maxCoverageGeometry, alloc);
-        }
         // update the progress
         emit loadProgressChanged((qreal) i / (qreal) nbFacilities);
     }
