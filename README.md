@@ -20,7 +20,7 @@ In addition, we used the [GDAL/OGR library](http://www.gdal.org/ogr_apitut.html)
 
 ### Spatial toolset
 
-We also designed a **spatial toolset** to visualize the spatial interaction of the nodes on the geographical area. Given the successive locations each node visited, the spatial toolset computes and represents statistical attributes for a set of geometry elements (e.g., cells on a grid that capture the whole geographical area, or intersections of two [LineStrings](https://msdn.microsoft.com/en-us/library/bb895372.aspx)). The statistics we calculate are the distributions of the inter-visits durations and the travel time between two geometry elements, as well as the frequency of the visits at and between geometry elements.
+We also designed a **spatial toolset** to visualize the spatial interaction of the nodes on the geographical area. Given the successive locations each node visited, the spatial toolset computes and represents statistical attributes for a set of geometry elements (e.g., cells on a grid that covers the whole geographical area, or intersections of two [LineStrings](https://msdn.microsoft.com/en-us/library/bb895372.aspx)). The statistics we calculate are the distributions of the inter-visits durations and the travel time between two geometry elements, as well as the frequency of the visits at and between geometry elements.
 
 ![Spatial toolset preview](img/spatial-toolset.png)
 
@@ -56,4 +56,4 @@ make
 ![Pipeline](https://docs.google.com/drawings/d/1_q_WWJcKD8aF9Pf2z6-T0sy_SF4RlOV5jdMZ3Tb-rzc/pub?w=960&h=224)
 
 The project pipeline is done with a [single Python script](src/master/scripts/projectPipeline.py).
-The pipeline is multiprocessed to increase its speed. An initial trace (either synthetic or real) is fed to the Location Allocation framework (described above) through a REST server. The framework includes a REST JSON server to get the location allocation parameters (as input) and outputs the resulting location allocation in JSON format. The JSON result is turned into an allocation file by the Pyhton script and fed to the simulation file generation procedure. The simulation is then run through a process call by the Python script using the generated simulation (settings) file.
+The pipeline is multiprocessed to increase its speed. An initial trace (either synthetic or real) is fed to the Location Allocation framework (described above) through a REST server. The framework includes a REST JSON server to get the location allocation parameters (as input) and outputs the resulting location allocation in JSON format. The JSON result is turned into an allocation file by the Python script and fed to the simulation file generation procedure. The simulation is then run through a process call by the Python script using the generated simulation (settings) file.
