@@ -57,3 +57,10 @@ make
 
 The project pipeline is done with a [single Python script](src/master/scripts/projectPipeline.py).
 The pipeline is multiprocessed to increase its speed. An initial trace (either synthetic or real) is fed to the Location Allocation framework (described above) through a REST server. The framework includes a REST JSON server to get the location allocation parameters (as input) and outputs the resulting location allocation in JSON format. The JSON result is turned into an allocation file by the Python script and fed to the simulation file generation procedure. The simulation is then run through a process call by the Python script using the generated simulation (settings) file.
+
+## Some projections for the included datasets
+
+Cabspotting cab traces collected from May 17th, 2008 to June 10th, 2008 in the San Francisco Bay Area: 
+
+- Input projection is ESPG (WGS84): `+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs`
+- Output projection is ESPG 26910 (UTM 10N): `+proj=utm +zone=10 +ellps=GRS80 +datum=NAD83 +units=m +no_defs`
