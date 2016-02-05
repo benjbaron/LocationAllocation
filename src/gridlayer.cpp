@@ -16,7 +16,7 @@ QGraphicsItemGroup *GridLayer::draw()
         qreal y = _topLeft.y() + p.y()*_geometriesize;
         qreal w = _geometriesize;
         qreal h = _geometriesize;
-        QGraphicsRectItem* item = new QGraphicsRectItem(x,y,w,h);
+        QGraphicsRectItem* item = new QGraphicsRectItem(x,-1*y,w,-1*h);
         item->setBrush(QBrush(QColor(255,0,0)));
         item->setOpacity(0.6);
         item->setPen(QPen(Qt::black));

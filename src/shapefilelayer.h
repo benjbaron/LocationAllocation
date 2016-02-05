@@ -17,8 +17,11 @@ public:
         // add the menu to compute the intersections of the shapefile
         _menu = new QMenu();
         _menu->setTitle("Shapefile");
-        QAction* action = _menu->addAction("Compute intersections");
-        connect(action, &QAction::triggered, this, &ShapefileLayer::computeIntersections);
+        QAction* action_int = _menu->addAction("Compute intersections");
+        connect(action_int, &QAction::triggered, this, &ShapefileLayer::computeIntersections);
+        QAction* action_pdf = _menu->addAction("Export PDF");
+        connect(action_pdf, &QAction::triggered, this, &ShapefileLayer::exportPDF);
+
         _parent->addMenu(_menu);
         hideMenu();
     }
@@ -48,6 +51,7 @@ public:
 private slots:
     void computeIntersections();
     void exportIntersectionPoints();
+    void exportPDF();
 
 private:
     QList<OGRGeometry*> _geometryItems;

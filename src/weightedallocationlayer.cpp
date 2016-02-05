@@ -1,6 +1,7 @@
 #include "weightedallocationlayer.h"
 #include "constants.h"
 #include "loader.h"
+#include "qdebug.h"
 
 QGraphicsItemGroup *WeightedAllocationLayer::draw()
 {
@@ -34,13 +35,13 @@ QGraphicsItemGroup *WeightedAllocationLayer::draw()
                         // add the points to the group
                         QGraphicsItemGroup* group = new QGraphicsItemGroup();
                         for(Geometry* rp : _points.value(id)->demands.keys()) {
-                            QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-demandRadius, rp->getCenter().y()-demandRadius, 2*demandRadius, 2*demandRadius);
+                            QGraphicsEllipseItem* i = new CircleGraphics(new Circle(rp->getCenter(), demandRadius));
                             i->setBrush(QBrush(Qt::black));
                             i->setPen(Qt::NoPen);
                             group->addToGroup(i);
                         }
                         for(Geometry* rp : _points.value(id)->deletedCandidates) {
-                            QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-deletedCandiateRadius, rp->getCenter().y()-deletedCandiateRadius, 2*deletedCandiateRadius, 2*deletedCandiateRadius);
+                            QGraphicsEllipseItem* i = new CircleGraphics(new Circle(rp->getCenter(), deletedCandiateRadius));
                             i->setBrush(QBrush(ORANGE));
                             i->setPen(Qt::NoPen);
                             group->addToGroup(i);
@@ -80,13 +81,13 @@ QGraphicsItemGroup *WeightedAllocationLayer::draw()
                     // add the points to the group
                     QGraphicsItemGroup* group = new QGraphicsItemGroup();
                     for(Geometry* rp : _points.value(id)->demands.keys()) {
-                        QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-demandRadius, rp->getCenter().y()-demandRadius, 2*demandRadius, 2*demandRadius);
+                        QGraphicsEllipseItem* i = new CircleGraphics(new Circle(rp->getCenter(), demandRadius));
                         i->setBrush(QBrush(Qt::black));
                         i->setPen(Qt::NoPen);
                         group->addToGroup(i);
                     }
                     for(Geometry* rp : _points.value(id)->deletedCandidates) {
-                        QGraphicsEllipseItem* i = new QGraphicsEllipseItem(rp->getCenter().x()-deletedCandiateRadius, rp->getCenter().y()-deletedCandiateRadius, 2*deletedCandiateRadius, 2*deletedCandiateRadius);
+                        QGraphicsEllipseItem* i = new CircleGraphics(new Circle(rp->getCenter(), deletedCandiateRadius));
                         i->setBrush(QBrush(ORANGE));
                         i->setPen(Qt::NoPen);
                         group->addToGroup(i);

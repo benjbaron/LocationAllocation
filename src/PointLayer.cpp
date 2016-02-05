@@ -12,7 +12,7 @@ QGraphicsItemGroup *PointLayer::draw() {
     QColor c = Qt::red;
 
     for(QPointF p : _points) {
-        QGraphicsEllipseItem* item = new QGraphicsEllipseItem(p.x()-radius, p.y()-radius, radius*2, radius*2);
+        GeometryGraphics* item = new CircleGraphics(new Circle(p, radius));
         item->setPen(Qt::NoPen);
         item->setBrush(QBrush(c));
 

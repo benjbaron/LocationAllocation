@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // connections
     connect(ui->actionOpen_Shapefile, &QAction::triggered, this, &MainWindow::openShapefile);
     connect(ui->actionOpen_Trace, &QAction::triggered, this, &MainWindow::openTrace);
+    connect(ui->actionOpen_TraceDir, &QAction::triggered, this, &MainWindow::openTraceDirectory);
     connect(ui->actionSet_projection, &QAction::triggered, this, &MainWindow::setProjection);
     connect(_showLayersAction, &QAction::triggered, this, &MainWindow::showLayerPanel);
     connect(_scene, &GraphicsScene::mousePressedEvent, this, &MainWindow::onMousePressEvent);
@@ -105,6 +106,32 @@ void MainWindow::openTrace()
     TraceLayer* layer  = new TraceLayer(this, name, filename);
     Loader loader(layer);
     createLayer(name, layer, &loader);
+}
+
+
+void MainWindow::openTraceDirectory() {
+    QSettings settings;
+    QFileDialog d(this, "Open a trace directory");
+    d.setFileMode(QFileDialog::Directory);
+    QString path = d.getExistingDirectory(this,
+                                          "Open a trace directory",
+                                          settings.value("defaultTraceDirPath", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString());
+
+    if(path.isEmpty()) {
+        return;
+    }
+    // Save the filename path in the app settings
+    settings.setValue("defaultTraceDirPath", QFileInfo(path).absolutePath());
+    QString name = QFileInfo(path).fileName();
+    qDebug() << "opened" << name;
+
+    changeProjection(name, _projOut);
+
+    // instantiate a new layer and a new loader
+    TraceLayer* layer  = new TraceLayer(this, name, path);
+    Loader loader(layer);
+    createLayer(name, layer, &loader);
+    qDebug() << "[DONE] opening directory" << path;
 }
 
 void MainWindow::setProjection()

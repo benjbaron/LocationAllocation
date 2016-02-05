@@ -94,7 +94,7 @@ public slots:
                         // run the allocation function
                         QHash<Geometry *, Allocation *> allocation;
                         _computeAllocation->processAllocationMethod(method, nbFacilities, deadline, delFactor, ttStat,
-                                                                    travelTime, dStat, distance, allocation);
+                                                                    travelTime, dStat, distance, allocation, false);
 
                         // format allocation response
                         QString allocationStr = "{";
@@ -127,7 +127,6 @@ public slots:
                                                                                                         allocationStr);
                         res->setStatusCode(qhttp::ESTATUS_OK); // code 200
                         res->end(respBody.toUtf8());
-
 
                     } else if (method == "pgrk") { // page rank
 

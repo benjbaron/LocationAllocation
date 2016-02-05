@@ -11,7 +11,7 @@ class ComputeAllocation: public QObject
     Q_OBJECT
 public:
     ComputeAllocation(SpatialStats* spatialStats);
-    void processAllocationMethod(QString method, int nbFacilities, double deadline, double delFactor, TravelTimeStat ttStat, double travelTime, DistanceStat dStat, double distance, QHash<Geometry*, Allocation *> &allocation);
+    void processAllocationMethod(QString method, int nbFacilities, double deadline, double delFactor, TravelTimeStat ttStat, double travelTime, DistanceStat dStat, double distance, QHash<Geometry*, Allocation *> &allocation, bool isMultiThreaded=true);
     void runLocationAllocation(int nbFacilities, double deadline, TravelTimeStat ttStat, double travelTime, DistanceStat dStat, double distance, QHash<Geometry*, Allocation*>& allocation);
 //    void runPageRank(int nbFacility, TravelTimeStat ttStat, double travelTime, DistanceStat dStat, double distance, QHash<Geometry*, Allocation*>& allocation);
 //    void runKMeans(int nbFacilities, QHash<Geometry*, Allocation*>& allocation);

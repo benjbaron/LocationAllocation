@@ -21,10 +21,10 @@ QGraphicsItemGroup* ShapefileLayer::draw()
             QPainterPath path;
             OGRPoint pt;
             ls->getPoint(0,&pt);
-            path.moveTo(QPointF(pt.getX(), pt.getY()));
+            path.moveTo(QPointF(pt.getX(), -1*pt.getY()));
             for(int i = 1; i < ls->getNumPoints(); ++i) {
                 ls->getPoint(i,&pt);
-                path.lineTo(QPointF(pt.getX(), pt.getY()));
+                path.lineTo(QPointF(pt.getX(), -1*pt.getY()));
             }
             QGraphicsPathItem* item = new QGraphicsPathItem(path);
             pen.setColor(SHAPEFILE_COL);
@@ -33,7 +33,7 @@ QGraphicsItemGroup* ShapefileLayer::draw()
         }
         else if(geom && wkbFlatten(geom->getGeometryType()) == wkbPoint) {
             OGRPoint* pt = (OGRPoint *) geom;
-            QGraphicsEllipseItem* item = new QGraphicsEllipseItem(pt->getX()-SHAPEFILE_WID/2.0, pt->getY()-SHAPEFILE_WID/2.0, SHAPEFILE_WID, SHAPEFILE_WID);
+            QGraphicsEllipseItem* item = new QGraphicsEllipseItem(pt->getX()-SHAPEFILE_WID/2.0, -1*(pt->getY()-SHAPEFILE_WID/2.0), SHAPEFILE_WID, -1*SHAPEFILE_WID);
             item->setBrush(QBrush(SHAPEFILE_COL));
             item->setPen(Qt::NoPen);
             addGraphicsItem(item);
@@ -327,4 +327,29 @@ bool ShapefileLayer::loadShapefile(Loader* loader)
     qDebug() << "loaded shapefile" << QFileInfo(_name).fileName() << "with" <<
     countGeometries() << "features";
     return true;
+}
+
+void ShapefileLayer::exportPDF() {
+    // choose file
+    QString filename = QFileDialog::getSaveFileName(0,
+                                                    tr("Export the PDF file"),
+                                                    QString(),
+                                                    tr("PDF file (*.pdf)"));
+
+    if(filename.isEmpty())
+        return;
+
+    QPrinter pdfPrinter;
+    pdfPrinter.setOutputFormat( QPrinter::PdfFormat );
+    pdfPrinter.setPaperSize( QSize(_parent->getSceneRect().width(), _parent->getSceneRect().height()), QPrinter::Point );
+    pdfPrinter.setFullPage(true);
+    pdfPrinter.setOutputFileName( filename );
+
+    QPainter pdfPainter;
+    pdfPainter.begin( &pdfPrinter);
+    _parent->scene()->render( &pdfPainter );
+
+    pdfPainter.end();
+
+    qDebug() << "[DONE]";
 }

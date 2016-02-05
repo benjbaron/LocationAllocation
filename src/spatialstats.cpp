@@ -338,7 +338,7 @@ QGraphicsItemGroup* SpatialStats::draw()
                     auto val = jt.value();
                     double score = val->avgScore;
                     int factor = (int) (50.0 + 150.0 * score / maxWeight);
-                    qDebug() << score << maxWeight << factor;
+//                    qDebug() << score << maxWeight << factor;
 
                     if(_geometryGraphics.contains(g)) {
                         _geometryGraphics[g]->setBrush(CELL_COLOR.darker(factor));

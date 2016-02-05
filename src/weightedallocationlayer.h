@@ -13,9 +13,9 @@ public:
     GraphicsPoint():
             QGraphicsEllipseItem(), _id(QPointF()) {}
     GraphicsPoint(qreal x, qreal y, qreal w, qreal h, QPointF id):
-            QGraphicsEllipseItem(x, y, w, h), _id(id) {}
+            QGraphicsEllipseItem(x, -1*y, w, -1*h), _id(id) {}
     GraphicsPoint(QPointF p, int radius, QPointF id):
-            QGraphicsEllipseItem(p.x()-radius, p.y()-radius, 2*radius, 2*radius), _id(id) {}
+            QGraphicsEllipseItem(p.x()-radius, -1*(p.y()-radius), 2*radius, -1*(2*radius)), _id(id) {}
 
 signals:
     void mousePressedEvent(QPointF, bool, bool);

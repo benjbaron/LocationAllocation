@@ -135,7 +135,7 @@ class CellGraphics: public GeometryGraphics, public QGraphicsRectItem
 public:
     explicit CellGraphics(): GeometryGraphics(), QGraphicsRectItem() { }
     explicit CellGraphics(Cell* cell):
-        GeometryGraphics(cell), QGraphicsRectItem(*cell) { }
+        GeometryGraphics(cell), QGraphicsRectItem(cell->x(), -1*cell->y(), cell->width(), -1*cell->height()) { }
 
     void setBrush(const QBrush & brush) { return QGraphicsRectItem::setBrush(brush); }
     void setPen(const QPen & pen) { return QGraphicsRectItem::setPen(pen); }
@@ -148,7 +148,10 @@ class CircleGraphics: public GeometryGraphics, public QGraphicsEllipseItem
 public:
     explicit CircleGraphics(): GeometryGraphics(), QGraphicsEllipseItem() { }
     explicit CircleGraphics(Circle* circle):
-        GeometryGraphics(circle), QGraphicsEllipseItem(circle->getBounds().getQRectF()) { }
+        GeometryGraphics(circle), QGraphicsEllipseItem(circle->getBounds().getQRectF().x(),
+                                                       -1*circle->getBounds().getQRectF().y(),
+                                                       circle->getBounds().getQRectF().width(),
+                                                       -1*circle->getBounds().getQRectF().height()) { }
 
     void setBrush(const QBrush & brush) { return QGraphicsEllipseItem::setBrush(brush); }
     void setPen(const QPen & pen) { return QGraphicsEllipseItem::setPen(pen); }

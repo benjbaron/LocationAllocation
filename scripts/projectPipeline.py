@@ -52,7 +52,7 @@ def get_allocation_file(out, method, nbFacilities, deadline, delFactor, travelTi
     :param delFactor: deletion factor to delete candidates around allocated facilities
     :param travelTime: travel time bound between two candidate locations
     :param distance: distance bound between two candidaate locations
-    :rtype: None
+    :rtype: number of facilities allocated
     """
     data = send_request(URL_BASE + "/allocation/" + method, {"nbFacilities": nbFacilities,
                                                              "deadline": deadline,
@@ -60,6 +60,7 @@ def get_allocation_file(out, method, nbFacilities, deadline, delFactor, travelTi
                                                              "travelTime": travelTime,
                                                              "distance": distance})
     results = data.get("allocationResult")
+    count = 0
     with open(out, 'w') as f:
         for rank, facility in results.items():
             print facility
@@ -69,6 +70,10 @@ def get_allocation_file(out, method, nbFacilities, deadline, delFactor, travelTi
                                                                                  weight=facility["weight"],
                                                                                  nbDeleted=facility["nbDeleted"],
                                                                                  nbAllocated=facility["nbAllocated"]))
+
+            count += 1
+
+    return count
 
 
 def run(settings, key, values, key2="", values2=[]):
@@ -109,14 +114,14 @@ def run(settings, key, values, key2="", values2=[]):
         if s["facilityPlacement"] == "file":
             out = os.getcwd() + "/alloc-" + str(count) + ".txt"
             s["facilitiesFilename"] = out
-            get_allocation_file(out,
+            nbFacilities = get_allocation_file(out,
                                 s['method'],
                                 s['nrofFacilities'],
                                 s['deadline'],
                                 s['delFactor'],
                                 s['travelTime'],
                                 s['distance'])
-
+            s["nrofFacilities"] = nbFacilities
         f = build_settings_file(s)
         print f
         process = Popen("echo \"{str}\" | java -jar ONE.jar -b {b} /dev/stdin".format(str=f, b=s["b"]),
@@ -125,6 +130,12 @@ def run(settings, key, values, key2="", values2=[]):
         return process.communicate()[0]  # get the output, [1] is the error
 
     outputs = Pool(NB_PROCESSES).map(get_lines, processes)
+
+    # remove the file we just created
+    for i in range(file_count):
+        filepath = os.getcwd() + "/alloc-" + str(i) + ".txt"
+        os.remove(filepath)
+
     # process the output of the simulations
     res = []
     for out in outputs:
@@ -225,6 +236,17 @@ Group2.nrofHosts = {nrofMobileUsers}
 Group2.movementModel = RandomWaypoint
 """.format(mobility=mobility, nrofMobileUsers=nrofMobileUsers)
 
+    elif mobility == "MapBasedMovement":
+        nrofHostGroups = 2
+        movementModel = """
+MovementModel.worldSize = 5000, 5000
+Group2.groupID = t
+Group2.nrofHosts = {nrofMobileUsers}
+Group2.movementModel = MapBasedMovement
+MapBasedMovement.nrofMapFiles = 1
+MapBasedMovement.mapFile1 = /Users/ben/Documents/workspace/ONE/src/one_1.4.1/data/FileSystem/world.wkt
+""".format(mobility=mobility, nrofMobileUsers=nrofMobileUsers)
+
     if settings["facilityPlacement"] in ["random", "grid", "file"]:
         facilityPlacement = settings["facilityPlacement"]
     if settings["facilityPlacement"] == "grid" and mobility == "ManhattanGridMovement":
@@ -232,6 +254,12 @@ Group2.movementModel = RandomWaypoint
     facilitiesFilename = ""
     if settings["facilityPlacement"] == "file" and settings["facilitiesFilename"]:
         facilitiesFilename = "FileSystemReport2.facilitiesFilename = %s" % settings["facilitiesFilename"]
+
+    propagationTimer = settings["propagationTimer"]
+    nrofFileCopies = settings["nrofFileCopies"]
+    useBackendNodes = "true" if settings["useBackendNodes"] else "false"
+    useGlobalInformation = "true" if settings["useGlobalInformation"] else "false"
+    putPolicy = settings["putPolicy"]
 
     if settings["nrofFacilities"] != -1:
         nrofFacilities = settings["nrofFacilities"]
@@ -274,12 +302,17 @@ FileSystemReport2.facilityPlacement = {facilityPlacement}
 FileSystemReport2.allowNodeContacts = false
 FileSystemReport2.useBackend = false
 FileSystemReport2.replicationType = rep
-FileSystemReport2.putPolicy = first
+FileSystemReport2.putPolicy = {putPolicy}
+FileSystemReport2.useBackendNodes = {useBackendNodes}
+FileSystemReport2.propagationTimer = {propagationTimer}
+FileSystemReport2.useGlobalInformation = {useGlobalInformation}
+FileSystemReport2.nrofFileCopies = {nrofFileCopies}
 {maxStorage}
 {facilitiesFilename}
 """.format(simTime=settings["simTime"], nrofHostGroups=nrofHostGroups, nrofFacilities=nrofFacilities,
            movementModel=movementModel, deadline=deadline, facilityPlacement=facilityPlacement, maxStorage=maxStorage,
-           facilitiesFilename=facilitiesFilename)
+           facilitiesFilename=facilitiesFilename, propagationTimer=propagationTimer, nrofFileCopies=nrofFileCopies,
+           useBackendNodes=useBackendNodes,useGlobalInformation=useGlobalInformation,putPolicy=putPolicy)
     return str
 
 
@@ -300,11 +333,11 @@ if __name__ == '__main__':
     options = get_options()
     settings = {
         "file": options.file,
-        "simTime": 30000,
-        "deadline": "3600",  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
-        "mobility": "RandomWaypoint",  # "ManhattanGridMovement", # "RandomWaypoint",# options.mobility,
+        "simTime": 10000,
+        "deadline": 3600,  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
+        "mobility": "MapBasedMovement",  # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", # options.mobility,
         "nrofFacilities": 50,  # options.nrofFacilities,
-        "nrofMobileUsers": 100,
+        "nrofMobileUsers": 50,
         "b": 1,  # number of simulations in batch to launch
         "maxStorage": -1,
         "facilityPlacement": "file",
@@ -312,9 +345,14 @@ if __name__ == '__main__':
         "method": "loc",
         "delFactor": 0.5,
         "travelTime": "avg",
-        "distance": "auto"
+        "distance": "auto",
+        "propagationTimer": -1,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": False,
+        "useBackendNodes": True,
+        "putPolicy": "first"  # {"all", "first"}
     }
 
-    out = run(settings, "nrofFacilities", [1, 2, 3], "deadline", [100, 200, 300])
+    out = run(settings, "nrofFacilities", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], "nrofFileCopies", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
     for o in out:
         print o

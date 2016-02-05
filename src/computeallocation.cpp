@@ -7,27 +7,20 @@
 #include "loader.h"
 
 ComputeAllocation::ComputeAllocation(SpatialStats *spatialStats):
-    _spatialStats(spatialStats)
-{
-
-}
+    _spatialStats(spatialStats) { }
 
 /*
  * Compute the location allocation
 */
-void ComputeAllocation::computeAllocation()
-{
+void ComputeAllocation::computeAllocation() {
     qDebug() << "Compute location allocation";
 
     AllocationDialog diag(_spatialStats->getParent());
-    int ret = diag.exec();
-    if (ret == QDialog::Rejected) {
+    if (diag.exec() == QDialog::Rejected) {
         return;
     }
 
     // get the parameters
-    double maxTravelTime = -1.0, maxDist = -1.0;
-
     long long deadline = diag.getDeadline();
     int nbStorageNodes = diag.getNbStorageNodes();
     double deletionFactor = diag.getDeletionFactor();
@@ -40,7 +33,7 @@ void ComputeAllocation::computeAllocation()
     QHash<Geometry*, Allocation*> allocation;
     processAllocationMethod(method,nbStorageNodes,deadline,deletionFactor,ts,travelTime,ds,distance,allocation);
 
-    // print the result allocation
+    // print the resulting allocation
     for(auto it = allocation.begin(); it != allocation.end(); ++it) {
         qDebug() << "candidate" << it.key()->getCenter().x()
                  << "allocated" << it.value()->weight << "with" << it.value()->demands.size()
@@ -63,8 +56,8 @@ void ComputeAllocation::processAllocationMethod(QString method,
                                                 double travelTime,
                                                 DistanceStat dStat,
                                                 double distance,
-                                                QHash<Geometry*, Allocation*> &allocation)
-{
+                                                QHash<Geometry*, Allocation*> &allocation,
+                                                bool isMultiThreaded) {
     qDebug() << "processAllocationMethod" << method << nbFacilities << deadline << delFactor
              << ttStat << travelTime << dStat << distance;
 
@@ -83,13 +76,17 @@ void ComputeAllocation::processAllocationMethod(QString method,
         qDebug() << deadline << nbFacilities << _spatialStats->getAverageSpeed() << maxDist << maxTravelTime;
 
         if(method == LOCATION_ALLOCATION_MEHTOD_NAME) {
-            ProgressDialog progressDialog(_spatialStats->getParent(), "Computing location allocation ");
-            connect(this, &ComputeAllocation::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
-            connect(this, &ComputeAllocation::changeText, &progressDialog, &ProgressDialog::changeText);
-            QtConcurrent::run([&](){
+            if(isMultiThreaded) {
+                ProgressDialog progressDialog(_spatialStats->getParent(), "Computing location allocation ");
+                connect(this, &ComputeAllocation::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
+                connect(this, &ComputeAllocation::changeText, &progressDialog, &ProgressDialog::changeText);
+                QtConcurrent::run([&](){
+                    runLocationAllocation(nbFacilities,deadline,ttStat,travelTime,dStat,distance,allocation);
+                });
+                progressDialog.exec();
+            } else {
                 runLocationAllocation(nbFacilities,deadline,ttStat,travelTime,dStat,distance,allocation);
-            });
-            progressDialog.exec();
+            }
         } else if(method == PAGE_RANK_MEHTOD_NAME) {
             return;
 //            runPageRank(nbFacilities,ttStat,travelTime,dStat,distance,allocation);
@@ -106,8 +103,7 @@ void ComputeAllocation::geomWithin(QSet<Geometry*> &geomWithin,
                                    double distance,
                                    double travelTime,
                                    DistanceStat ds,
-                                   TravelTimeStat ts)
-{
+                                   TravelTimeStat ts) {
     if(ds == NoneD && ts == NoneTT) return;
 
 //    QRectF cell1(cell.x()*_geometriesize, cell.y()*+_geometriesize, _geometriesize, _geometriesize);

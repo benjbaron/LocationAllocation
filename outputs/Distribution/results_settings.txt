@@ -1,0 +1,124 @@
+Result settings:
+
+ - Settting 1: 
+        "simTime": 10000,
+        "mobility": "MapBasedMovement",
+        "nrofMobileUsers": 50,
+        "maxStorage": -1,
+        "method": "loc",
+        "delFactor": 0.5,
+        "travelTime": "avg",
+        "distance": "auto",
+        "propagationTimer": -1,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": False,
+        "useBackendNodes": False,
+        "putPolicy": "first",
+        "nrofFacilities": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "deadline": [600,1200,2400,3600,7200]
+
+- Settings 2:
+        "simTime": 10000,
+        "mobility": "MapBasedMovement",
+        "nrofMobileUsers": 50,
+        "maxStorage": -1,
+        "method": "loc",
+        "delFactor": 0.5,
+        "travelTime": "avg",
+        "distance": "auto",
+        "propagationTimer": -1,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": False,
+        "useBackendNodes": False,
+        "putPolicy": "all",
+        "nrofFacilities": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "deadline": [600,1200,2400,3600,7200]
+
+- Settings 3:
+        "simTime": 10000,
+        "mobility": "MapBasedMovement",
+        "nrofMobileUsers": 50,
+        "maxStorage": -1,
+        "method": "loc",
+        "delFactor": 0.5,
+        "travelTime": "avg",
+        "distance": "auto",
+        "propagationTimer": -1,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": True,
+        "useBackendNodes": True,
+        "putPolicy": "first",
+        "nrofFacilities": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "deadline": [600,1200,2400,3600,7200]
+
+- Settings 4:
+        "simTime": 10000,
+        "mobility": "MapBasedMovement",
+        "nrofMobileUsers": 50,
+        "maxStorage": -1,
+        "method": "loc",
+        "delFactor": 0.5,
+        "travelTime": "avg",
+        "distance": "auto",
+        "propagationTimer": -1,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": True,
+        "useBackendNodes": True,
+        "putPolicy": "all",
+        "nrofFacilities": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "deadline": [600,1200,2400,3600,7200]
+
+- Settings 5:
+        "simTime": 10000,
+        "mobility": "MapBasedMovement",
+        "nrofMobileUsers": 50,
+        "maxStorage": -1,
+        "method": "loc",
+        "delFactor": 0.5,
+        "travelTime": "avg",
+        "distance": "auto",
+        "propagationTimer": 3600,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": True,
+        "useBackendNodes": True,
+        "putPolicy": "first",
+        "nrofFacilities": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "deadline": [600,1200,2400,3600,7200]
+
+- Settings 6:
+        "simTime": 10000,
+        "mobility": "MapBasedMovement",
+        "nrofMobileUsers": 50,
+        "maxStorage": -1,
+        "method": "loc",
+        "delFactor": 0.5,
+        "travelTime": "avg",
+        "distance": "auto",
+        "propagationTimer": 3600,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": True,
+        "useBackendNodes": True,
+        "putPolicy": "first",
+        "deadline": 3600,
+        "nrofFacilities": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "propagationTimer": [100,600,1000,1200,2400,3600,5000,7200]
+
+
+- Settings 7:
+        "simTime": 10000,
+        "mobility": "MapBasedMovement",
+        "nrofMobileUsers": 50,
+        "maxStorage": -1,
+        "method": "loc",
+        "delFactor": 0.5,
+        "travelTime": "avg",
+        "distance": "auto",
+        "propagationTimer": -1,
+        "nrofFileCopies": -1,
+        "useGlobalInformation": True,
+        "useBackendNodes": True,
+        "putPolicy": "first",
+        "deadline": 3600,
+        "nrofFacilities": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "nrofFileCopies": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+

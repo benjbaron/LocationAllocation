@@ -31,6 +31,9 @@ public:
     QRectF getSceneRect() {
         return _scene->sceneRect();
     }
+    GraphicsScene* scene() {
+        return _scene;
+    }
     void addMenu(QMenu* menu);
     void createLayer(QString name = 0, Layer* layer = 0, Loader* loader = 0);
 
@@ -40,6 +43,7 @@ signals:
 private slots:
     void openShapefile();
     void openTrace();
+    void openTraceDirectory();
     void setProjection();
     void addGrid();
     void showLayerPanel();

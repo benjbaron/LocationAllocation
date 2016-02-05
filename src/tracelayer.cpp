@@ -14,7 +14,7 @@ QGraphicsItemGroup *TraceLayer::draw() {
             double x = jt.value().x();
             double y = jt.value().y();
 
-            QGraphicsEllipseItem* item = new QGraphicsEllipseItem(x-radius, y-radius, radius*2, radius*2);
+            QGraphicsEllipseItem* item = new QGraphicsEllipseItem(x-radius, -1*(y-radius), radius*2, -1*(radius*2));
 //            item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
             item->setBrush(QBrush(QColor(0,0,0)));
