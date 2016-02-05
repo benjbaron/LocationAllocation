@@ -60,7 +60,7 @@ The pipeline is multiprocessed to increase its speed. An initial trace (either s
 
 ## Some projections for the included datasets
 
-Cabspotting cab traces collected in June 2008 in the San Francisco Bay Area: 
+Cabspotting cab traces collected from May 17th, 2008 to June 10th, 2008 in the San Francisco Bay Area: 
 
 - Input projection is ESPG (WGS84): `+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs`
 - Output projection is ESPG 26910 (UTM 10N): `+proj=utm +zone=10 +ellps=GRS80 +datum=NAD83 +units=m +no_defs`
