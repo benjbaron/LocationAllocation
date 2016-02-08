@@ -29,6 +29,7 @@
     </property>
     <addaction name="actionOpen_Trace"/>
     <addaction name="actionOpen_TraceDir"/>
+    <addaction name="actionOpen_GTFS"/>
     <addaction name="actionOpen_Shapefile"/>
     <addaction name="actionSet_projection"/>
     <addaction name="actionAdd_Grid"/>
@@ -45,6 +46,11 @@
     <string>Open Trace Directory</string>
    </property>
   </action>
+  <action name="actionOpen_GTFS">
+     <property name="text">
+      <string>Open GTFS Directory</string>
+     </property>
+    </action>
   <action name="actionOpen_Shapefile">
    <property name="text">
     <string>Open Shapefile</string>

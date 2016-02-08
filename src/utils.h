@@ -12,6 +12,7 @@ enum DistanceStat   { NoneD, Auto, FixedD };
 const QString LOCATION_ALLOCATION_MEHTOD_NAME = "Location allocation";
 const QString PAGE_RANK_MEHTOD_NAME = "Page Rank";
 const QString K_MEANS_MEHTOD_NAME = "k-means";
+const QString RANDOM_METHOD_NAME = "random";
 
 static double euclideanDistance(double x1, double y1, double x2, double y2) {
     return qSqrt(qPow(x1 - x2,2) + qPow(y1 - y2,2));
@@ -131,7 +132,7 @@ private:
 class Geometry;
 struct Allocation {
     Allocation(): geom(NULL), weight(0.0), demands(QHash<Geometry*, double>()), deletedCandidates(QSet<Geometry*>()) { }
-    Allocation(Geometry* p, double w, QHash<Geometry*, double>& d, QSet<Geometry*>& c, int rank) :
+    Allocation(Geometry* p, double w, const QHash<Geometry*, double>& d = QHash<Geometry*, double>(), const QSet<Geometry*>& c = QSet<Geometry*>(), int rank = -1) :
         geom(p), weight(w), demands(d), deletedCandidates(c), rank(rank) { }
 
     Geometry* geom;

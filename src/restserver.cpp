@@ -41,14 +41,20 @@ public slots:
                 gHandledConnections.ref();
                 res->addHeader("connection", "close");
 
-                QRegExp exp("^/allocation/(loc|pgrk|kmeans)$");
+                QRegExp exp("^/allocation/(loc|pgrk|kmeans|rnd)$");
 
                 if (exp.indexIn(req->url().path()) != -1) {
                     QString method = exp.capturedTexts()[1];
                     QString queryStr = req->url().query();
                     QUrlQuery query(queryStr);
 
-                    if (method == "loc") { // allocation allocation
+                    // convert the method name
+                    if (method == "loc") method = LOCATION_ALLOCATION_MEHTOD_NAME;
+                    else if (method == "pgrk") method = PAGE_RANK_MEHTOD_NAME;
+                    else if (method == "kmeans") method = K_MEANS_MEHTOD_NAME;
+                    else if (method == "rnd") method = RANDOM_METHOD_NAME;
+
+                    if (method == LOCATION_ALLOCATION_MEHTOD_NAME) { // allocation allocation
 
                         int nbFacilities = query.queryItemValue("nbFacilities").toInt();
                         double deadline = query.queryItemValue("deadline").toDouble();
@@ -82,19 +88,14 @@ public slots:
                             }
                         }
 
-                        // convert the method name
-                        if (method == "loc") method = LOCATION_ALLOCATION_MEHTOD_NAME;
-                        else if (method == "pgrk") method = PAGE_RANK_MEHTOD_NAME;
-                        else if (method == "kmeans") method = K_MEANS_MEHTOD_NAME;
-
-
                         qDebug() << "Method" << method << "nbFacilities" << nbFacilities << "deadline" << deadline <<
                         "delFactor" << delFactor << "travelStat" << ttStat << "travelTime" << travelTime << "dstat" <<
                         dStat << "distance" << distance;
-                        // run the allocation function
+
+                        /* run the allocation function */
                         QHash<Geometry *, Allocation *> allocation;
                         _computeAllocation->processAllocationMethod(method, nbFacilities, deadline, delFactor, ttStat,
-                                                                    travelTime, dStat, distance, allocation, false);
+                                                                    travelTime, dStat, distance, &allocation, false);
 
                         // format allocation response
                         QString allocationStr = "{";
@@ -128,9 +129,16 @@ public slots:
                         res->setStatusCode(qhttp::ESTATUS_OK); // code 200
                         res->end(respBody.toUtf8());
 
-                    } else if (method == "pgrk") { // page rank
+                    } else if (method == PAGE_RANK_MEHTOD_NAME) { // page rank
 
-                    } else if (method == "kmeans") { // kmeans
+                    } else if (method == K_MEANS_MEHTOD_NAME) { // kmeans
+
+                    } else if (method == RANDOM_METHOD_NAME) { // random
+                        int nbFacilities = query.queryItemValue("nbFacilities").toInt();
+
+                        qDebug() << "Method" << method << "nbFacilities" << nbFacilities;
+                        QHash<Geometry *, Allocation *> allocation;
+                        _computeAllocation->runRandomAllocation(nbFacilities, &allocation);
 
                     }
                 }

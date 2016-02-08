@@ -3,6 +3,8 @@
 
 #include <QGraphicsView>
 #include <QWheelEvent>
+#include <qgraphicsitem.h>
+#include <qpixmapcache.h>
 
 
 class GraphicsView: public QGraphicsView

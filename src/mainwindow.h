@@ -44,6 +44,7 @@ private slots:
     void openShapefile();
     void openTrace();
     void openTraceDirectory();
+    void openGTFSDirectory();
     void setProjection();
     void addGrid();
     void showLayerPanel();

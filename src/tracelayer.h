@@ -35,8 +35,6 @@ public:
 
     QGraphicsItemGroup* draw();
 
-    OGRGeometryCollection *getGeometry(long long startTime = 0, long long endTime = 0);
-
     QHash<QString, QMap<long long, QPointF>*> getNodes() const { return _nodes; }
     QMap<long long, QPointF>* const getNodeTrace(QString node) { return _nodes.value(node); }
     double getAverageSpeed();
@@ -78,7 +76,7 @@ public:
 signals:
     void loadProgressChanged(qreal);
 
-private:
+protected:
     QString _filename;
     QHash<QString, QMap<long long, QPointF>*> _nodes;
     Distribution _averageSpeeds;

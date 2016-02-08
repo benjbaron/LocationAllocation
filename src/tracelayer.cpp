@@ -27,25 +27,6 @@ QGraphicsItemGroup *TraceLayer::draw() {
     return _groupItem;
 }
 
-OGRGeometryCollection *TraceLayer::getGeometry(long long startTime, long long endTime)
-{
-    // check endTime value
-    if(endTime == 0) {
-        // set to max
-        endTime = std::numeric_limits<qlonglong>::max();
-    }
-
-    OGRGeometryCollection* collection = new OGRGeometryCollection();
-    for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
-        auto jt_start = it.value()->lowerBound(startTime);
-        for(auto jt = jt_start; jt != it.value()->end() && jt.key() <= endTime; ++jt) {
-            OGRPoint pt(jt.value().x(), jt.value().y());
-            collection->addGeometry(&pt);
-        }
-    }
-    return collection;
-}
-
 double TraceLayer::getAverageSpeed()
 {
     if(_averageSpeeds.isEmpty()) {

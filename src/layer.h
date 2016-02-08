@@ -47,9 +47,6 @@ public:
     // draw the layer objects
     virtual QGraphicsItemGroup* draw() = 0;
 
-    // get the geometries
-    virtual OGRGeometryCollection* getGeometry(long long startTime = 0, long long endTime = 0) { return NULL; }
-
 protected:
     MainWindow* _parent;
     QString _name;

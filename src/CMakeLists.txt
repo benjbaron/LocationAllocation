@@ -19,6 +19,7 @@ FIND_PACKAGE(Qt5Concurrent REQUIRED)
 FIND_PACKAGE(Qt5PrintSupport REQUIRED)
 FIND_PACKAGE(Qt5Network REQUIRED)
 
+FIND_LIBRARY(geos REQUIRED)
 FIND_LIBRARY(proj.9 REQUIRED)
 FIND_LIBRARY(gdal.1 REQUIRED)
 FIND_LIBRARY(qhttp REQUIRED)
@@ -43,7 +44,9 @@ set(SOURCE_FILES
         tracelayer.cpp
         weightedallocationlayer.cpp
         PointLayer.cpp
-        NumberDialog.cpp)
+        NumberDialog.cpp
+        gtfs_layer.cpp
+        linestring_layer.cpp)
 
 set(FORM_FILES
         dockwidgetplots.ui
@@ -80,7 +83,10 @@ set(HEADER_FILES
         weightedallocationlayer.h
         PointLayer.h
         NumberDialog.h
-        threadlist.h)
+        threadlist.h
+        gtfs_layer.h
+        csv_parser.h
+        linestring_layer.h)
 
 add_executable(LocAll ${SOURCE_FILES}
                       ${HEADER_FILES}
@@ -95,4 +101,5 @@ TARGET_LINK_LIBRARIES(LocAll
         Qt5::Network
         proj.9
         gdal.1
+        geos
         qhttp)

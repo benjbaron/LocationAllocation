@@ -2,7 +2,6 @@
 
 #include "allocationdialog.h"
 #include "spatialstats.h"
-#include "geometries.h"
 #include "mainwindow.h"
 #include "loader.h"
 
@@ -31,7 +30,7 @@ void ComputeAllocation::computeAllocation() {
     QString method = diag.getMethod();
 
     QHash<Geometry*, Allocation*> allocation;
-    processAllocationMethod(method,nbStorageNodes,deadline,deletionFactor,ts,travelTime,ds,distance,allocation);
+    processAllocationMethod(method,nbStorageNodes,deadline,deletionFactor,ts,travelTime,ds,distance,&allocation);
 
     // print the resulting allocation
     for(auto it = allocation.begin(); it != allocation.end(); ++it) {
@@ -56,7 +55,7 @@ void ComputeAllocation::processAllocationMethod(QString method,
                                                 double travelTime,
                                                 DistanceStat dStat,
                                                 double distance,
-                                                QHash<Geometry*, Allocation*> &allocation,
+                                                QHash<Geometry*, Allocation*>* allocation,
                                                 bool isMultiThreaded) {
     qDebug() << "processAllocationMethod" << method << nbFacilities << deadline << delFactor
              << ttStat << travelTime << dStat << distance;
@@ -94,10 +93,12 @@ void ComputeAllocation::processAllocationMethod(QString method,
     } else if(method == K_MEANS_MEHTOD_NAME) {
         return;
 //        runKMeans(nbFacilities,allocation);
+    } else if(method == RANDOM_METHOD_NAME) {
+        runRandomAllocation(nbFacilities, allocation);
     }
 }
 
-void ComputeAllocation::geomWithin(QSet<Geometry*> &geomWithin,
+void ComputeAllocation::geomWithin(QSet<Geometry*>* geomWithin,
                                    QSet<Geometry*> geoms,
                                    Geometry* geom,
                                    double distance,
@@ -134,7 +135,7 @@ void ComputeAllocation::geomWithin(QSet<Geometry*> &geomWithin,
             qDebug() << "or / add" << geom << g->toString()
                      << "distance" << ds << dist << distance
                      << "travelTime" << ts << tt << travelTime;
-            geomWithin.insert(g);
+            geomWithin->insert(g);
         }
     }
 }
@@ -146,7 +147,7 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
                                               double travelTime,
                                               DistanceStat dStat,
                                               double distance,
-                                              QHash<Geometry*, Allocation*>& allocation)
+                                              QHash<Geometry*, Allocation*>* allocation)
 {
     emit loadProgressChanged((qreal) 0.0);
     emit changeText("Initialization");
@@ -193,7 +194,7 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
             double coverage = 0.0;
 
             // compute the score for the previously allocated storage nodes
-            foreach(Geometry* c, allocation.keys()) {
+            foreach(Geometry* c, allocation->keys()) {
                 GeometryMatrixValue* val = _spatialStats->getValue(c,k);
                 if(val) {
                     double visitCount = val->visits.size();
@@ -254,7 +255,7 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
 
             // remove the candidate cells in the vicinity of the selected cell
             QSet<Geometry*> candidatesToRemove;
-            geomWithin(candidatesToRemove, candidatesToAllocate, maxCoverageGeometry,
+            geomWithin(&candidatesToRemove, candidatesToAllocate, maxCoverageGeometry,
                        distance, travelTime, dStat, ttStat);
             candidatesToAllocate.subtract(candidatesToRemove);
 
@@ -265,16 +266,16 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
             // add the allocation
             Allocation* alloc = new Allocation(maxCoverageGeometry, maxCoverage,
                                                maxDemandsCovered, candidatesToRemove, i);
-            allocation.insert(maxCoverageGeometry, alloc);
+            allocation->insert(maxCoverageGeometry, alloc);
         }
 
         /* Substitution part of the algorithm */
         // -> tries to replace each facility one at a time with a facility at another "free" site
         emit changeText("Substitution for facility " + QString::number(i));
-        for(Geometry* k : allocation.keys()) {
+        for(Geometry* k : allocation->keys()) {
             // get the demands already covered by the current candidate
 
-            Allocation* alloc = allocation.value(k);
+            Allocation* alloc = allocation->value(k);
             QSet<Geometry*> prevDemandsCovered = alloc->demands.keys().toSet();
             double prevWeight = alloc->weight;
             QSet<Geometry*> prevDeletedCandidates = alloc->deletedCandidates;
@@ -283,14 +284,14 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
             Geometry* maxNewCoverageGeometry;
             QHash<Geometry*, double> maxNewDemandsCovered;
 
-            for(Geometry* k1 : allCandidates - allocation.keys().toSet()) {
+            for(Geometry* k1 : allCandidates - allocation->keys().toSet()) {
                 if(k1 == maxCoverageGeometry) continue;
 
                 QHash<Geometry*, double> demandsCovered; // <demand, weight of the demand>
                 double coverage = 0.0;
 
                 // all allocated candidates backend cost
-                for(Geometry* c : allocation.keys()) {
+                for(Geometry* c : allocation->keys()) {
                     GeometryMatrixValue* val = _spatialStats->getValue(c,k1);
                     if(val) {
                         double visitCount = val->visits.size();
@@ -334,11 +335,11 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
                 // change the candidate's current allocation
                 qDebug() << "changed candidate / old" << prevWeight << "new" << maxNewCoverage;
 
-                Allocation* alloc = allocation.value(k);
+                Allocation* alloc = allocation->value(k);
                 alloc->weight = maxNewCoverage;
                 alloc->demands = maxNewDemandsCovered;
                 QSet<Geometry*> candidatesToRemove;
-                geomWithin(candidatesToRemove,
+                geomWithin(&candidatesToRemove,
                            candidatesToAllocate + prevDeletedCandidates,
                            maxNewCoverageGeometry,
                            distance, travelTime, dStat, ttStat);
@@ -359,6 +360,24 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
     emit changeText("Done");
     emit loadProgressChanged((qreal) 1.0);
 }
+
+
+void ComputeAllocation::runRandomAllocation(int nbFacilities, QHash<Geometry*, Allocation *>* allocation) {
+    QList<Geometry*> toAllocate;
+    for(auto it = _spatialStats->getGeometries()->begin(); it != _spatialStats->getGeometries()->end(); ++it) {
+        toAllocate.append(it.key());
+    }
+
+    for(int i = 0; i < nbFacilities; ++i) {
+        // choose a random candidate to allocate
+        int idx = qrand() % toAllocate.size();
+        Geometry* geom = toAllocate.at(idx);
+        toAllocate.removeAt(idx);
+        allocation->insert(geom, new Allocation(geom, 1.0));
+
+    }
+}
+
 
 /*
  * PageRank function

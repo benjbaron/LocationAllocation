@@ -13,18 +13,23 @@
 #include "layerpanel.h"
 #include "projfactory.h"
 #include "loader.h"
+#include "gtfs_layer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QPixmapCache::setCacheLimit(102400);
 
     // initialize the graphics scene
     _scene = new GraphicsScene();
     GraphicsView* v = new GraphicsView(_scene, this);
     setCentralWidget(v);
-    
+
+    v->setCacheMode(QGraphicsView::CacheBackground);
+
+
     // set up the layers menu
     _layerMenu = new QMenu();
     _layerMenu->setTitle("Layers");
@@ -40,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen_Shapefile, &QAction::triggered, this, &MainWindow::openShapefile);
     connect(ui->actionOpen_Trace, &QAction::triggered, this, &MainWindow::openTrace);
     connect(ui->actionOpen_TraceDir, &QAction::triggered, this, &MainWindow::openTraceDirectory);
+    connect(ui->actionOpen_GTFS, &QAction::triggered, this, &MainWindow::openGTFSDirectory);
     connect(ui->actionSet_projection, &QAction::triggered, this, &MainWindow::setProjection);
     connect(_showLayersAction, &QAction::triggered, this, &MainWindow::showLayerPanel);
     connect(_scene, &GraphicsScene::mousePressedEvent, this, &MainWindow::onMousePressEvent);
@@ -132,6 +138,31 @@ void MainWindow::openTraceDirectory() {
     Loader loader(layer);
     createLayer(name, layer, &loader);
     qDebug() << "[DONE] opening directory" << path;
+}
+
+void MainWindow::openGTFSDirectory() {
+    QSettings settings;
+    QFileDialog d(this, "Open a GTFS directory");
+    d.setFileMode(QFileDialog::Directory);
+    QString path = d.getExistingDirectory(this,
+                                          "Open a GTFS directory",
+                                          settings.value("defaultGTFSPath", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString());
+
+    if(path.isEmpty()) {
+        return;
+    }
+    // Save the filename path in the app settings
+    settings.setValue("defaultGTFSPath", QFileInfo(path).absolutePath());
+    QString name = QFileInfo(path).fileName();
+    qDebug() << "opened" << name;
+
+    changeProjection(name, _projOut);
+
+    // instantiate a new layer and a new loader
+    GTFSLoader* layer  = new GTFSLoader(this, name, path);
+    Loader loader(layer);
+    createLayer(name, layer, &loader);
+    qDebug() << "[DONE] opening GTFS directory" << path;
 }
 
 void MainWindow::setProjection()

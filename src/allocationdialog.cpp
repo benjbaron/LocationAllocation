@@ -11,7 +11,7 @@ AllocationDialog::AllocationDialog(QWidget *parent)
 {
     methodChoiceLabel = new QLabel("Choose method");
     methodChoiceComboBox = new QComboBox();
-    QStringList methodChoiceItems = QStringList() << "" << LOCATION_ALLOCATION_MEHTOD_NAME << PAGE_RANK_MEHTOD_NAME << K_MEANS_MEHTOD_NAME;
+    QStringList methodChoiceItems = QStringList() << "" << LOCATION_ALLOCATION_MEHTOD_NAME << PAGE_RANK_MEHTOD_NAME << K_MEANS_MEHTOD_NAME << RANDOM_METHOD_NAME;
     methodChoiceComboBox->addItems(methodChoiceItems);
     // two overloads for QComboBox::currentIndexChanged, need to cast the right method
     // @see https://bugreports.qt.io/browse/QTBUG-30926
@@ -32,7 +32,7 @@ AllocationDialog::AllocationDialog(QWidget *parent)
             showNbStorage = true;
             showDeadline = true;
             showDel = true;
-        } else if(method == K_MEANS_MEHTOD_NAME) {
+        } else if(method == K_MEANS_MEHTOD_NAME || method == RANDOM_METHOD_NAME) {
             nbStorageExtension->setVisible(true);
             deadlineExtension->setVisible(false);
             delExtension->setVisible(false);
