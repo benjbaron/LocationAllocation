@@ -17,7 +17,7 @@ QGraphicsItemGroup *PointLayer::draw() {
         item->setBrush(QBrush(c));
 
         addGraphicsItem(item);
-        item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+//        item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     }
     return _groupItem;
 }

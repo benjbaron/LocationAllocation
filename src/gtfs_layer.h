@@ -35,11 +35,11 @@ public:
     Stop(QString id, QString name, QPointF coords):
             _id(id), _name(name), _coords(coords) {}
 
-    QPointF getCoords() {return _coords;}
+    QPointF getCoords() const {return _coords;}
     void setCoords(double x, double y) { _coords = QPointF(x,y); }
     void setCoords(QPointF p) { _coords = QPointF(p); }
 
-    QString toString() {
+    QString toString() const {
         return QString("%1 - %2 (%3, %4)").arg(_id).arg(_name).arg(_coords.x()).arg(_coords.y());
     }
 
@@ -63,12 +63,12 @@ public:
     WayPoint(QPointF coords, long long departureTime, long long arrivalTime, Stop * stop = NULL):
             _coords(coords), _departureTime(departureTime), _arrivalTime(arrivalTime), _stop(stop) {}
 
-    QPointF getCoords() {return _coords;}
+    QPointF getCoords() const {return _coords;}
     void setCoords(double x, double y) { _coords = QPointF(x,y); }
     void setCoords(QPointF p) { _coords = QPointF(p); }
     void setTimes(long long departureTime, long long arrivalTime) { _departureTime = departureTime; _arrivalTime = arrivalTime; }
-    long long getDepartureTime() { return _departureTime; }
-    long long getArrivalTime() { return _arrivalTime; }
+    long long getDepartureTime() const { return _departureTime; }
+    long long getArrivalTime() const { return _arrivalTime; }
 
 protected:
     QPointF _coords;
@@ -126,18 +126,16 @@ public:
             Trip(t),
             _trajectory(QMap<long long, WayPoint*>()) {}
 
-    QMap<long long, WayPoint*> getTrajectory() { return _trajectory; }
+    QMap<long long, WayPoint*> getTrajectory() const { return _trajectory; }
 
     // returns whether the vehicle is active at timestamp time
-    bool isActive(long long time) {
+    bool isActive(long long time) const {
         return time <= _trajectory.lastKey() && time >= _trajectory.firstKey();
     }
 
     void addWayPoint(WayPoint * p) {
         _trajectory.insert(p->getArrivalTime(), p);
     }
-
-    QMap<long long, WayPoint *> getTrajectory() const { return _trajectory; }
 
     QString toString() {
         QString ret;
@@ -162,6 +160,9 @@ public:
     QGraphicsItemGroup* draw();
     bool load(Loader* loader);
     QString getInformation() { return "GTFS Layer: " + _name; }
+
+private slots:
+    void exportStops();
 
 private:
     QString _folderPath;

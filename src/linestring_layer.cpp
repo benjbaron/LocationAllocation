@@ -21,7 +21,7 @@ QGraphicsItemGroup* LineStringLayer::draw() {
         QGraphicsPathItem* item = new QGraphicsPathItem(path);
         item->setPen(pen);
         addGraphicsItem(item);
-        item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+//        item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     }
     return _groupItem;
 }

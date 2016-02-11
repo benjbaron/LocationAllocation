@@ -11,6 +11,7 @@
 #include "csv_parser.h"
 #include "PointLayer.h"
 #include "linestring_layer.h"
+#include "NumberDialog.h"
 
 
 // get the extension of the files (either .csv or .txt)
@@ -191,16 +192,16 @@ void GTFSLoader::parseTrips()
 
             // get the first waypoint
             auto tIt = it.value()->begin();
-            WayPoint * wp1 = tIt.value();
+            WayPoint* wp1 = tIt.value();
             geos::geom::Coordinate pt1(wp1->getCoords().x(), wp1->getCoords().y());
             geos::linearref::LinearLocation loc1 = lineRef->project(pt1);
             long long startTime = wp1->getDepartureTime();
             geos::geom::Coordinate projWp1 = loc1.getCoordinate(ls);
 
-            tIt++;
+            tIt++; // go onto the second waypoint
             // snap each waypoint of the trajectory to the shape linestring
-            for(; tIt != it.value()->end()-1; ++tIt) {
-                WayPoint * wp2 = (tIt+1).value();
+            for(; tIt != it.value()->end(); ++tIt) {
+                WayPoint* wp2 = tIt.value();
                 geos::geom::Coordinate pt2(wp2->getCoords().x(), wp2->getCoords().y());
                 geos::linearref::LinearLocation loc2 = lineRef->project(pt2);
                 long long endTime   = wp2->getArrivalTime();
@@ -215,7 +216,7 @@ void GTFSLoader::parseTrips()
                 _trajectories.value(tripId)->addWayPoint(wp2);
 
                 // Get the partial time
-                geos::geom::LineString * partialLine = dynamic_cast<geos::geom::LineString*>(
+                geos::geom::LineString* partialLine = dynamic_cast<geos::geom::LineString*>(
                         lineRef->extractLine(loc1, loc2));
                 double totalLength = partialLine->getLength();
                 double sumLength = 0;
@@ -229,7 +230,8 @@ void GTFSLoader::parseTrips()
                     curPt = partialLine->getCoordinateN(ptIdx);
                     double distance = prevPt.distance(curPt);
                     long long time = startTime + (endTime - startTime) * (sumLength/totalLength);
-                    WayPoint * wp = new WayPoint(QPointF(curPt.x, curPt.y), time, time);
+                    // add the new waypoint to the trajectory
+                    WayPoint* wp = new WayPoint(QPointF(curPt.x, curPt.y), time, time);
                     _trajectories.value(tripId)->addWayPoint(wp);
 
                     // increment the distance and previous point
@@ -282,10 +284,12 @@ bool GTFSLoader::load(Loader* loader)
         id++;
         delete traj;
         emit loader->loadProgressChanged(0.1 + 0.9*((qreal) id / (qreal) count));
+//        qDebug() << "Trajectories added " << id;
 //        if(id > 1000) break;
     }
 
-    qDebug() << "Trajectories added " << id;
+    qDebug() << "[DONE] Added" << _nodes.size() << "nodes";
+
     emit loader->loadProgressChanged((qreal)1.0);
     return 1;
 }
@@ -298,8 +302,9 @@ QGraphicsItemGroup *GTFSLoader::draw() {
 
 void GTFSLoader::addBarMenuItems() {
     _menu->addSeparator();
-    QAction* actionShowStops = _menu->addAction("Show Stops");
-    QAction* actionShowLines = _menu->addAction("Show Lines");
+    QAction* actionShowStops   = _menu->addAction("Show Stops");
+    QAction* actionShowLines   = _menu->addAction("Show Lines");
+    QAction* actionExportStops = _menu->addAction("Export Stops");
 
     connect(actionShowStops, &QAction::triggered, [=](bool checked){
         qDebug() << "Show stops of " << getName();
@@ -329,4 +334,42 @@ void GTFSLoader::addBarMenuItems() {
         Loader loader(layer);
         _parent->createLayer(name, layer, &loader);
     });
+
+    connect(actionExportStops, &QAction::triggered, this, &GTFSLoader::exportStops);
+}
+
+void GTFSLoader::exportStops() {
+    QString filename = QFileDialog::getSaveFileName(0,
+                                                    tr("Save the stops"),
+                                                    QString(),
+                                                    tr("CSV file (*.csv)"));
+
+    if(filename.isEmpty())
+        return;
+
+    // choose radius
+    NumberDialog numDiag(_parent, "Radius");
+    int ret = numDiag.exec(); // synchronous
+    if (ret == QDialog::Rejected) {
+        return;
+    }
+    int radius = numDiag.getNumber();
+
+    qDebug() << "Exporting" << _stops.size() << "stops in" << filename;
+    QFile file(filename);
+    if(!file.open(QFile::WriteOnly))
+    {
+        qDebug() << "Unable to write in file "<< filename;
+        return;
+    }
+
+    QTextStream out(&file);
+    for(const Stop* s : _stops.values()) {
+        out << QString::number(s->getCoords().x(), 'f', 4) << ";"
+        << QString::number(s->getCoords().y(), 'f', 4) << ";"
+        << QString::number(radius) << "\n";
+    }
+    file.close();
+
+    qDebug() << "[DONE] export stops points";
 }

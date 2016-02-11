@@ -193,7 +193,7 @@ void ShapefileLayer::exportIntersectionPoints() {
 
     // choose radius
     NumberDialog numDiag(_parent, "Radius");
-    int ret = numDiag.exec(); // synchornous
+    int ret = numDiag.exec(); // synchronous
     if (ret == QDialog::Rejected) {
         return;
     }
@@ -218,7 +218,7 @@ void ShapefileLayer::exportIntersectionPoints() {
     qDebug() << "[DONE] export intersection points";
 }
 
-bool ShapefileLayer::load(Loader *loader) {
+bool ShapefileLayer::load(Loader* loader) {
 
     // get the format of the file to load - either *.wkt or *.shp
     QStringList fileSplits = _name.split(".", QString::SkipEmptyParts);
