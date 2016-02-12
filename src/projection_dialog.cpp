@@ -1,5 +1,5 @@
-#include "projectiondialog.h"
-#include "ui_projectiondialog.h"
+#include "projection_dialog.h"
+#include "ui_projection_dialog.h"
 
 #include <QPushButton>
 #include <QSettings>

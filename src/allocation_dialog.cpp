@@ -1,4 +1,4 @@
-#include "allocationdialog.h"
+#include "allocation_dialog.h"
 
 #include <QVBoxLayout>
 #include <QDebug>

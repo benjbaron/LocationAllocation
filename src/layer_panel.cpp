@@ -1,5 +1,5 @@
-#include "layerpanel.h"
-#include "ui_layerpanel.h"
+#include "layer_panel.h"
+#include "ui_layer_panel.h"
 
 #include <QStyle>
 

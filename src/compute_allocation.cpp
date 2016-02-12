@@ -1,7 +1,7 @@
-#include "computeallocation.h"
+#include "compute_allocation.h"
 
-#include "allocationdialog.h"
-#include "spatialstats.h"
+#include "allocation_dialog.h"
+#include "spatial_stats.h"
 #include "mainwindow.h"
 #include "loader.h"
 

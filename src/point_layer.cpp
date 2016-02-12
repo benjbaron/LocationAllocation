@@ -2,7 +2,7 @@
 // Created by Benjamin Baron on 01/01/16.
 //
 
-#include "PointLayer.h"
+#include "point_layer.h"
 #include "geometries.h"
 #include "loader.h"
 

@@ -11,7 +11,7 @@
 #include <QMap>
 
 #include "proj_api.h"
-#include "tracelayer.h"
+#include "trace_layer.h"
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/Coordinate.h>
 #include <geos/operation/overlay/snap/GeometrySnapper.h>

@@ -1,7 +1,7 @@
 #ifndef COMPUTEALLOCATION_H
 #define COMPUTEALLOCATION_H
 
-#include "weightedallocationlayer.h"
+#include "weighted_allocation_layer.h"
 
 class SpatialStats;
 class Geometry;

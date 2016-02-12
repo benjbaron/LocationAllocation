@@ -2,7 +2,7 @@
 // Created by Benjamin Baron on 02/01/16.
 //
 
-#include "NumberDialog.h"
+#include "number_dialog.h"
 #include "utils.h"
 
 NumberDialog::NumberDialog(QWidget *parent, QString name)

@@ -2,7 +2,7 @@
 #define SHAPEFILELAYER_H
 
 #include "layer.h"
-#include "PointLayer.h"
+#include "point_layer.h"
 #include "mainwindow.h"
 #include <ogrsf_frmts.h>
 #include <QMenu>

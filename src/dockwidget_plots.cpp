@@ -1,7 +1,7 @@
-#include "dockwidgetplots.h"
-#include "ui_dockwidgetplots.h"
+#include "dockwidget_plots.h"
+#include "ui_dockwidget_plots.h"
 
-#include "spatialstats.h"
+#include "spatial_stats.h"
 #include "constants.h"
 
 DockWidgetPlots::DockWidgetPlots(QWidget *parent, SpatialStats *spatialStats) :

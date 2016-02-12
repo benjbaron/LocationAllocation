@@ -1,15 +1,15 @@
 #ifndef SPATIALSTATS_H
 #define SPATIALSTATS_H
 
-#include "dockwidgetplots.h"
+#include "dockwidget_plots.h"
 #include "utils.h"
 #include "layer.h"
 #include "geometries.h"
-#include "computeallocation.h"
-#include "tracelayer.h"
-#include "weightedallocationlayer.h"
-#include "geometryindex.h"
-#include "restserver.h"
+#include "compute_allocation.h"
+#include "trace_layer.h"
+#include "weighted_allocation_layer.h"
+#include "geometry_index.h"
+#include "rest_server.h"
 
 class TraceLayer;
 

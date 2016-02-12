@@ -1,4 +1,4 @@
-#include "weightedallocationlayer.h"
+#include "weighted_allocation_layer.h"
 #include "constants.h"
 #include "loader.h"
 #include "qdebug.h"

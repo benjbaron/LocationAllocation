@@ -7,11 +7,11 @@
 #include "loader.h"
 
 #include "gtfs_layer.h"
-#include "projfactory.h"
+#include "proj_factory.h"
 #include "csv_parser.h"
-#include "PointLayer.h"
+#include "point_layer.h"
 #include "linestring_layer.h"
-#include "NumberDialog.h"
+#include "number_dialog.h"
 
 
 // get the extension of the files (either .csv or .txt)

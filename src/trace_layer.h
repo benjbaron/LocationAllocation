@@ -3,7 +3,7 @@
 
 #include "layer.h"
 #include "utils.h"
-#include "progressdialog.h"
+#include "progress_dialog.h"
 #include <QAction>
 
 class SpatialStats;

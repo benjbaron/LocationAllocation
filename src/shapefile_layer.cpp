@@ -1,8 +1,8 @@
-#include "shapefilelayer.h"
+#include "shapefile_layer.h"
 
 #include "constants.h"
 #include "utils.h"
-#include "NumberDialog.h"
+#include "number_dialog.h"
 #include "loader.h"
 
 QGraphicsItemGroup* ShapefileLayer::draw()

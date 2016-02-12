@@ -1,9 +1,9 @@
-#include "tracelayer.h"
+#include "trace_layer.h"
 
-#include "projfactory.h"
-#include "intermediateposlayer.h"
-#include "spatialstatsdialog.h"
-#include "spatialstats.h"
+#include "proj_factory.h"
+#include "intermediate_pos_layer.h"
+#include "spatial_stats_dialog.h"
+#include "spatial_stats.h"
 
 QGraphicsItemGroup *TraceLayer::draw() {
     int radius = 10;

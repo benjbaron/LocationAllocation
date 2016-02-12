@@ -10,7 +10,7 @@
 #include <QCheckBox>
 #include <QWidget>
 #include <QComboBox>
-#include "geometryindex.h"
+#include "geometry_index.h"
 
 #include "geometries.h"
 

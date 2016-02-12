@@ -1,9 +1,9 @@
-#include "spatialstatsdialog.h"
+#include "spatial_stats_dialog.h"
 
 #include <QVBoxLayout>
 #include <QSettings>
 #include <QFileDialog>
-#include "tracelayer.h"
+#include "trace_layer.h"
 
 SpatialStatsDialog::SpatialStatsDialog(QWidget *parent, TraceLayer *traceLayer):
     QDialog(parent), _traceLayer(traceLayer), minStartTime(traceLayer->getStartTime()), maxEndTime(traceLayer->getEndTime())

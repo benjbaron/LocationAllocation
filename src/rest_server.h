@@ -1,7 +1,7 @@
 #ifndef RESTSERVER_H
 #define RESTSERVER_H
 
-#include "computeallocation.h"
+#include "compute_allocation.h"
 #include "qhttpserver.hpp"
 
 // forward class declarations

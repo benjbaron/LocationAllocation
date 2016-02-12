@@ -1,4 +1,4 @@
-#include "restserver.h"
+#include "rest_server.h"
 
 #include "qhttpserverconnection.hpp"
 #include "qhttpserverrequest.hpp"
@@ -264,4 +264,4 @@ void RESTServer::timerEvent(QTimerEvent *e) {
     QHttpServer::timerEvent(e);
 }
 
-#include "restserver.moc"
+#include "rest_server.moc"

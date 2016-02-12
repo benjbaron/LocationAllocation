@@ -5,13 +5,13 @@
 #include <QTcpServer>
 
 #include "graphicsview.h"
-#include "projectiondialog.h"
-#include "progressdialog.h"
-#include "shapefilelayer.h"
-#include "tracelayer.h"
-#include "gridlayer.h"
-#include "layerpanel.h"
-#include "projfactory.h"
+#include "projection_dialog.h"
+#include "progress_dialog.h"
+#include "shapefile_layer.h"
+#include "trace_layer.h"
+#include "grid_layer.h"
+#include "layer_panel.h"
+#include "proj_factory.h"
 #include "loader.h"
 #include "gtfs_layer.h"
 

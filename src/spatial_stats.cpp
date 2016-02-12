@@ -1,6 +1,6 @@
-#include "spatialstats.h"
+#include "spatial_stats.h"
 
-#include "restserver.h"
+#include "rest_server.h"
 #include "constants.h"
 #include "loader.h"
 
@@ -70,9 +70,10 @@ void SpatialStats::computeStats(Loader* loader)
     int nbNodes = _mobileNodes.size();
     int count = 0;
     qDebug() << "number of mobile nodes" << nbNodes;
+
     for(auto it_mobileNode = _mobileNodes.begin(); it_mobileNode != _mobileNodes.end(); ++it_mobileNode) {
         MobileNode* mobileNode = it_mobileNode.value();
-        auto geoms = mobileNode->getGeometries(); // get the geometries the node visits
+        auto geoms = mobileNode->getGeometries(); // get the set of geometries the node visits
         for(auto it = geoms.begin(); it != geoms.end(); ++it) {
             long long start1 = it.key();
 
@@ -130,7 +131,9 @@ void SpatialStats::computeStats(Loader* loader)
         }
         loader->loadProgressChanged(0.1 + 0.4 * ((qreal) ++count / (qreal) nbNodes));
     }
-    qDebug() << "size of the geometry matrix" << _geometryMatrix.size();
+    qDebug() << "size of the geometry matrix" << _geometryMatrix.size()
+             << "size of the geometry list" << _geometries.size();
+
     loader->loadProgressChanged((qreal) 0.4);
     loader->changeText("Compute inter-visit durations (cells)");
 

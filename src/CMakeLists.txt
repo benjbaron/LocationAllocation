@@ -25,64 +25,64 @@ FIND_LIBRARY(gdal.1 REQUIRED)
 FIND_LIBRARY(qhttp REQUIRED)
 
 set(SOURCE_FILES
-        allocationdialog.cpp
-        computeallocation.cpp
-        dockwidgetplots.cpp
-        geometryindex.cpp
-        gridlayer.cpp
-        layerpanel.cpp
+        allocation_dialog.cpp
+        compute_allocation.cpp
+        dockwidget_plots.cpp
+        geometry_index.cpp
+        grid_layer.cpp
+        layer_panel.cpp
         main.cpp
         mainwindow.cpp
-        projfactory.cpp
-        progressdialog.cpp
-        projectiondialog.cpp
+        proj_factory.cpp
+        progress_dialog.cpp
+        projection_dialog.cpp
         qcustomplot.cpp
-        restserver.cpp
-        shapefilelayer.cpp
-        spatialstats.cpp
-        spatialstatsdialog.cpp
-        tracelayer.cpp
-        weightedallocationlayer.cpp
-        PointLayer.cpp
-        NumberDialog.cpp
+        rest_server.cpp
+        shapefile_layer.cpp
+        spatial_stats.cpp
+        spatial_stats_dialog.cpp
+        trace_layer.cpp
+        weighted_allocation_layer.cpp
+        point_layer.cpp
+        number_dialog.cpp
         gtfs_layer.cpp
         linestring_layer.cpp)
 
 set(FORM_FILES
-        dockwidgetplots.ui
-        layerpanel.ui
+        dockwidget_plots.ui
+        layer_panel.ui
         mainwindow.ui
-        progressdialog.ui
-        projectiondialog.ui)
+        progress_dialog.ui
+        projection_dialog.ui)
 
 set(HEADER_FILES
-        allocationdialog.h
-        computeallocation.h
+        allocation_dialog.h
+        compute_allocation.h
         constants.h
-        dockwidgetplots.h
+        dockwidget_plots.h
         geometries.h
-        geometryindex.h
+        geometry_index.h
         graphicsscene.h
         graphicsview.h
-        gridlayer.h
-        intermediateposlayer.h
+        grid_layer.h
+        intermediate_pos_layer.h
         layer.h
-        layerpanel.h
+        layer_panel.h
         loader.h
         mainwindow.h
-        projfactory.h
-        progressdialog.h
-        projectiondialog.h
+        proj_factory.h
+        progress_dialog.h
+        projection_dialog.h
         qcustomplot.h
-        restserver.h
-        shapefilelayer.h
-        spatialstats.h
-        spatialstatsdialog.h
-        tracelayer.h
+        rest_server.h
+        shapefile_layer.h
+        spatial_stats.h
+        spatial_stats_dialog.h
+        trace_layer.h
         utils.h
-        weightedallocationlayer.h
-        PointLayer.h
-        NumberDialog.h
+        weighted_allocation_layer.h
+        point_layer.h
+        number_dialog.h
         threadlist.h
         gtfs_layer.h
         csv_parser.h

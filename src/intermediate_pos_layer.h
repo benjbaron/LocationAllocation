@@ -2,7 +2,7 @@
 #define INTERMEDIATEPOSLAYER_H
 
 #include "layer.h"
-#include "tracelayer.h"
+#include "trace_layer.h"
 #include <qmath.h>
 #include "loader.h"
 
