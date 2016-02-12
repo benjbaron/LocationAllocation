@@ -111,7 +111,7 @@ protected:
 
 };
 
-class GTFSLoader;
+class GTFSLayer;
 
 class Trajectory: public Trip
 {
@@ -142,20 +142,20 @@ public:
         return QString("%1 / %2 / %3 / %4").arg(_tripId).arg(_serviceId).arg(_routeId).arg(_trajectory.count());
     }
 
-    friend class GTFSLoader;
+    friend class GTFSLayer;
 
 private:
     QMap<long long, WayPoint *> _trajectory;
 };
 
 
-class GTFSLoader : public TraceLayer
+class GTFSLayer : public TraceLayer
 {
     Q_OBJECT
 public:
-    GTFSLoader(MainWindow* parent = 0, QString name = 0, QString filename = 0, bool snapToShape = true);
-    GTFSLoader(const GTFSLoader &other);
-    ~GTFSLoader();
+    GTFSLayer(MainWindow* parent = 0, QString name = 0, QString filename = 0, bool snapToShape = true);
+    GTFSLayer(const GTFSLayer &other);
+    ~GTFSLayer();
 
     QGraphicsItemGroup* draw();
     bool load(Loader* loader);

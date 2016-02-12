@@ -664,7 +664,10 @@ void TraceLayer::addBarMenuItems() {
             double sampling  = spatialStatsDialog.getSampling();
             double startTime = spatialStatsDialog.getStartTime();
             double endTime   = spatialStatsDialog.getEndTime();
-            GeometryIndex* geometryIndex = spatialStatsDialog.getGeometryIndex();
+            GeometryIndex* geometryIndex = GeometryIndex::make_geometryIndex(*this, sampling, startTime, endTime,
+                                                                             spatialStatsDialog.getCellSize(),
+                                                                             spatialStatsDialog.getGeometryType(),
+                                                                             spatialStatsDialog.getCircleFile());
 
             _spatialStats = new SpatialStats(_parent, "Spatial Stats layer", this,
                                              (int) sampling, (long long) startTime, (long long) endTime,

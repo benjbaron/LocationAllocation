@@ -159,7 +159,7 @@ void MainWindow::openGTFSDirectory() {
     changeProjection(name, _projOut);
 
     // instantiate a new layer and a new loader
-    GTFSLoader* layer  = new GTFSLoader(this, name, path);
+    GTFSLayer* layer  = new GTFSLayer(this, name, path);
     Loader loader(layer);
     createLayer(name, layer, &loader);
     qDebug() << "[DONE] opening GTFS directory" << path;

@@ -243,65 +243,6 @@ SpatialStatsDialog::SpatialStatsDialog(QWidget *parent, TraceLayer *traceLayer):
     checkConsistency();
 }
 
-GeometryIndex *SpatialStatsDialog::getGeometryIndex()
-{
-    // build the geometry index
-    QSet<Geometry*> geometries;
-    // build the cells from the trace layer
-    auto nodes = _traceLayer->getNodes();
-    QSet<QPoint> cellGeometries;
-    for(auto it = nodes.begin(); it != nodes.end(); ++it) {
-        auto jt = (startTime == -1) ? it.value()->begin() : it.value()->lowerBound(startTime);
-        long long prevTimestamp = jt.key(); // previous timestamp
-        QPointF prevPos = jt.value();       // previous position
-        for(jt++; jt != it.value()->end(); ++jt) {
-            // start from the second position
-            long long timestamp = jt.key(); // current timestamp
-            QPointF pos = jt.value();       // current position
-
-            // number of intermediate positions (with the sampling)
-            int nbPos = qMax(1,(int) qCeil((timestamp - prevTimestamp) / sampling));
-            for(int i = 1; i <= nbPos; ++i) {
-                long long t = prevTimestamp + i*sampling; // get the sampling time
-                QPointF p = (timestamp - t)*prevPos + (t - prevTimestamp)*pos;
-                p /= (timestamp - prevTimestamp);
-
-                if(endTime != -1 && t > endTime) break;
-
-                QPoint cellIdx((int)qFloor(p.x() / geometryCellsSize), (int)qFloor(p.y() / geometryCellsSize));
-                if(!cellGeometries.contains(cellIdx)) {
-                    Geometry* geom = new Cell(cellIdx.x()*geometryCellsSize, cellIdx.y()*geometryCellsSize, geometryCellsSize);
-                    cellGeometries.insert(cellIdx);
-                    geometries.insert(geom);
-                }
-
-                prevPos = pos;
-                prevTimestamp = timestamp;
-            }
-        }
-    }
-
-    // add the circles from the given file
-    if(geometryType == CircleType) {
-        // build the circles from the given file
-        QFile* file = new QFile(geometryCirclesFile);
-        if(!file->open(QFile::ReadOnly | QFile::Text))
-            return 0;
-        while(!file->atEnd()) {
-            // line format: "x;y;radius"
-            QString line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
-            QStringList fields = line.split(";");
-            double x = fields.at(0).toDouble();
-            double y = fields.at(1).toDouble();
-            double radius = fields.at(2).toDouble();
-            Geometry* geom = new Circle(x,y,radius);
-            geometries.insert(geom);
-        }
-    }
-    GeometryIndex* geometryIndex = new GeometryIndex(geometries, geometryCellsSize);
-    return geometryIndex;
-}
-
 void SpatialStatsDialog::done()
 {
     /* Save all of the attributes */

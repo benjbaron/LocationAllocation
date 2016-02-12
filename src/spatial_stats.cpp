@@ -48,6 +48,9 @@ void SpatialStats::populateMobileNodes()
             _mobileNodes.insert(nodeId, new MobileNode(nodeId, (int) _sampling, this));
         }
         MobileNode* node = _mobileNodes.value(nodeId);
+        if(it.value()->lastKey() < _startTime)
+            continue;
+
         auto jt = (_startTime == -1) ? it.value()->begin() : it.value()->lowerBound(_startTime);
         for(; jt != it.value()->end(); ++jt) {
             if(_endTime != -1 && jt.key() > _endTime) break;
@@ -381,7 +384,7 @@ void MobileNode::addPosition(long long time, double x, double y) {
     } else { // increase the end time of the current recorded geometries
         QPointF pos(x,y); // position of the node
         // number of intermediate positions (with the sampling)
-        int nbPos = qMax(1,(int) qCeil((time - _prevTime) / _sampling));
+        int nbPos = qMax(1, qCeil((time - _prevTime) / _sampling));
         for(int i = 1; i <= nbPos; ++i) {
             long long t = _prevTime + i*_sampling; // get the sampling time
             QPointF p = (time - t)*_prevPos + (t - _prevTime)*pos;

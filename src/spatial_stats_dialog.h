@@ -28,7 +28,6 @@ public:
     GeometryType getGeometryType() { return geometryType; }
     double getCellSize() { return geometryCellsSize; }
     QString getCircleFile() { return geometryCirclesFile; }
-    GeometryIndex *getGeometryIndex();
 
 private slots:
     void done();
