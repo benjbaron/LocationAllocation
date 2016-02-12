@@ -6,47 +6,63 @@
 #include <QApplication>
 #include <qcommandlineparser.h>
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-    MainWindow w;
+QCoreApplication* createApplication(int &argc, char *argv[]) {
+    for (int i = 1; i < argc; ++i)
+        if (!qstrcmp(argv[i], "-no-gui"))
+            return new QCoreApplication(argc, argv);
+    return new QApplication(argc, argv);
+}
 
-    QCommandLineParser parser;
-    parser.setApplicationDescription("LocAll");
-    parser.addHelpOption();
-    parser.addVersionOption();
+int main(int argc, char *argv[]) {
+    QScopedPointer<QCoreApplication> a(createApplication(argc, argv));
 
-    // A boolean option for running it via GUI (--gui)
-    QCommandLineOption noguiOption(QStringList() << "nogui", "Running it via GUI.");
-    parser.addOption(noguiOption);
-    QCommandLineOption gtfsOption(QStringList() << "gtfs", "Load a GTFS directory.", "dir", QString());
-    parser.addOption(gtfsOption);
-    QCommandLineOption traceOption(QStringList() << "trace", "Load a trace file.", "file", QString());
-    parser.addOption(traceOption);
-    QCommandLineOption traceDirOption(QStringList() << "trace-dir", "Load a trace directory.", "dir", QString());
-    parser.addOption(traceDirOption);
-    QCommandLineOption pointOption(QStringList() << "points", "Use a points file.", "file", QString());
-    parser.addOption(pointOption);
-    QCommandLineOption serverOption(QStringList() << "server", "Run the location allocation API server.");
-    parser.addOption(serverOption);
-    QCommandLineOption projInOption(QStringList() << "proj-in", "Choose the input projection.", "projection", QString());
-    parser.addOption(projInOption);
-    QCommandLineOption projOutOption(QStringList() << "proj-out", "Choose the output projection.", "projection", QString());
-    parser.addOption(projOutOption);
-    QCommandLineOption samplingOption(QStringList() << "sampling", "Sampling for the spatial stats.", "value", "-1");
-    parser.addOption(samplingOption);
-    QCommandLineOption startTimeOption(QStringList() << "starttime", "startTime for the spatial stats.", "value", "-1");
-    parser.addOption(startTimeOption);
-    QCommandLineOption endTimeOption(QStringList() << "endtime", "endTime for the spatial stats.", "value", "-1");
-    parser.addOption(endTimeOption);
-    QCommandLineOption cellSizeOption(QStringList() << "cell-size", "cell size for the spatial stats.", "value", "-1");
-    parser.addOption(cellSizeOption);
+    if (qobject_cast<QApplication *>(a.data())) {
 
-    qDebug() << "parser options" << parser.optionNames();
+        // start GUI version...
+        qDebug() << "GUI version";
+        MainWindow w;
+        w.show();
+        qDebug() << "hello";
+        return a->exec();
 
-    // Process the actual command line arguments given by the user
-    parser.process(a);
-    if (parser.isSet(noguiOption)) {
+    }  else {
+
+        // start non-GUI version...
+        qDebug() << "non-GUI version";
+        QCommandLineParser parser;
+        parser.setApplicationDescription("LocAll");
+        parser.addHelpOption();
+        parser.addVersionOption();
+
+        // A boolean option for running it via GUI (--gui)
+        QCommandLineOption gtfsOption(QStringList() << "gtfs", "Load a GTFS directory.", "dir", QString());
+        parser.addOption(gtfsOption);
+        QCommandLineOption traceOption(QStringList() << "trace", "Load a trace file.", "file", QString());
+        parser.addOption(traceOption);
+        QCommandLineOption traceDirOption(QStringList() << "trace-dir", "Load a trace directory.", "dir", QString());
+        parser.addOption(traceDirOption);
+        QCommandLineOption pointOption(QStringList() << "points", "Use a points file.", "file", QString());
+        parser.addOption(pointOption);
+        QCommandLineOption serverOption(QStringList() << "server", "Run the location allocation API server.");
+        parser.addOption(serverOption);
+        QCommandLineOption projInOption(QStringList() << "proj-in", "Choose the input projection.", "projection", QString());
+        parser.addOption(projInOption);
+        QCommandLineOption projOutOption(QStringList() << "proj-out", "Choose the output projection.", "projection", QString());
+        parser.addOption(projOutOption);
+        QCommandLineOption samplingOption(QStringList() << "sampling", "Sampling for the spatial stats.", "value", "-1");
+        parser.addOption(samplingOption);
+        QCommandLineOption startTimeOption(QStringList() << "starttime", "startTime for the spatial stats.", "value", "-1");
+        parser.addOption(startTimeOption);
+        QCommandLineOption endTimeOption(QStringList() << "endtime", "endTime for the spatial stats.", "value", "-1");
+        parser.addOption(endTimeOption);
+        QCommandLineOption cellSizeOption(QStringList() << "cell-size", "cell size for the spatial stats.", "value", "-1");
+        parser.addOption(cellSizeOption);
+
+        qDebug() << "parser options" << parser.optionNames();
+
+        // Process the actual command line arguments given by the user
+        parser.process(*(a.data()));
+
         if(parser.isSet(projInOption) && parser.isSet(projOutOption)) {
             QString projIn = parser.value(projInOption);
             QString projOut = parser.value(projOutOption);
@@ -102,9 +118,6 @@ int main(int argc, char *argv[])
         server.listen(8080);
         qDebug() << "Launching REST server";
 
-    } else {
-        w.show();
+        return a->exec();
     }
-
-    return a.exec();
 }
