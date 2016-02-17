@@ -64,3 +64,5 @@ Cabspotting cab traces collected from May 17th, 2008 to June 10th, 2008 in the S
 
 - Input projection is ESPG (WGS84): `+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs`
 - Output projection is ESPG 26910 (UTM 10N): `+proj=utm +zone=10 +ellps=GRS80 +datum=NAD83 +units=m +no_defs`
+
+Run the location allocation from the REST server: `http://localhost:8080/allocation/loc?distance=auto&delFactor=0.5&deadline=2400&travelTime=avg&nbFacilities=3`
