@@ -15,8 +15,10 @@ public:
     TraceLayer(MainWindow* parent = 0, QString name = 0, QString filename = 0):
         Layer(parent, name), _filename(filename)
     {
-        addBarMenuItems();
-        hideMenu();
+        if(parent) {
+            addBarMenuItems();
+            hideMenu();
+        }
     }
 
     /* Adds successive points to the "_nodes" hash */

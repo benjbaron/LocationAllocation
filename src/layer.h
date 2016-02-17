@@ -36,6 +36,7 @@ public:
         }
     }
     void hideMenu() { if(_menu) _menu->setVisible(false); }
+    virtual void addMenuBar() { }
 
     // load whatever has to load
     virtual bool load(Loader* loader) = 0;

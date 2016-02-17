@@ -28,7 +28,9 @@ QString checkFile(QString foldername, QStringList exts, QString filename) {
 GTFSLayer::GTFSLayer(MainWindow* parent, QString name, QString filename, bool snapToShape):
         TraceLayer(parent, name, filename), _snapToShape(snapToShape)
 {
-    addBarMenuItems();
+    if(parent) {
+        addBarMenuItems();
+    }
 
     QStringList exts;
     exts << "txt" << "csv";

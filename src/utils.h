@@ -1,6 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <iostream>
 #include "qcustomplot.h"
 
 enum WithinOperator { And, Or, NoneWithin };
@@ -190,9 +191,21 @@ static void verticalFlipQGraphicsItem(QGraphicsItem* item) {
 
     // Set the items transformation
     item->setTransform(transform);
-
 }
 
+static void printConsoleProgressBar(double progress, QString const &msg = QString()) {
+    int barWidth = 40;
+
+    std::cout << "\e[2K[";
+    int pos = int(barWidth * progress);
+    for (int i = 0; i < barWidth; ++i) {
+        if (i < pos) std::cout << "=";
+        else if (i == pos) std::cout << ">";
+        else std::cout << " ";
+    }
+    std::cout << "] " << int(progress * 100.0) << "% " << msg.toUtf8().constData() << "\r";
+    std::cout.flush();
+}
 
 #endif // UTILS_H
 

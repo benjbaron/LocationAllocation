@@ -91,7 +91,7 @@ public:
                  GeometryIndex* geometryIndex = 0);
 
     /* Populate nodes from the trace layer */
-    void populateMobileNodes();
+    void populateMobileNodes(Loader* loader);
     /* Compute spatial statistics */
     void computeStats(Loader* loader);
 
@@ -112,7 +112,9 @@ public:
     /* Getis Ord G spatial stats
      * TODO: compute the p-value
     */
-    qreal computeLocalStat(Geometry *geom_i);
+    qreal computeLocalStat(Geometry* geom_i);
+    void addMenuBar();
+
 
     /* Draw the group of cells */
     QGraphicsItemGroup* draw();
