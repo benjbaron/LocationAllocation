@@ -133,7 +133,7 @@ private:
 class Geometry;
 struct Allocation {
     Allocation(): geom(NULL), weight(0.0), demands(QHash<Geometry*, double>()), deletedCandidates(QSet<Geometry*>()) { }
-    Allocation(Geometry* p, double w, const QHash<Geometry*, double>& d = QHash<Geometry*, double>(), const QSet<Geometry*>& c = QSet<Geometry*>(), int rank = -1) :
+    Allocation(Geometry* p, double w, int rank = -1, const QHash<Geometry*, double>& d = QHash<Geometry*, double>(), const QSet<Geometry*>& c = QSet<Geometry*>()) :
         geom(p), weight(w), demands(d), deletedCandidates(c), rank(rank) { }
 
     Geometry* geom;

@@ -264,8 +264,8 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
             demandsToCover.subtract(maxDemandsCovered.keys().toSet());
 
             // add the allocation
-            Allocation* alloc = new Allocation(maxCoverageGeometry, maxCoverage,
-                                               maxDemandsCovered, candidatesToRemove, i);
+            Allocation* alloc = new Allocation(maxCoverageGeometry, maxCoverage, i,
+                                               maxDemandsCovered, candidatesToRemove);
             allocation->insert(maxCoverageGeometry, alloc);
         }
 
@@ -373,7 +373,7 @@ void ComputeAllocation::runRandomAllocation(int nbFacilities, QHash<Geometry*, A
         int idx = qrand() % toAllocate.size();
         Geometry* geom = toAllocate.at(idx);
         toAllocate.removeAt(idx);
-        allocation->insert(geom, new Allocation(geom, 1.0));
+        allocation->insert(geom, new Allocation(geom, 1.0, i));
 
     }
 }
