@@ -362,7 +362,7 @@ void ComputeAllocation::runLocationAllocation(int nbFacilities,
 }
 
 
-void ComputeAllocation::runRandomAllocation(int nbFacilities, QHash<Geometry*, Allocation *>* allocation) {
+void ComputeAllocation::runRandomAllocation(int nbFacilities, QHash<Geometry*, Allocation*>* allocation) {
     QList<Geometry*> toAllocate;
     for(auto it = _spatialStats->getGeometries()->begin(); it != _spatialStats->getGeometries()->end(); ++it) {
         toAllocate.append(it.key());

@@ -8,12 +8,10 @@
 class ComputeAllocation;
 class RESTServerPrivate;
 
-class RESTServer: public qhttp::server::QHttpServer
-{
+class RESTServer: public qhttp::server::QHttpServer {
 public:
     explicit     RESTServer(size_t threads, QObject* parent, ComputeAllocation* computeAllocation);
     virtual      ~RESTServer();
-
 
 protected:
     void        incomingConnection(qintptr handle) override;

@@ -48,6 +48,9 @@ public slots:
                     QString queryStr = req->url().query();
                     QUrlQuery query(queryStr);
 
+                    QString originalReq = "{}";
+                    QHash<Geometry *, Allocation *> allocation;
+
                     // convert the method name
                     if (method == "loc") method = LOCATION_ALLOCATION_MEHTOD_NAME;
                     else if (method == "pgrk") method = PAGE_RANK_MEHTOD_NAME;
@@ -93,41 +96,13 @@ public slots:
                         dStat << "distance" << distance;
 
                         /* run the allocation function */
-                        QHash<Geometry *, Allocation *> allocation;
                         _computeAllocation->processAllocationMethod(method, nbFacilities, deadline, delFactor, ttStat,
                                                                     travelTime, dStat, distance, &allocation, false);
 
-                        // format allocation response
-                        QString allocationStr = "{";
-                        int allocationCtr = 0;
-                        for (auto it = allocation.begin(); it != allocation.end(); ++it) {
-                            allocationStr += QString(
-                                    "\"%1\": {\"x\":\"%2\", \"y\":\"%3\", \"weight\":\"%4\", \"nbAllocated\":\"%5\", \"nbDeleted\":\"%6\", \"rank\":\"%7\"},").arg(
-                                    QString::number(it.value()->rank), QString::number(it.key()->getCenter().x()),
-                                    QString::number(it.key()->getCenter().y()), QString::number(it.value()->weight),
-                                    QString::number(it.value()->demands.size()),
-                                    QString::number(it.value()->deletedCandidates.size()),
-                                    QString::number(it.value()->rank));
-                            allocationCtr++;
-                        }
-                        if (allocationCtr == allocation.size()) {
-                            // delete the last comma
-                            allocationStr = allocationStr.left(allocationStr.size() - 1);
-                        }
-                        allocationStr += "}";
-
-                        // output the result in JSON format
-                        res->setStatusCode(qhttp::ESTATUS_OK);
-                        res->addHeader("Content-Type", "application/json");
-
-                        QString originalReq = QString(
+                        originalReq = QString(
                                 "{\"method\":\"%1\",\"nbFacilities\":\"%2\",\"deadline\":\"%3\",\"delFactor\":\"%4\",\"travelTime\":\"%5\",\"distance\":\"%6\"}").arg(
                                 method, QString::number(nbFacilities), QString::number(deadline),
                                 QString::number(delFactor), QString::number(travelTime), QString::number(distance));
-                        QString respBody = QString("{\"originalReq\":%1, \"allocationResult\":%2}").arg(originalReq,
-                                                                                                        allocationStr);
-                        res->setStatusCode(qhttp::ESTATUS_OK); // code 200
-                        res->end(respBody.toUtf8());
 
                     } else if (method == PAGE_RANK_MEHTOD_NAME) { // page rank
 
@@ -137,10 +112,19 @@ public slots:
                         int nbFacilities = query.queryItemValue("nbFacilities").toInt();
 
                         qDebug() << "Method" << method << "nbFacilities" << nbFacilities;
-                        QHash<Geometry *, Allocation *> allocation;
                         _computeAllocation->runRandomAllocation(nbFacilities, &allocation);
 
+                        originalReq = QString("{\"method\":\"%1\",\"nbFacilities\":\"%2\"}").arg(method,
+                                                                                                QString::number(nbFacilities));
                     }
+
+                    QString allocationStr = constructResponse(allocation);
+                    QString respBody = QString("{\"originalReq\":%1, \"allocationResult\":%2}").arg(originalReq,
+                                                                                                    allocationStr);
+                    res->setStatusCode(qhttp::ESTATUS_OK);
+                    res->addHeader("Content-Type", "application/json");
+                    res->end(respBody.toUtf8());
+
                 }
 
             });
@@ -150,6 +134,8 @@ public slots:
 
 private:
     ComputeAllocation* _computeAllocation;
+    QString constructResponse(QHash<Geometry*, Allocation*> const &allocation);
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -262,6 +248,29 @@ void RESTServer::timerEvent(QTimerEvent *e) {
     }
 
     QHttpServer::timerEvent(e);
+}
+
+
+QString ClientHandler::constructResponse(QHash<Geometry*, Allocation*> const &allocation) {
+    // format allocation response
+    QString allocationStr = "{";
+    int allocationCtr = 0;
+    for (auto it = allocation.begin(); it != allocation.end(); ++it) {
+        allocationStr += QString(
+                "\"%1\": {\"x\":\"%2\", \"y\":\"%3\", \"weight\":\"%4\", \"nbAllocated\":\"%5\", \"nbDeleted\":\"%6\", \"rank\":\"%7\"},").arg(
+                QString::number(it.value()->rank), QString::number(it.key()->getCenter().x()),
+                QString::number(it.key()->getCenter().y()), QString::number(it.value()->weight),
+                QString::number(it.value()->demands.size()),
+                QString::number(it.value()->deletedCandidates.size()),
+                QString::number(it.value()->rank));
+        allocationCtr++;
+    }
+    if (allocationCtr == allocation.size()) {
+        // delete the last comma
+        allocationStr = allocationStr.left(allocationStr.size() - 1);
+    }
+    allocationStr += "}";
+    return allocationStr;
 }
 
 #include "rest_server.moc"
