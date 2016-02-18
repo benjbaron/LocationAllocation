@@ -6,6 +6,7 @@
 class SpatialStats;
 class Geometry;
 
+
 class ComputeAllocation: public QObject
 {
     Q_OBJECT
@@ -32,6 +33,10 @@ private:
 
     QList<WeightedAllocationLayer*> _allocationLayers;
     SpatialStats* _spatialStats;
+
+    double computeBackendWeight(Geometry* c, Geometry* k);
+    double computeCoverageWeight(Geometry* l, Geometry* k, double deadline, QHash<Geometry*, double>* demandsCovered);
+    void updateTopCandidates(QList<Allocation>* c, Geometry* k,double coverage, double backendWeight, QHash<Geometry*, double> const &demandsCovered);
 };
 
 #endif // COMPUTEALLOCATION_H

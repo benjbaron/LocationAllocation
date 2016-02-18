@@ -17,6 +17,7 @@ void SpatialStats::populateMobileNodes(Loader* loader)
     QString currentMsg = "Populate the nodes ("
                          +QString::number(_startTime)+" -> "+QString::number(_endTime)
                          +", "+QString::number(_sampling)+")";
+
     // add the successive point positions of the mobile nodes
     auto nodes = _traceLayer->getNodes();
     int count = 0;
