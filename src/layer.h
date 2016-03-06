@@ -9,11 +9,15 @@
 #include <ogrsf_frmts.h>
 #include <qtconcurrentrun.h>
 
-class MainWindow;
-class Loader;
+#include "compute_allocation.h"
+#include "progress_dialog.h"
+#include "mainwindow.h"
+#include "loader.h"
 
-class Layer: public QObject
-{
+class MainWindow;
+
+class Layer: public QObject {
+
     Q_OBJECT
 public:
     Layer(MainWindow* parent = 0, QString name = 0):
@@ -25,11 +29,23 @@ public:
     }
     void setVisible(bool visible) { _groupItem->setVisible(visible); }
     bool isVisible() { return _groupItem->isVisible(); }
+
     QString getName() { return _name; }
     void setZValue(qreal value) { _groupItem->setZValue(value); }
     qreal getZValue() { return _groupItem->zValue(); }
     MainWindow* getParent() { return _parent; }
     virtual QString getInformation() { return "Layer: " + _name; }
+
+    template<typename Class, typename ...A1, typename ...A2>
+    void loadWithProgressDialog(Class* object, bool (Class::*f) (A1 ...), A2&&... args) {
+        Loader l;
+        ProgressDialog p(_parent);
+        connect(&l, &Loader::loadProgressChanged, &p, &ProgressDialog::updateProgress);
+        l.load(object, f, &l, std::forward<A2>(args)...);
+        p.exec();
+    }
+
+    // menu bar methods
     void showMenu() {
         if(_menu) {
             _menu->setVisible(true);
@@ -41,6 +57,7 @@ public:
     // load whatever has to load
     virtual bool load(Loader* loader) = 0;
 
+    // run the layer in an other QtConcurrent thread
     QFuture<bool> run(Loader* loader) {
         return QtConcurrent::run(this, &Layer::load, loader);
     }

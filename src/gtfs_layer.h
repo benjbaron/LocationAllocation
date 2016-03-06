@@ -149,20 +149,13 @@ private:
 };
 
 
-class GTFSLayer : public TraceLayer
-{
-    Q_OBJECT
+class GTFSTrace : public Trace {
 public:
-    GTFSLayer(MainWindow* parent = 0, QString name = 0, QString filename = 0, bool snapToShape = true);
-    GTFSLayer(const GTFSLayer &other);
-    ~GTFSLayer();
+    GTFSTrace(QString filename, bool snapToShape);
 
-    QGraphicsItemGroup* draw();
-    bool load(Loader* loader);
-    QString getInformation() { return "GTFS Layer: " + _name; }
-
-private slots:
-    void exportStops();
+    virtual bool openTrace(Loader* loader);
+    QMap<QString, QMap<int,QPointF>*>* getShapes() { return &_shapes; }
+    QMap<QString,Stop*>* getStops() { return &_stops; }
 
 private:
     QString _folderPath;
@@ -177,10 +170,34 @@ private:
     QMap<QString,Stop*> _stops;
     QMap<QString, QMap<int,QPointF>*> _shapes;
 
+    // helper methods
     void parseTrips();
     long long toSeconds(QString time);
 
-    void addBarMenuItems();
+};
+
+class GTFSLayer : public TraceLayer
+{
+    Q_OBJECT
+public:
+    GTFSLayer(MainWindow* parent = 0, QString name = 0, GTFSTrace* trace = nullptr):
+            TraceLayer(parent, name, trace) {
+        if(parent) {
+            addMenuBar();
+        }
+    }
+
+    virtual QGraphicsItemGroup* draw();
+    virtual void addMenuBar();
+
+    QString getInformation() { return "GTFS Layer: " + _name; }
+    bool load(Loader* loader) {
+        _trace->openTrace(loader);
+        return true;
+    }
+
+private slots:
+    void exportStops();
 };
 
 #endif //LOCALL_GTFS_LOADER_H

@@ -5,6 +5,9 @@
 #include "qhttpserverresponse.hpp"
 #include "threadlist.h"
 
+#include "loader.h"
+#include "geometries.h"
+
 using namespace qhttp::server;
 QAtomicInt  gHandledConnections;
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,13 +94,17 @@ public slots:
                             }
                         }
 
+                        AllocationParams params(deadline,nbFacilities,delFactor,ttStat,dStat,travelTime,distance,method);
+
                         qDebug() << "Method" << method << "nbFacilities" << nbFacilities << "deadline" << deadline <<
                         "delFactor" << delFactor << "travelStat" << ttStat << "travelTime" << travelTime << "dstat" <<
                         dStat << "distance" << distance;
 
                         /* run the allocation function */
-                        _computeAllocation->processAllocationMethod(method, nbFacilities, deadline, delFactor, ttStat,
-                                                                    travelTime, dStat, distance, &allocation, false);
+                        Loader l;
+                        ProgressConsole p;
+                        connect(&l, &Loader::loadProgressChanged, &p, &ProgressConsole::updateProgress);
+                        l.load(_computeAllocation, &ComputeAllocation::processAllocationMethod, &l, &params, &allocation);
 
                         originalReq = QString(
                                 "{\"method\":\"%1\",\"nbFacilities\":\"%2\",\"deadline\":\"%3\",\"delFactor\":\"%4\",\"travelTime\":\"%5\",\"distance\":\"%6\"}").arg(
@@ -112,7 +119,10 @@ public slots:
                         int nbFacilities = query.queryItemValue("nbFacilities").toInt();
 
                         qDebug() << "Method" << method << "nbFacilities" << nbFacilities;
-                        _computeAllocation->runRandomAllocation(nbFacilities, &allocation);
+                        Loader l;
+                        ProgressConsole p;
+                        connect(&l, &Loader::loadProgressChanged, &p, &ProgressConsole::updateProgress);
+                        l.load(_computeAllocation, &ComputeAllocation::runRandomAllocation, &l, nbFacilities, &allocation);
 
                         originalReq = QString("{\"method\":\"%1\",\"nbFacilities\":\"%2\"}").arg(method,
                                                                                                 QString::number(nbFacilities));

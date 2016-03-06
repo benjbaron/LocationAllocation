@@ -45,12 +45,12 @@ bool GridLayer::load(Loader *loader) {
         for(int j = 0; yCursor < _parent->getSceneRect().bottom(); ++j) {
             _geometries.append(QPointF(i,j));
             yCursor += _geometriesize;
-            emit loader->loadProgressChanged((qreal) count++ / (qreal) size);
+            loader->loadProgressChanged((qreal) count++ / (qreal) size, "");
         }
         xCursor += _geometriesize;
     }
     qDebug() << "cells size" << _geometries.size();
 
-    emit loader->loadProgressChanged((qreal) 1.0);
+    loader->loadProgressChanged((qreal) 1.0, "Done");
     return true;
 }

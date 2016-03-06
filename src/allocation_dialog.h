@@ -12,6 +12,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include "utils.h"
+#include "compute_allocation.h"
 
 class AllocationDialog : public QDialog
 {
@@ -19,26 +20,37 @@ class AllocationDialog : public QDialog
 
 public:
     AllocationDialog(QWidget* parent = 0);
-    int getDeadline()          { return deadline; }
-    int getNbStorageNodes()    { return nbStorageNodes; }
-    double getDeletionFactor() { return deletionFactor; }
-    TravelTimeStat getTravelTimeStat() { return ttStat; }
-    DistanceStat getDistanceStat() { return dStat; }
+    int getDeadline()                  const { return deadline; }
+    int getNbStorageNodes()            const { return nbStorageNodes; }
+    double getDeletionFactor()         const { return deletionFactor; }
+    TravelTimeStat getTravelTimeStat() const { return ttStat; }
+    DistanceStat getDistanceStat()     const { return dStat; }
 
-    WithinOperator getWithinOperator() {
+    WithinOperator getWithinOperator() const {
         if(enableTravelTime && enableDistance)   return And;
         else if(enableTravelTime || enableDistance)   return Or;
         else return NoneWithin;
     }
 
-    bool isTravelTimeEnabled() { return enableTravelTime; }
-    bool isDistanceEnabled()   { return enableDistance; }
-    bool isMedTravelTime()     { return ttStat == Med; }
-    bool isAvgTraveTime()      { return ttStat == Avg; }
-    bool isAutoDistance()      { return dStat == Auto; }
-    double getTravelTime()     { return travelTime; }
-    double getDistance()       { return distance; }
-    QString getMethod()        { return method; }
+    bool isTravelTimeEnabled() const { return enableTravelTime; }
+    bool isDistanceEnabled()   const { return enableDistance; }
+    bool isMedTravelTime()     const { return ttStat == Med; }
+    bool isAvgTraveTime()      const { return ttStat == Avg; }
+    bool isAutoDistance()      const { return dStat == Auto; }
+    double getTravelTime()     const { return travelTime; }
+    double getDistance()       const { return distance; }
+    QString getMethod()        const { return method; }
+
+    void allocationParams(AllocationParams* params) {
+        params->deadline = deadline;
+        params->nbFacilities = nbStorageNodes;
+        params->delFactor = deletionFactor;
+        params->ttStat = ttStat;
+        params->dStat = dStat;
+        params->travelTime = travelTime;
+        params->distance = distance;
+        params->method = method;
+    }
 
 private slots:
     void done();

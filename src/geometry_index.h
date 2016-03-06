@@ -13,11 +13,13 @@ class GeometryIndex
 {
 public:
     GeometryIndex(QSet<Geometry*>& geometries, double cellSize = 100);
-    QSet<Geometry*> getGeometriesAt(double x, double y);
-    QSet<Geometry*> getGeometriesAt(QPointF p) { return getGeometriesAt(p.x(), p.y()); }
+    void getGeometriesAt(QSet<Geometry*>* geometries, double x, double y);
+    void getGeometriesAt(QSet<Geometry*>* geometries, QPointF p) {
+        return getGeometriesAt(geometries, p.x(), p.y());
+    }
 
     // Factory method
-    static GeometryIndex* make_geometryIndex(const TraceLayer& traceLayer,
+    static GeometryIndex* make_geometryIndex(Trace* trace,
                                              double sampling = -1, double startTime = -1, double endTime = -1,
                                              double geometryCellsSize = -1,
                                              GeometryType geometryType = NoneType,

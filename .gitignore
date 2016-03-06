@@ -14,3 +14,5 @@ data/san-francisco_california
 data/sf-muni
 src/.idea
 src/.qmake.stash
+src/CMakeFiles
+CMakeCache.txt

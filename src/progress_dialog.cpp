@@ -1,7 +1,7 @@
 #include "progress_dialog.h"
 #include "ui_progress_dialog.h"
 
-ProgressDialog::ProgressDialog(QWidget *parent, QString loadingText) :
+ProgressDialog::ProgressDialog(QWidget* parent, QString loadingText) :
         QDialog(parent),
         ui(new Ui::ProgressDialog),
         _loadingText(loadingText)
@@ -18,20 +18,12 @@ ProgressDialog::~ProgressDialog()
     delete ui;
 }
 
-void ProgressDialog::setLoadingText(QString text)
-{
-    ui->label->setText(text);
-}
-
-void ProgressDialog::updateProgress(qreal value)
+void ProgressDialog::updateProgress(qreal value, const QString& text)
 {
     ui->labelProgressBar->setText(QString::number((int)(value*100)) + " %");
     ui->progressBar->setValue((int)(value*100));
+    ui->label->setText(_loadingText + "\n" + text);
     if(value == 1.0) {
         accept();
     }
-}
-
-void ProgressDialog::changeText(QString text) {
-    ui->label->setText(_loadingText + "\n" + text);
 }

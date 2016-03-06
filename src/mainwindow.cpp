@@ -12,13 +12,13 @@
 #include "grid_layer.h"
 #include "layer_panel.h"
 #include "proj_factory.h"
-#include "loader.h"
 #include "gtfs_layer.h"
+#include "flickr_layer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+    ui(new Ui::MainWindow) {
+
     ui->setupUi(this);
     QPixmapCache::setCacheLimit(102400);
 
@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen_Trace, &QAction::triggered, this, &MainWindow::openTrace);
     connect(ui->actionOpen_TraceDir, &QAction::triggered, this, &MainWindow::openTraceDirectory);
     connect(ui->actionOpen_GTFS, &QAction::triggered, this, &MainWindow::openGTFSDirectory);
+    connect(ui->actionOpen_Flickr, &QAction::triggered, this, &MainWindow::openFlickrFile);
     connect(ui->actionSet_projection, &QAction::triggered, this, &MainWindow::setProjection);
     connect(_showLayersAction, &QAction::triggered, this, &MainWindow::showLayerPanel);
     connect(_scene, &GraphicsScene::mousePressedEvent, this, &MainWindow::onMousePressEvent);
@@ -54,8 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAdd_Grid, &QAction::triggered, this, &MainWindow::addGrid);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
@@ -63,8 +63,7 @@ void MainWindow::addMenu(QMenu *menu) {
     ui->menuBar->addMenu(menu);
 }
 
-void MainWindow::openShapefile()
-{
+void MainWindow::openShapefile() {
     QSettings settings;
     QString filename = QFileDialog::getOpenFileName(this,
                        "Open a Shapefile",
@@ -83,13 +82,11 @@ void MainWindow::openShapefile()
 
     // instantiate a new layer and a new loader
     ShapefileLayer* layer = new ShapefileLayer(this, name, filename);
-    Loader* loader = new Loader(layer);
-
-    createLayer(name, layer, loader);
+    Loader loader;
+    createLayer(name, layer, &loader);
 }
 
-void MainWindow::openTrace()
-{
+void MainWindow::openTrace() {
     QSettings settings;
     QFileDialog d(this, "Open a trace directory");
     d.setFileMode(QFileDialog::Directory);
@@ -104,13 +101,14 @@ void MainWindow::openTrace()
     // Save the filename path in the app settings
     settings.setValue("defaultTracePath", QFileInfo(filename).absolutePath());
     QString name = QFileInfo(filename).fileName();
-    qDebug() << "opened" << name;
+    qDebug() << "opened" << name << "path" << filename;
 
     changeProjection(name, _projOut);
 
     // instantiate a new layer and a new loader
-    TraceLayer* layer  = new TraceLayer(this, name, filename);
-    Loader loader(layer);
+    Trace* t = new Trace(filename);
+    TraceLayer* layer  = new TraceLayer(this, name, t);
+    Loader loader;
     createLayer(name, layer, &loader);
 }
 
@@ -134,8 +132,9 @@ void MainWindow::openTraceDirectory() {
     changeProjection(name, _projOut);
 
     // instantiate a new layer and a new loader
-    TraceLayer* layer  = new TraceLayer(this, name, path);
-    Loader loader(layer);
+    Trace t(path);
+    TraceLayer* layer  = new TraceLayer(this, name, &t);
+    Loader loader;
     createLayer(name, layer, &loader);
     qDebug() << "[DONE] opening directory" << path;
 }
@@ -159,27 +158,25 @@ void MainWindow::openGTFSDirectory() {
     changeProjection(name, _projOut);
 
     // instantiate a new layer and a new loader
-    GTFSLayer* layer  = new GTFSLayer(this, name, path);
-    Loader loader(layer);
+    GTFSTrace* trace = new GTFSTrace(path, true);
+    GTFSLayer* layer  = new GTFSLayer(this, name, trace);
+    Loader loader;
     createLayer(name, layer, &loader);
     qDebug() << "[DONE] opening GTFS directory" << path;
 }
 
-void MainWindow::setProjection()
-{
+void MainWindow::setProjection() {
     changeProjection("global", _projOut);
 }
 
-void MainWindow::addGrid()
-{
+void MainWindow::addGrid() {
     QString name = "grid";
     GridLayer* layer = new GridLayer(this, name, GRID_SIZE);
-    Loader loader(layer);
+    Loader loader;
     createLayer(name, layer, &loader);
 }
 
-void MainWindow::changeProjection(QString filename, QString projOut)
-{
+void MainWindow::changeProjection(QString filename, QString projOut) {
     // execute the projection dialog
     ProjectionDialog projectionDialog(this, filename, projOut);
     int ret = projectionDialog.exec(); // synchronous
@@ -191,8 +188,7 @@ void MainWindow::changeProjection(QString filename, QString projOut)
     ProjFactory::getInstance().setProj(_projIn, _projOut);
 }
 
-void MainWindow::closedLayerPanel()
-{
+void MainWindow::closedLayerPanel() {
     // received a close event from the layer panel
     _showLayersAction->setText("Show Layers");
 }
@@ -210,13 +206,9 @@ void MainWindow::showLayerPanel() {
     }
 }
 
-void MainWindow::onMousePressEvent()
-{
+void MainWindow::onMousePressEvent() { }
 
-}
-
-void MainWindow::changeLayerOrder(int oldIndex, int newIndex)
-{
+void MainWindow::changeLayerOrder(int oldIndex, int newIndex) {
     int nbLayers = _layers.size();
     Layer* tmp = _layers.at(oldIndex);
     if(newIndex > oldIndex) {
@@ -237,13 +229,11 @@ void MainWindow::changeLayerOrder(int oldIndex, int newIndex)
     _scene->update();
 }
 
-void MainWindow::createLayer(QString name, Layer* layer, Loader* loader)
-{
+void MainWindow::createLayer(QString name, Layer* layer, Loader* loader) {
     if(loader) {
         ProgressDialog progressDiag(this, "Loading "+name);
         connect(loader, &Loader::loadProgressChanged, &progressDiag, &ProgressDialog::updateProgress);
-        connect(loader, &Loader::changeText, &progressDiag, &ProgressDialog::changeText);
-        loader->load(layer);
+        loader->load(layer, &Layer::load, loader);
         progressDiag.exec();
     }
 
@@ -261,4 +251,30 @@ void MainWindow::createLayer(QString name, Layer* layer, Loader* loader)
         _layers.append(layer);
         _layerPanel->addLayer(layer);
     }
+}
+
+void MainWindow::openFlickrFile() {
+    QSettings settings;
+    QFileDialog d(this, "Open a Flickr dataset");
+    d.setFileMode(QFileDialog::Directory);
+    QString filename = d.getOpenFileName(this,
+                                         "Open a Flickr dataset",
+                                         settings.value("defaultFickrDatasetPath", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString());
+
+
+    if(filename.isEmpty()) {
+        return;
+    }
+    // Save the filename path in the app settings
+    settings.setValue("defaultFickrDatasetPath", QFileInfo(filename).absolutePath());
+    QString name = QFileInfo(filename).fileName();
+    qDebug() << "opened" << name;
+
+    changeProjection(name, _projOut);
+
+    // instantiate a new layer and a new loader
+    FlickrTrace* t = new FlickrTrace(filename);
+    FlickrLayer* layer  = new FlickrLayer(this, name, t);
+    Loader loader;
+    createLayer(name, layer, &loader);
 }

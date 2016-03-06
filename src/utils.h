@@ -22,8 +22,7 @@ static double euclideanDistance(QPointF a, QPointF b) {
     return euclideanDistance(a.x(), a.y(), b.x(), b.y());
 }
 
-class Distribution
-{
+class Distribution {
 public:
     Distribution() {}
     void addValue(int v) {
@@ -144,13 +143,11 @@ struct Allocation {
     int rank;
 };
 
-inline uint qHash(const QPointF &key)
-{
+inline uint qHash(const QPointF &key) {
     return qHash(key.x()) ^ qHash(key.y());
 }
 
-static bool toggleBoldFont(QLineEdit *lineEdit, bool isValid)
-{
+static bool toggleBoldFont(QLineEdit *lineEdit, bool isValid) {
     QFont prevFont(lineEdit->font()); // Get previous font
     if(isValid) {
         prevFont.setBold(false);

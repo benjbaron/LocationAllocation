@@ -27,8 +27,7 @@ public:
         int cp = 0;                // Pointer to the next character in the buffer
         int cpmax = buffer.size(); // End of string
 
-        while ( true )
-        {
+        while ( true ) {
             QChar c = buffer[cp];
             cp++;
 

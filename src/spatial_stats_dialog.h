@@ -15,13 +15,12 @@
 #include "geometries.h"
 
 // forward class declaration
-class TraceLayer;
+class Trace;
 
-class SpatialStatsDialog: public QDialog
-{
+class SpatialStatsDialog: public QDialog {
     Q_OBJECT
 public:
-    SpatialStatsDialog(QWidget* parent = 0, TraceLayer* traceLayer = 0);
+    SpatialStatsDialog(QWidget* parent = 0, Trace* trace = 0);
     long long getSampling() { return sampling; }
     long long getStartTime() { return startTime; }
     long long getEndTime() { return endTime; }
@@ -65,7 +64,7 @@ private:
     QString geometryCirclesFile;
     double geometryCellsSize = -1.0;
     GeometryType geometryType = NoneType;
-    TraceLayer* _traceLayer;
+    Trace* _trace;
     QString traceLayerSettingName;
 
     /* Private functions */

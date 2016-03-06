@@ -112,15 +112,15 @@ QGraphicsItemGroup *WeightedAllocationLayer::draw()
 }
 
 bool WeightedAllocationLayer::load(Loader *loader) {
-    emit loader->loadProgressChanged((qreal) 0.0);
+    loader->loadProgressChanged((qreal) 0.0, "");
     int count = 0;
     int size = _alloc->size();
     for(auto it = _alloc->begin(); it != _alloc->end(); ++it) {
         Geometry* g = it.key();
         _points.insert(g->getCenter(), it.value());
-        emit loader->loadProgressChanged((qreal) ++count / (qreal) size);
+        loader->loadProgressChanged((qreal) ++count / (qreal) size, "");
     }
 
-    emit loader->loadProgressChanged((qreal) 1.0);
+    loader->loadProgressChanged((qreal) 1.0, "Done");
     return true;
 }

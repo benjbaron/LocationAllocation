@@ -27,6 +27,6 @@ QGraphicsItemGroup* LineStringLayer::draw() {
 }
 
 bool LineStringLayer::load(Loader *loader) {
-    emit loader->loadProgressChanged((qreal) 1.0);
+    loader->loadProgressChanged((qreal) 1.0, "Done");
     return false;
 }

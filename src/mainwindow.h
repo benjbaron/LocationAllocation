@@ -45,6 +45,7 @@ private slots:
     void openTrace();
     void openTraceDirectory();
     void openGTFSDirectory();
+    void openFlickrFile();
     void setProjection();
     void addGrid();
     void showLayerPanel();

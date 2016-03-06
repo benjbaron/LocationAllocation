@@ -1,13 +1,11 @@
 #include "spatial_stats_dialog.h"
 
-#include <QVBoxLayout>
-#include <QSettings>
-#include <QFileDialog>
-#include "trace_layer.h"
+SpatialStatsDialog::SpatialStatsDialog(QWidget* parent, Trace* trace):
+    QDialog(parent),
+    _trace(trace),
+    minStartTime(trace->getStartTime()),
+    maxEndTime(trace->getEndTime()) {
 
-SpatialStatsDialog::SpatialStatsDialog(QWidget *parent, TraceLayer *traceLayer):
-    QDialog(parent), _traceLayer(traceLayer), minStartTime(traceLayer->getStartTime()), maxEndTime(traceLayer->getEndTime())
-{
     geometryTypeExtension = new QWidget;
     geometryTypeLabel = new QLabel("Choose geometry type");
 
@@ -220,7 +218,7 @@ SpatialStatsDialog::SpatialStatsDialog(QWidget *parent, TraceLayer *traceLayer):
     }
 
     // get the attributes per traceLayer name
-    traceLayerSettingName = QString("savedSpatialStatsTraceLayer%1").arg(_traceLayer->getName());
+    traceLayerSettingName = QString("savedSpatialStatsTraceLayer%1").arg(_trace->getName());
     if(settings.contains(traceLayerSettingName)) {
         auto traceLayerSettings = settings.value(traceLayerSettingName).toMap();
         if(traceLayerSettings.contains("savedSpatialStatsSampling")) {

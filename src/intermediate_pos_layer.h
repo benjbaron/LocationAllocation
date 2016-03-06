@@ -9,8 +9,8 @@
 class IntermediatePosLayer: public Layer
 {
 public:
-    IntermediatePosLayer(MainWindow* parent = 0, QString name = 0, TraceLayer* traceLayer = 0):
-        Layer(parent, name), _traceLayer(traceLayer) { }
+    IntermediatePosLayer(MainWindow* parent = 0, QString name = 0, Trace* trace = 0):
+        Layer(parent, name), _trace(trace) { }
 
     QGraphicsItemGroup* draw() {
         int radius;
@@ -54,7 +54,10 @@ public:
 
 
     void populateNodes(Loader* loader) {
-        auto nodes = _traceLayer->getNodes();
+
+        QHash<QString, QMap<long long, QPointF>*> nodes;
+        _trace->getNodes(&nodes);
+
         qDebug() << "populateNodes()" << nodes.size();
         int count = 0, size = nodes.size();
         for(auto it = nodes.begin(); it != nodes.end(); ++it) {
@@ -82,14 +85,14 @@ public:
                 _prevPos = pos;
                 _prevTime = time;
             }
-            emit loader->loadProgressChanged((qreal) ++count / size);
+            loader->loadProgressChanged((qreal) ++count / size, "");
         }
 
-        emit loader->loadProgressChanged((qreal) 1.0);
+        loader->loadProgressChanged((qreal) 1.0, "Done");
     }
 
 private:
-    TraceLayer* _traceLayer;
+    Trace* _trace;
     QHash<QString, QMap<long long, QPair<QPointF, bool>>*> _nodes;
     int _sampling = 1;
     long long _prevTime = 0;

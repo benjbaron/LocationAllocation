@@ -4,7 +4,7 @@
 #include "spatial_stats.h"
 #include "constants.h"
 
-DockWidgetPlots::DockWidgetPlots(QWidget *parent, SpatialStats *spatialStats) :
+DockWidgetPlots::DockWidgetPlots(QWidget* parent, SpatialStats* spatialStats) :
     QDockWidget(parent),
     ui(new Ui::DockWidgetPlots),
     _spatialStats(spatialStats)
@@ -18,7 +18,8 @@ DockWidgetPlots::~DockWidgetPlots()
 }
 
 void DockWidgetPlots::showNodeData(Geometry* geom) {
-    GeometryValue* value = _spatialStats->getValue(geom);
+    GeometryValue* value;
+    _spatialStats->getValue(&value, geom);
 
     int visitCount = value->visits.size();
     double interVisitAvg = value->interVisitDurationDist.getAverage();
@@ -42,6 +43,7 @@ void DockWidgetPlots::showNodeData(Geometry* geom) {
     qDebug() << "Visit Frequencies";
     plotFrequencies(value->visitFrequency, ui->plot3, 60);
 
+
     ui->label4->setText("Visit count " + QString::number(visitCount)
                         + "\nUnique nodes " + QString::number(value->nodes.size())
                         + "\nConnections " + QString::number(value->connections)
@@ -54,8 +56,9 @@ void DockWidgetPlots::showNodeData(Geometry* geom) {
 
 void DockWidgetPlots::showLinkData(Geometry *geom1, Geometry *geom2)
 {
-    GeometryMatrixValue* value = _spatialStats->getValue(geom1, geom2);
-    int visitCount = value->visits.size();
+    GeometryMatrixValue* value;
+    _spatialStats->getValue(&value,geom1, geom2);
+    int visitCount       = value->visits.size();
     double interVisitAvg = value->interVisitDurationDist.getAverage();
     double travelTimeAvg = value->travelTimeDist.getAverage();
     double interVisitMed = value->interVisitDurationDist.getMedian();
@@ -77,8 +80,7 @@ void DockWidgetPlots::showLinkData(Geometry *geom1, Geometry *geom2)
     qDebug() << "Visit frequency";
     plotFrequencies(value->visitFrequency, ui->plot3, 60);
 
-    auto val = _spatialStats->getValue(geom1, geom2);
-    ui->label4->setText("count " + QString::number(val->visits.size())
+    ui->label4->setText("count " + QString::number(visitCount)
                         + "\nScore " + QString::number(visitCount / interVisitAvg)
                         + "\nScore (med) " + QString::number(value->medScore)
                         + "\nScore (avg) " + QString::number(value->avgScore));

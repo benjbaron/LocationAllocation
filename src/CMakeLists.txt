@@ -46,7 +46,8 @@ set(SOURCE_FILES
         point_layer.cpp
         number_dialog.cpp
         gtfs_layer.cpp
-        linestring_layer.cpp)
+        linestring_layer.cpp
+        flickr_layer.cpp)
 
 set(FORM_FILES
         dockwidget_plots.ui
@@ -86,7 +87,8 @@ set(HEADER_FILES
         threadlist.h
         gtfs_layer.h
         csv_parser.h
-        linestring_layer.h)
+        linestring_layer.h
+        flickr_layer.h spatial_stats_layer.cpp spatial_stats_layer.h compute_allocation_layer.cpp compute_allocation_layer.h trace.cpp trace.h)
 
 add_executable(LocAll ${SOURCE_FILES}
                       ${HEADER_FILES}

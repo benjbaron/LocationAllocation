@@ -1,10 +1,10 @@
 #ifndef WEIGHTEDALLOCATIONLAYER_H
 #define WEIGHTEDALLOCATIONLAYER_H
 
-#include "layer.h"
-#include "utils.h"
-
 #include "geometries.h"
+
+// forward class declarations
+class Loader;
 
 class GraphicsPoint: public QObject, public QGraphicsEllipseItem
 {
@@ -43,15 +43,16 @@ private:
     QPointF _id;
 };
 
-class WeightedAllocationLayer: public Layer
-{
+#include "layer.h"
+
+class WeightedAllocationLayer: public Layer {
     Q_OBJECT
+
 public:
     WeightedAllocationLayer(MainWindow* parent = 0, QString name = 0, const QHash<Geometry*,Allocation*>& alloc = QHash<Geometry*,Allocation*>()):
         Layer(parent, name), _alloc(&alloc) { }
 
-    QGraphicsItemGroup* draw();
-    QList<std::tuple<QPointF,double,double>> getPoints(int weight = 0, long long startTime = 0, long long endTime = 0) { return QList<std::tuple<QPointF,double,double>>(); }
+    virtual QGraphicsItemGroup* draw();
     virtual bool load(Loader* loader);
 
 private:

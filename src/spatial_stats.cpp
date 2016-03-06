@@ -1,25 +1,27 @@
 #include "spatial_stats.h"
 
-#include "constants.h"
 #include "loader.h"
 
-SpatialStats::SpatialStats(MainWindow *parent, QString name, TraceLayer *traceLayer, long long sampling, long long startTime, long long endTime, GeometryIndex *geometryIndex):
-    Layer(parent, name), _traceLayer(traceLayer), _sampling(sampling), _startTime(startTime), _endTime(endTime), _geometryIndex(geometryIndex)
-{
-    _computeAllocation = new ComputeAllocation(this);
-    if(parent) {
-        addMenuBar();
-    }
-}
+SpatialStats::SpatialStats(Trace* trace,
+                           long long sampling,
+                           long long startTime,
+                           long long endTime,
+                           GeometryIndex *geometryIndex):
+    _trace(trace),
+    _sampling(sampling),
+    _startTime(startTime),
+    _endTime(endTime),
+    _geometryIndex(geometryIndex) { }
 
-void SpatialStats::populateMobileNodes(Loader* loader)
-{
+void SpatialStats::populateMobileNodes(Loader* loader) {
     QString currentMsg = "Populate the nodes ("
                          +QString::number(_startTime)+" -> "+QString::number(_endTime)
                          +", "+QString::number(_sampling)+")";
 
     // add the successive point positions of the mobile nodes
-    auto nodes = _traceLayer->getNodes();
+    QHash<QString, QMap<long long, QPointF>*> nodes;
+    _trace->getNodes(&nodes);
+
     int count = 0;
     for(auto it = nodes.begin(); it != nodes.end(); ++it) {
         QString nodeId = it.key();
@@ -39,39 +41,31 @@ void SpatialStats::populateMobileNodes(Loader* loader)
         }
 
         count++;
-        if(loader) {
-            loader->loadProgressChanged(0.10 * ((qreal) count / (qreal) nodes.size()));
-            loader->changeText(currentMsg);
-        } else {
-            printConsoleProgressBar(0.10 * ((qreal) count / (qreal) nodes.size()), currentMsg);
-        }
+        loader->loadProgressChanged(0.10 * ((qreal) count / (qreal) nodes.size()), currentMsg);
+//        if(loader) {
+//            loader->loadProgressChanged();
+//            loader->changeText(currentMsg);
+//        } else {
+//            printConsoleProgressBar(0.10 * ((qreal) count / (qreal) nodes.size()), currentMsg);
+//        }
     }
 }
 
-void SpatialStats::computeStats(Loader* loader)
-{
+bool SpatialStats::computeStats(Loader* loader) {
     QString currentMsg = "Populate the nodes";
-
-    if(loader) {
-        loader->loadProgressChanged((qreal) 0.0); // initialize the load progress
-        loader->changeText(currentMsg);
-    } else {
-        printConsoleProgressBar(0.0, currentMsg);
-    }
+    loader->loadProgressChanged(0.0, currentMsg);
 
     populateMobileNodes(loader);
 
-    currentMsg = "Compute visit matrix ("+QString::number(_mobileNodes.size())+" nodes)";
-    if(loader) {
-        loader->loadProgressChanged((qreal) 0.1);
-        loader->changeText(currentMsg);
-    } else {
-        printConsoleProgressBar(0.1, currentMsg);
-    }
     // compute the visiting matrix for the current set of mobile nodes
     int nbNodes = _mobileNodes.size();
-    int count = 0;
 
+    currentMsg = "Compute visit matrix ("+QString::number(nbNodes)+" nodes)";
+    loader->loadProgressChanged(0.1, currentMsg);
+
+    qDebug() << currentMsg;
+
+    int count = 0;
     for(auto it_mobileNode = _mobileNodes.begin(); it_mobileNode != _mobileNodes.end(); ++it_mobileNode) {
         MobileNode* mobileNode = it_mobileNode.value();
         auto geoms = mobileNode->getGeometries(); // get the set of geometries the node visits
@@ -133,12 +127,7 @@ void SpatialStats::computeStats(Loader* loader)
 
         // update the UI or console
         count++;
-        if(loader) {
-            loader->loadProgressChanged(0.1 + 0.4 * ((qreal) count / (qreal) nbNodes));
-        } else {
-            printConsoleProgressBar(0.1 + 0.4 * ((qreal) count / (qreal) nbNodes), currentMsg);
-        }
-
+        loader->loadProgressChanged(0.1 + 0.4 * ((qreal) count / (qreal) nbNodes), currentMsg);
     }
 
     currentMsg = "Inter-visit ("
@@ -146,12 +135,7 @@ void SpatialStats::computeStats(Loader* loader)
                  +" matrix size, ("
                  +QString::number(_geometries.size())
                  +" nodes size)";
-    if(loader) {
-        loader->loadProgressChanged((qreal) 0.4);
-        loader->changeText(currentMsg);
-    } else {
-        printConsoleProgressBar(0.4, currentMsg);
-    }
+    loader->loadProgressChanged(0.4, currentMsg);
 
     currentMsg = "Compute inter-visit durations (cells)";
     // compute the inter-visit durations for the cells
@@ -174,21 +158,11 @@ void SpatialStats::computeStats(Loader* loader)
 
         // update the UI
         count++;
-        if(loader) {
-            loader->loadProgressChanged(0.5 + 0.16 * ((qreal) count / (qreal) size));
-            loader->changeText(currentMsg);
-        } else {
-            printConsoleProgressBar(0.5 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
-        }
+        loader->loadProgressChanged(0.5 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
     }
 
     currentMsg = "Compute inter-visit durations (matrix)";
-    if(loader) {
-        loader->loadProgressChanged((qreal) 0.66);
-        loader->changeText(currentMsg);
-    } else {
-        printConsoleProgressBar(0.66, currentMsg);
-    }
+    loader->loadProgressChanged(0.66, currentMsg);
 
     // compute the inter-visit durations for the matrix cells
     count = 0;
@@ -221,20 +195,11 @@ void SpatialStats::computeStats(Loader* loader)
             }
         }
         count++;
-        if(loader) {
-            loader->loadProgressChanged(0.66 + 0.16 * ((qreal) count / (qreal) size));
-        } else {
-            printConsoleProgressBar(0.66 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
-        }
+        loader->loadProgressChanged(0.66 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
     }
 
     currentMsg = "Compute scores";
-    if(loader) {
-        loader->loadProgressChanged((qreal) 0.82);
-        loader->changeText(currentMsg);
-    } else {
-        printConsoleProgressBar(0.82, currentMsg);
-    }
+    loader->loadProgressChanged(0.82, currentMsg);
 
     count = 0;
     size = _geometryMatrix.size();
@@ -267,27 +232,17 @@ void SpatialStats::computeStats(Loader* loader)
 
         // update the UI and console
         count++;
-        if(loader) {
-            loader->loadProgressChanged(0.82 + 0.16 * ((qreal) count / (qreal) size));
-        } else {
-            printConsoleProgressBar(0.82 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
-        }
+        loader->loadProgressChanged(0.82 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
     }
 
     // TODO  Only one loader for both console and GUI
-    currentMsg = "Done";
-    if(loader) {
-        loader->loadProgressChanged((qreal) 1.0);
-        loader->changeText(currentMsg);
-    } else {
-        printConsoleProgressBar(1.0, currentMsg);
-    }
-
+    loader->loadProgressChanged((qreal) 1.0, "Done");
     std::cout << std::endl;
+
+    return true;
 }
 
-QColor SpatialStats::selectColorForLocalStat(qreal zScore)
-{
+QColor SpatialStats::selectColorForLocalStat(qreal zScore) {
     if(zScore >= 3.291) return QColor("#720206");
     else if(zScore >= 2.576) return QColor("#f33f1c");
     else if(zScore >= 1.960) return QColor("#f37b22");
@@ -295,8 +250,7 @@ QColor SpatialStats::selectColorForLocalStat(qreal zScore)
     else return QColor("#cccccc");
 }
 
-qreal SpatialStats::computeLocalStat(Geometry* geom_i)
-{
+qreal SpatialStats::computeLocalStat(Geometry* geom_i) {
     qreal sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0, sum5 = 0.0;
     int n = _geometries.size();
     for(auto it = _geometries.begin(); it != _geometries.end(); ++it) {
@@ -318,109 +272,13 @@ qreal SpatialStats::computeLocalStat(Geometry* geom_i)
     return (sum1 - mean * sum2) / (S * qSqrt((n * sum3 - qPow(sum2,2)) / (n-1)));
 }
 
-QGraphicsItemGroup* SpatialStats::draw()
-{
-    _groupItem = new QGraphicsItemGroup();
-    _groupItem->setHandlesChildEvents(false);
-
-    for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
-        Geometry* geom = it.key();
-        GeometryGraphics* item;
-        if(geom->getGeometryType() == CircleType)
-            item = new CircleGraphics(static_cast<Circle*>(geom));
-        else if(geom->getGeometryType() == CellType)
-            item = new CellGraphics(static_cast<Cell*>(geom));
-
-        item->setBrush(QBrush(_geometries[it.key()]->color));
-        item->setPen(Qt::NoPen);
-        item->setOpacity(CELL_OPACITY);
-        addGraphicsItem(item);
-        _geometryGraphics.insert(it.key(), item);
-
-        // add behavior on mouse press
-        connect(item, &GeometryGraphics::mousePressedEvent, [=](Geometry* geom, bool mod){
-            if(!_geometries.contains(geom) || !_geometryMatrix.contains(geom)) return;
-
-            qDebug() << "Clicked on geometry" << geom->toString() << mod;
-            // select all the reachable geometries
-            // restore the paramters for the previously selected geometry
-            if(_selectedGeometry && mod) {
-                if(!_geometryMatrix[_selectedGeometry]->contains(geom)) return;
-
-                if(!_plots) {
-                    _plots = new DockWidgetPlots(_parent, this); // see to dock the widget on the mainwindow
-                }
-                if(_parent)
-                    _parent->addDockWidget(Qt::RightDockWidgetArea, _plots);
-                _plots->show();
-                _plots->showLinkData(_selectedGeometry, geom);
-
-            } else {
-                if(_selectedGeometry) {
-                    // restore the "normal" opacity
-                    _geometryGraphics[_selectedGeometry]->setOpacity(CELL_OPACITY);
-                    // restore the "normal" colors for the neighbor geometries
-                    auto geoms = _geometryMatrix[_selectedGeometry];
-                    for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
-                        Geometry* g = jt.key();
-                        if(_geometryGraphics.contains(g)) {
-                            _geometryGraphics[g]->setBrush(QBrush(_geometries[g]->color));
-                            _geometryGraphics[g]->update();
-                        }
-                    }
-
-                    if(_selectedGeometry == geom) {
-                        _geometryGraphics[_selectedGeometry]->setBrush(_geometries[_selectedGeometry]->color);
-                        _selectedGeometry = NULL;
-                        qDebug() << "clicked on same geometry";
-                        return;
-                    }
-                }
-
-                auto geoms = _geometryMatrix[geom];
-                double maxWeight = 0.0;
-                for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
-                    if(jt.key() == geom) continue;
-                    double score = jt.value()->avgScore;
-                    if(score > maxWeight) maxWeight = score;
-                }
-                _geometryGraphics[geom]->setOpacity(1.0);
-                _geometryGraphics[geom]->setBrush(CELL_COLOR);
-                for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
-                    Geometry* g = jt.key();
-                    if(g == geom) continue;
-                    auto val = jt.value();
-                    double score = val->avgScore;
-                    int factor = (int) (50.0 + 150.0 * score / maxWeight);
-//                    qDebug() << score << maxWeight << factor;
-
-                    if(_geometryGraphics.contains(g)) {
-                        _geometryGraphics[g]->setBrush(CELL_COLOR.darker(factor));
-                        _geometryGraphics[g]->update();
-                    }
-                }
-
-                if(!_plots) {
-                    _plots = new DockWidgetPlots(_parent, this); // see to dock the widget on the mainwindow
-                }
-                if(_parent)
-                    _parent->addDockWidget(Qt::RightDockWidgetArea, _plots);
-                _plots->show();
-                _plots->showNodeData(geom);
-
-                _selectedGeometry = geom;
-            }
-        });
-    }
-
-    return _groupItem;
-}
 
 void MobileNode::addPosition(long long time, double x, double y) {
     // assuming the positions are added sequentially
     if(_prevPos.isNull() || time - _prevTime > 300) { // restart the cell recording
         // get the list of geometries that contain the current position
-        QSet<Geometry*> geoms = _spatialStats->containsPoint(x,y);
+        QSet<Geometry*> geoms;
+        _spatialStats->containsPoint(&geoms, x,y);
         _startTimeGeometries.clear();
         // record all geometries
         for(Geometry* geom : geoms) {
@@ -439,7 +297,8 @@ void MobileNode::addPosition(long long time, double x, double y) {
             p /= (time - _prevTime);
 
             // get the corresponding visited Geometries
-            QSet<Geometry*> geoms = _spatialStats->containsPoint(p);
+            QSet<Geometry*> geoms;
+            _spatialStats->containsPoint(&geoms, p);
 
             // start recording all the new geometries
             QSet<Geometry*> newGeometries = geoms - _prevGeometries;
@@ -459,135 +318,4 @@ void MobileNode::addPosition(long long time, double x, double y) {
     }
     _prevPos = QPointF(x,y);
     _prevTime = time;
-}
-
-void SpatialStats::exportContourFile() {
-    if(!_selectedGeometry) {
-        QMessageBox q(QMessageBox::Warning, "Error", "No geometry is selected", QMessageBox::Ok);
-        q.exec(); // synchronous
-        return;
-    }
-
-    // get output filename
-    QString filename = QFileDialog::getSaveFileName(0,
-                                                    tr("Export contour file"),
-                                                    QString(),
-                                                    tr("CSV file (*.csv)"));
-    if(filename.isEmpty())
-        return;
-
-    // compute the contour plot
-    qDebug() << "Export the contour plot file";
-    QFile file(filename);
-    if(!file.open(QFile::WriteOnly))
-    {
-        qDebug() << "Unable to write in file "<< filename;
-        return;
-    }
-
-    Geometry* randomGeom = _geometries.keys().first();
-    double cellSize = randomGeom->getBounds().getQRectF().width();
-    QPointF topLeft = randomGeom->getBounds().getTopLeft();
-    QPointF bottomRight = randomGeom->getBounds().getBottomRight();
-    for(Geometry* geom : _geometries.keys()) {
-        QPointF tl = geom->getBounds().getTopLeft();
-        QPointF br = geom->getBounds().getBottomRight();
-        if(tl.x() < topLeft.x())
-            topLeft.setX(tl.x());
-        if(tl.y() < topLeft.y())
-            topLeft.setY(tl.y());
-        if(br.x() > bottomRight.x())
-            bottomRight.setX(br.x());
-        if(br.y() > bottomRight.y())
-            bottomRight.setY(br.y());
-    }
-
-    QTextStream out(&file);
-    // first line (header)
-    out << "x;y;z\n";
-//    out << QString::number(_selectedGeometry->getCenter().x(), 'f', 4) << ";"
-//        << QString::number(_selectedGeometry->getCenter().y(), 'f', 4) << ";"
-//        << QString::number(1e10, 'f', 4) << "\n";
-
-    qDebug() << topLeft << bottomRight << cellSize << (bottomRight.x() - topLeft.x()) / cellSize << (bottomRight.y() - topLeft.y()) / cellSize;
-    auto cells = _geometryMatrix.value(_selectedGeometry);
-    for(double i = topLeft.x(); i < bottomRight.x(); i += 10) {
-        for(double j = topLeft.y(); j < bottomRight.y(); j += 10) {
-            QSet<Geometry*> geoms = _geometryIndex->getGeometriesAt(i, j);
-            bool foundRightGeom = false;
-            if(!geoms.isEmpty()) {
-                for(Geometry* geom : geoms) {
-                    if(geom->getGeometryType() == CellType) {
-                        // add the geometry to the output
-                        if(cells->contains(geom)) {
-                            GeometryMatrixValue* val = cells->value(geom);
-//                            double x = geom->getCenter().x();
-//                            double y = geom->getCenter().y();
-                            double z = 10 * val->avgScore;
-                            out << QString::number(i, 'f', 0) << ";"
-                                << QString::number(j, 'f', 0) << ";"
-                                << QString::number(z, 'f', 2) << "\n";
-                            foundRightGeom = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            if(!foundRightGeom) {
-                // add the generic output
-                out << QString::number(i, 'f', 0) << ";"
-                    << QString::number(j, 'f', 0) << ";"
-                    << QString::number(0, 'f', 2) << "\n";
-            }
-        }
-    }
-//    for(Geometry* geom : cells->keys()) {
-//        GeometryMatrixValue* val = cells->value(geom);
-//        double x = geom->getCenter().x();
-//        double y = geom->getCenter().y();
-//        double z = 100.0 * val->avgScore;
-//
-//        out << QString::number(x, 'f', 0) << ";"
-//            << QString::number(y, 'f', 0) << ";"
-//            << QString::number(z, 'f', 2) << "\n";
-//    }
-
-    file.close();
-
-    qDebug() << "[DONE] export contour file";
-}
-
-bool SpatialStats::load(Loader *loader) {
-    computeStats(loader);
-    return true;
-}
-
-void SpatialStats::addMenuBar() {
-    _menu = new QMenu();
-    _menu->setTitle("Stat analysis");
-    _parent->addMenu(_menu);
-
-    // add action to compute the location allocation
-    QAction* action_compute_allocation = _menu->addAction("Compute allocation");
-    connect(action_compute_allocation, &QAction::triggered, _computeAllocation, &ComputeAllocation::computeAllocation);
-
-    // add action to the menu to export a contour file
-    QAction* action_export_contour = _menu->addAction("Export contour file");
-    connect(action_export_contour, &QAction::triggered, this, &SpatialStats::exportContourFile);
-
-    // add action to the menu to launch the REST server
-    QAction* action_rest_server = _menu->addAction("Start REST server");
-    connect(action_rest_server, &QAction::triggered, this, [=](bool checked) {
-        qDebug() << "Lauch REST server";
-        if(!_restServer) {
-            _restServer = new RESTServer(10, 0, _computeAllocation);
-            _restServer->setTimeOut(500);
-            _restServer->listen(8080);
-            qDebug() << "REST Server listening on port 8080";
-        }
-    });
-
-    // TODO use method addBarMenuItems (see trace_layer.h)
-    _parent->addMenu(_menu);
-    hideMenu();
 }

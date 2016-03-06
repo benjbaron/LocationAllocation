@@ -13,8 +13,7 @@
 
 enum GeometryType { NoneType, CircleType, CellType, CoordType };
 
-class Bounds
-{
+class Bounds {
 public:
     explicit Bounds(double x1, double x2, double y1, double y2) {
         minX = qMin(x1,x2);
@@ -39,8 +38,7 @@ private:
     double maxY;
 };
 
-class Geometry
-{
+class Geometry {
 public:
     virtual ~Geometry() { }
 
@@ -55,8 +53,7 @@ public:
     virtual QString toString() = 0;
 };
 
-class Coord: public QPointF, public Geometry
-{
+class Coord: public QPointF, public Geometry {
 public:
     explicit Coord(double x, double y): QPointF(x,y) { }
     explicit Coord(const QPointF &c): QPointF(c) { }
@@ -67,8 +64,7 @@ public:
     QString toString() { return "Coord ("+QString::number(x())+","+QString::number(y())+")"; }
 };
 
-class Circle: public Geometry
-{
+class Circle: public Geometry {
 public:
     explicit Circle(QPointF center, double radius): _center(center), _radius(radius) { }
     explicit Circle(double x, double y, double radius): _center(x,y), _radius(radius) { }
@@ -87,8 +83,7 @@ private:
     double _radius;
 };
 
-class Cell: public QRectF, public Geometry
-{
+class Cell: public QRectF, public Geometry {
 public:
     explicit Cell(QPointF topLeft, double cellSize): QRectF(topLeft, QSizeF(cellSize,cellSize)) { }
     explicit Cell(double x, double y, double cellSize): QRectF(x,y,cellSize,cellSize) { }
@@ -102,8 +97,7 @@ public:
 
 
 /* Corresponding Graphics classes */
-class GeometryGraphics: public QObject, public QGraphicsItem
-{
+class GeometryGraphics: public QObject, public QGraphicsItem {
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
 public:
@@ -130,8 +124,7 @@ private:
     Geometry* _geom;
 };
 
-class CellGraphics: public GeometryGraphics, public QGraphicsRectItem
-{
+class CellGraphics: public GeometryGraphics, public QGraphicsRectItem {
 public:
     explicit CellGraphics(): GeometryGraphics(), QGraphicsRectItem() { }
     explicit CellGraphics(Cell* cell):
@@ -143,8 +136,7 @@ public:
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) { return QGraphicsRectItem::paint(painter, option, widget); }
 };
 
-class CircleGraphics: public GeometryGraphics, public QGraphicsEllipseItem
-{
+class CircleGraphics: public GeometryGraphics, public QGraphicsEllipseItem {
 public:
     explicit CircleGraphics(): GeometryGraphics(), QGraphicsEllipseItem() { }
     explicit CircleGraphics(Circle* circle):

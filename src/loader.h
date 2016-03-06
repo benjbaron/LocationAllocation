@@ -5,31 +5,42 @@
 #include <QString>
 #include <QObject>
 
+#include "progress_dialog.h"
 #include "mainwindow.h"
 
-// forward declaration
-//class Layer;
-#include "layer.h"
 
-class Loader: public QObject
-{
+class Loader: public QObject {
     Q_OBJECT
 public:
-    Loader(Layer* layer = 0):
-            _layer(layer) { }
+    Loader() { }
 
-    void load(Layer* layer) {
-        _loadResult = layer->run(this);
-        _layer->showMenu();
+    template<typename Class, typename ...A1, typename ...A2>
+    void load(Class* object, bool (Class::*f)(A1...), A2&&... args) {
+//    void load(Class* object, std::function<bool (Class&, A...)> f, A... args) {
+        _loadResult = QtConcurrent::run(object, f, std::forward<A2>(args)...);
     }
 
 signals:
-    void loadProgressChanged(qreal);
-    void changeText(QString);
+    void loadProgressChanged(qreal, QString);
 
 protected:
     QFuture<bool> _loadResult;
-    Layer* _layer;
+};
+
+class ProgressConsole: public QObject {
+    Q_OBJECT
+
+public:
+    ProgressConsole(QString loadingText = "Loading") :
+        _loadingText(loadingText) { }
+
+public slots:
+    void updateProgress(qreal value, const QString& text){
+        printConsoleProgressBar(value, text);
+    };
+
+private:
+    QString _loadingText;
 };
 
 #endif // LOADER_H

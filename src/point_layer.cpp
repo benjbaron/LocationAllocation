@@ -23,6 +23,6 @@ QGraphicsItemGroup *PointLayer::draw() {
 }
 
 bool PointLayer::load(Loader *loader) {
-    emit loader->loadProgressChanged((qreal) 1.0);
+    loader->loadProgressChanged((qreal) 1.0, "Done");
     return false;
 }

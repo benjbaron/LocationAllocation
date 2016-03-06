@@ -17,7 +17,7 @@ QGraphicsItemGroup* ShapefileLayer::draw()
 
     foreach (auto geom, _geometryItems) {
         if(geom && wkbFlatten(geom->getGeometryType()) == wkbLineString) {
-            OGRLineString* ls = (OGRLineString *) geom;
+            OGRLineString* ls = (OGRLineString*) geom;
             QPainterPath path;
             OGRPoint pt;
             ls->getPoint(0,&pt);
@@ -32,10 +32,25 @@ QGraphicsItemGroup* ShapefileLayer::draw()
             addGraphicsItem(item);
         }
         else if(geom && wkbFlatten(geom->getGeometryType()) == wkbPoint) {
-            OGRPoint* pt = (OGRPoint *) geom;
+            OGRPoint* pt = (OGRPoint*) geom;
             QGraphicsEllipseItem* item = new QGraphicsEllipseItem(pt->getX()-SHAPEFILE_WID/2.0, -1*(pt->getY()-SHAPEFILE_WID/2.0), SHAPEFILE_WID, -1*SHAPEFILE_WID);
             item->setBrush(QBrush(SHAPEFILE_COL));
             item->setPen(Qt::NoPen);
+            addGraphicsItem(item);
+        }
+        else if(geom && wkbFlatten(geom->getGeometryType()) == wkbPolygon) {
+            OGRPolygon* poly = (OGRPolygon*) geom;
+            QPainterPath path;
+            OGRPoint pt;
+            poly->getExteriorRing()->getPoint(0, &pt);
+            path.moveTo(QPointF(pt.getX(), -1*pt.getY()));
+            for(int i = 1; i < poly->getExteriorRing()->getNumPoints(); ++i) {
+                poly->getExteriorRing()->getPoint(i, &pt);
+                path.lineTo(QPointF(pt.getX(), -1*pt.getY()));
+            }
+            QGraphicsPathItem* item = new QGraphicsPathItem(path);
+            pen.setColor(SHAPEFILE_COL);
+            item->setPen(pen);
             addGraphicsItem(item);
         }
     }
@@ -229,7 +244,7 @@ bool ShapefileLayer::load(Loader* loader) {
     } else if(fileFormat == "wkt") {
         return loadWKT(loader);
     } else {
-        emit loader->loadProgressChanged((qreal)1.0);
+        loader->loadProgressChanged((qreal) 1.0, "Done");
         return false;
     }
 }
@@ -251,17 +266,16 @@ bool ShapefileLayer::loadWKT(Loader *loader)
         OGRGeometry *poGeometry;
         OGRGeometryFactory::createFromWkt(&wktLine, poTarget, &poGeometry);
         addGeometry(poGeometry);
-        emit loader->loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size());
+        loader->loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size(), "");
     }
 
-    emit loader->loadProgressChanged((qreal)1.0);
+    loader->loadProgressChanged((qreal)1.0, "Done");
     qDebug() << "loaded wkt file" << QFileInfo(_filename).fileName() << "with" <<
     countGeometries() << "features";
     return true;
 }
 
-bool ShapefileLayer::loadShapefile(Loader* loader)
-{
+bool ShapefileLayer::loadShapefile(Loader* loader) {
     OGRRegisterAll();
     OGRDataSource *poDS;
 
@@ -284,45 +298,46 @@ bool ShapefileLayer::loadShapefile(Loader* loader)
         poTarget->importFromProj4(_parent->getProjOut().toLatin1().data());
 
         poLayer->ResetReading();
-        OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-        int hwIdx = poFDefn->GetFieldIndex("type");
-        if(hwIdx == -1)
-            hwIdx = poFDefn->GetFieldIndex("highway");
 
-
-        qDebug() << "highway field index" << hwIdx;
         int nrofFeatures = 0;
-        while( (poFeature = poLayer->GetNextFeature()) != NULL )
-        {
-            QString HWFieldStr = QString::fromStdString(poFeature->GetFieldAsString(hwIdx));
-            if(acceptedHWFieldsSet.contains(HWFieldStr)) {
-                OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-                if( poGeometry != NULL
-                    && wkbFlatten(poGeometry->getGeometryType()) == wkbPoint)
-                {
-                    poGeometry->transformTo(poTarget);
-                    OGRPoint * pt = (OGRPoint *) poGeometry;
-                    addGeometry(pt);
+        while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+            OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+            if( poGeometry != NULL
+                && wkbFlatten(poGeometry->getGeometryType()) == wkbPoint) {
+                poGeometry->transformTo(poTarget);
+                OGRPoint* pt = (OGRPoint*) poGeometry;
+                addGeometry(pt);
 
-                }
-                else if (poGeometry != NULL
-                         && wkbFlatten(poGeometry->getGeometryType()) == wkbLineString)
-                {
-                    poGeometry->transformTo(poTarget);
-                    OGRLineString * ls = (OGRLineString *) poGeometry;
-                    addGeometry(ls);
+            }
+            else if (poGeometry != NULL
+                     && wkbFlatten(poGeometry->getGeometryType()) == wkbLineString) {
+                poGeometry->transformTo(poTarget);
+                OGRLineString* ls = (OGRLineString*) poGeometry;
+                addGeometry(ls);
+            }
+            else if (poGeometry != NULL
+                    && wkbFlatten(poGeometry->getGeometryType()) == wkbPolygon) {
+                poGeometry->transformTo(poTarget);
+                OGRPolygon* poly = (OGRPolygon*) poGeometry;
+                addGeometry(poly);
+            } else if (poGeometry != NULL
+                    && wkbFlatten(poGeometry->getGeometryType()) == wkbMultiPolygon){
+                OGRMultiPolygon* multiPolygon = (OGRMultiPolygon*) poGeometry;
+                for(int i = 0; i < multiPolygon->getNumGeometries(); ++i) {
+                    OGRPolygon* poly = (OGRPolygon*) multiPolygon->getGeometryRef(i);
+                    addGeometry(poly);
                 }
             }
-            if(nrofFeatures % 100 == 0)
-            {
+
+            if(nrofFeatures % 100 == 0) {
                 qreal loadProgress = nrofFeatures / (qreal) poLayer->GetFeatureCount();
-                emit loader->loadProgressChanged(loadProgress);
+                loader->loadProgressChanged(loadProgress, "Done");
             }
             nrofFeatures++;
         }
     }
 
-    emit loader->loadProgressChanged((qreal)1.0);
+    loader->loadProgressChanged((qreal)1.0, "Done");
     // Do not delete any structure as they will be used later
     qDebug() << "loaded shapefile" << QFileInfo(_name).fileName() << "with" <<
     countGeometries() << "features";

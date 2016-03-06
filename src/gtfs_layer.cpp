@@ -25,12 +25,8 @@ QString checkFile(QString foldername, QStringList exts, QString filename) {
 }
 
 
-GTFSLayer::GTFSLayer(MainWindow* parent, QString name, QString filename, bool snapToShape):
-        TraceLayer(parent, name, filename), _snapToShape(snapToShape)
-{
-    if(parent) {
-        addBarMenuItems();
-    }
+GTFSTrace::GTFSTrace(QString filename, bool snapToShape):
+        Trace(filename), _snapToShape(snapToShape) {
 
     QStringList exts;
     exts << "txt" << "csv";
@@ -44,29 +40,9 @@ GTFSLayer::GTFSLayer(MainWindow* parent, QString name, QString filename, bool sn
     }
 
     _trajectories = QMap<QString, Trajectory *>();
-
-    if(snapToShape && !_shapesFilePath.isEmpty())
-        _snapToShape = true;
-    else
-        _snapToShape = false;
 }
 
-GTFSLayer::GTFSLayer(const GTFSLayer &other) :
-        _folderPath(other._folderPath),
-        _stopTimesFilePath(other._stopTimesFilePath),
-        _stopsFilePath(other._stopsFilePath),
-        _shapesFilePath(other._shapesFilePath),
-        _tripsFilePath(other._tripsFilePath)
-{
-    _trajectories = QMap<QString, Trajectory *>();
-}
-
-
-GTFSLayer::~GTFSLayer()
-{
-}
-
-void GTFSLayer::parseTrips()
+void GTFSTrace::parseTrips()
 {
     QVector<QMap<QString, QString>> stopList  = QVector<QMap<QString, QString>>();
     QVector<QMap<QString, QString>> timesList = QVector<QMap<QString, QString>>();
@@ -254,65 +230,51 @@ void GTFSLayer::parseTrips()
     }
 }
 
-long long GTFSLayer::toSeconds(QString time)
-{
+long long GTFSTrace::toSeconds(QString time) {
     long hours = time.mid(0, 2).toLong();
     long minutes = time.mid(3, 2).toLong();
     long seconds = time.mid(6, 2).toLong();
     return hours * 3600 + minutes * 60 + seconds;
 }
 
-bool GTFSLayer::load(Loader* loader)
-{
+bool GTFSTrace::openTrace(Loader* loader) {
     qDebug() << "Begin parsing trips";
-    if(loader) {
-        loader->changeText("Parsing the trips");
-    }
+    loader->loadProgressChanged(0.0, "Parsing the trips");
     parseTrips();
 
-    if(loader) {
-        emit loader->loadProgressChanged((qreal) 0.1);
-    }
-    qDebug() << "Trips parsed " << _trajectories.count();
-    qDebug() << "Adding trajectories";
-
-    if(loader) {
-        loader->changeText("Add trajectories");
-    }
+    loader->loadProgressChanged(0.1, "Adding trajectories");
 
     int id = 0;
     int count = _trajectories.size();
     for(auto trajId: _trajectories.keys()) {
-        Trajectory *traj = _trajectories.value(trajId);
+        Trajectory* traj = _trajectories.value(trajId);
         for (auto mvt: traj->getTrajectory().keys()) {
-            WayPoint *stop = traj->getTrajectory().value(mvt);
+            WayPoint* stop = traj->getTrajectory().value(mvt);
             addPoint(QString::number(id), mvt,
                      stop->getCoords().x(), stop->getCoords().y());
         }
         id++;
         delete traj;
-        if(loader) {
-            emit loader->loadProgressChanged(0.1 + 0.9 * ((qreal) id / (qreal) count));
-        }
+
+        loader->loadProgressChanged(0.1 + 0.9 * ((qreal) id / (qreal) count), "Adding trajectory "+trajId);
 //        qDebug() << "Trajectories added " << id;
 //        if(id > 1000) break;
     }
 
     qDebug() << "[DONE] Added" << _nodes.size() << "nodes";
+    loader->loadProgressChanged((qreal) 1.0, "Done");
 
-    if(loader) {
-        emit loader->loadProgressChanged((qreal) 1.0);
-    }
-    return 1;
+    return true;
 }
 
 QGraphicsItemGroup *GTFSLayer::draw() {
     // show the bus lines
-    qDebug() << _nodes.size() << "nodes";
+    qDebug() << _trace->getNbNodes() << "nodes";
     return TraceLayer::draw();
 }
 
-void GTFSLayer::addBarMenuItems() {
+void GTFSLayer::addMenuBar() {
+    TraceLayer::addMenuBar();
     _menu->addSeparator();
     QAction* actionShowStops   = _menu->addAction("Show Stops");
     QAction* actionShowLines   = _menu->addAction("Show Lines");
@@ -322,12 +284,13 @@ void GTFSLayer::addBarMenuItems() {
         qDebug() << "Show stops of " << getName();
         QString name = "GTFS Stops";
         QList<QPointF> stops;
-        for(auto it = _stops.begin(); it != _stops.end(); ++it) {
+        GTFSTrace* ptrace = static_cast<GTFSTrace*>(_trace);
+        for(auto it = ptrace->getStops()->begin(); it != ptrace->getStops()->end(); ++it) {
             stops.append(it.value()->getCoords());
         }
         qDebug() << stops.size() << "stops";
         PointLayer* layer   = new PointLayer(_parent, name, stops);
-        Loader loader(layer);
+        Loader loader;
         _parent->createLayer(name, layer, &loader);
     });
 
@@ -335,7 +298,8 @@ void GTFSLayer::addBarMenuItems() {
         qDebug() << "Show lines of " << getName();
         QString name = "GTFS Lines";
         QList<QList<QPointF>*> lines;
-        for(auto it = _shapes.begin(); it != _shapes.end(); ++it) {
+        GTFSTrace* ptrace = static_cast<GTFSTrace*>(_trace);
+        for(auto it = ptrace->getShapes()->begin(); it != ptrace->getShapes()->end(); ++it) {
             QList<QPointF>* line = new QList<QPointF>();
             for(auto jt = it.value()->begin(); jt != it.value()->end(); ++jt) {
                 line->append(jt.value());
@@ -343,7 +307,7 @@ void GTFSLayer::addBarMenuItems() {
             lines.append(line);
         }
         LineStringLayer* layer   = new LineStringLayer(_parent, name, lines);
-        Loader loader(layer);
+        Loader loader;
         _parent->createLayer(name, layer, &loader);
     });
 
@@ -351,6 +315,7 @@ void GTFSLayer::addBarMenuItems() {
 }
 
 void GTFSLayer::exportStops() {
+
     QString filename = QFileDialog::getSaveFileName(0,
                                                     tr("Save the stops"),
                                                     QString(),
@@ -366,8 +331,8 @@ void GTFSLayer::exportStops() {
         return;
     }
     int radius = numDiag.getNumber();
-
-    qDebug() << "Exporting" << _stops.size() << "stops in" << filename;
+    GTFSTrace* ptrace = static_cast<GTFSTrace*>(_trace);
+    qDebug() << "Exporting" << ptrace->getStops()->size() << "stops in" << filename;
     QFile file(filename);
     if(!file.open(QFile::WriteOnly))
     {
@@ -376,7 +341,7 @@ void GTFSLayer::exportStops() {
     }
 
     QTextStream out(&file);
-    for(const Stop* s : _stops.values()) {
+    for(const Stop* s : ptrace->getStops()->values()) {
         out << QString::number(s->getCoords().x(), 'f', 4) << ";"
         << QString::number(s->getCoords().y(), 'f', 4) << ";"
         << QString::number(radius) << "\n";

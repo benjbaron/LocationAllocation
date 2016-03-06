@@ -3,8 +3,7 @@
 
 #include "layer.h"
 
-class GridLayer: public Layer
-{
+class GridLayer: public Layer {
 public:
     GridLayer(MainWindow* parent = 0, QString name = 0, int cellSize = 100);
 
