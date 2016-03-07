@@ -181,7 +181,7 @@ class GTFSLayer : public TraceLayer
     Q_OBJECT
 public:
     GTFSLayer(MainWindow* parent = 0, QString name = 0, GTFSTrace* trace = nullptr):
-            TraceLayer(parent, name, trace) {
+            TraceLayer(parent, name, trace, false) {
         if(parent) {
             addMenuBar();
         }

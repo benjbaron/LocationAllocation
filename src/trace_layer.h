@@ -13,10 +13,12 @@ class TraceLayer: public Layer
 {
     Q_OBJECT
 public:
-    TraceLayer(MainWindow* parent = 0, QString name = 0, Trace* trace = nullptr):
+    TraceLayer(MainWindow* parent = 0, QString name = 0, Trace* trace = nullptr, bool showMenu = true):
         Layer(parent, name), _trace(trace) {
-        addMenuBar();
-        hideMenu();
+        if(parent && showMenu) {
+            addMenuBar();
+            hideMenu();
+        }
     }
 
     virtual QGraphicsItemGroup* draw();

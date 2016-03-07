@@ -14,7 +14,8 @@ class SpatialStats;
 
 class FlickrTrace: public Trace {
 public:
-    FlickrTrace(QString filename): Trace(filename) { }
+    FlickrTrace(QString filename):
+            Trace(filename) { }
 
     virtual bool openTrace(Loader* loader);
 
@@ -27,7 +28,7 @@ class FlickrLayer : public TraceLayer {
     Q_OBJECT
 public:
     FlickrLayer(MainWindow* parent = 0, QString name = 0, FlickrTrace* trace = nullptr):
-            TraceLayer(parent, name, trace) {
+            TraceLayer(parent, name, trace, false) {
         if(parent) {
             addBarMenuItems();
         }
