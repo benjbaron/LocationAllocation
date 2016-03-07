@@ -15,9 +15,10 @@ public:
     Loader() { }
 
     template<typename Class, typename ...A1, typename ...A2>
-    void load(Class* object, bool (Class::*f)(A1...), A2&&... args) {
+    QFuture<bool> load(Class* object, bool (Class::*f)(A1...), A2&&... args) {
 //    void load(Class* object, std::function<bool (Class&, A...)> f, A... args) {
         _loadResult = QtConcurrent::run(object, f, std::forward<A2>(args)...);
+        return _loadResult;
     }
 
 signals:

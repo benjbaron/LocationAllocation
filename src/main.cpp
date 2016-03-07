@@ -98,6 +98,7 @@ int main(int argc, char *argv[]) {
         Trace* trace = nullptr;
 
         Loader l;
+        QFuture<bool> future;
         ProgressConsole p;
         QObject::connect(&l, &Loader::loadProgressChanged, &p, &ProgressConsole::updateProgress);
 
@@ -107,7 +108,8 @@ int main(int argc, char *argv[]) {
             qDebug() << "load GTFS directory" << gtfsPath << "...";
 
             trace = new GTFSTrace(gtfsPath, true);
-            l.load(static_cast<GTFSTrace*>(trace), &GTFSTrace::openTrace, &l);
+            future = l.load(static_cast<GTFSTrace*>(trace), &GTFSTrace::openTrace, &l);
+            future.result();
 
         } else if (parser.isSet(traceOption)) {
             QString tracePath = parser.value(traceOption);
@@ -126,12 +128,16 @@ int main(int argc, char *argv[]) {
         SpatialStats* spatialStats = new SpatialStats(trace,
                                                       (int) sampling, (long long) startTime, (long long) endTime,
                                                       geometryIndex);
-        l.load(spatialStats,&SpatialStats::computeStats, &l);
+        future = l.load(spatialStats,&SpatialStats::computeStats, &l);
+        future.result();
 
         ComputeAllocation* computeAllocation = new ComputeAllocation(spatialStats);
         RESTServer server(8, nullptr, computeAllocation);
         server.setTimeOut(500);
         server.listen(8080);
+
+        // see http://stackoverflow.com/questions/21911526/qtquick-animation-freezing-on-list-and-open-serial-ports/21913457#21913457
+
         qDebug() << "Launching REST server";
 
         return a->exec();

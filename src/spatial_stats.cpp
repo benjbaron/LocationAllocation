@@ -63,8 +63,6 @@ bool SpatialStats::computeStats(Loader* loader) {
     currentMsg = "Compute visit matrix ("+QString::number(nbNodes)+" nodes)";
     loader->loadProgressChanged(0.1, currentMsg);
 
-    qDebug() << currentMsg;
-
     int count = 0;
     for(auto it_mobileNode = _mobileNodes.begin(); it_mobileNode != _mobileNodes.end(); ++it_mobileNode) {
         MobileNode* mobileNode = it_mobileNode.value();
