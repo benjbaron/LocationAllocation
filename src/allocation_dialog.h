@@ -14,8 +14,7 @@
 #include "utils.h"
 #include "compute_allocation.h"
 
-class AllocationDialog : public QDialog
-{
+class AllocationDialog : public QDialog {
     Q_OBJECT
 
 public:

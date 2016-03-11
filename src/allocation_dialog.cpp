@@ -7,8 +7,7 @@
 // example http://doc.qt.io/qt-5/qtwidgets-dialogs-extension-example.html
 
 AllocationDialog::AllocationDialog(QWidget *parent)
-    : QDialog(parent)
-{
+    : QDialog(parent) {
     methodChoiceLabel = new QLabel("Choose method");
     methodChoiceComboBox = new QComboBox();
     QStringList methodChoiceItems = QStringList() << "" << LOCATION_ALLOCATION_MEHTOD_NAME << PAGE_RANK_MEHTOD_NAME << K_MEANS_MEHTOD_NAME << RANDOM_METHOD_NAME;
@@ -337,8 +336,7 @@ void AllocationDialog::done() {
     QDialog::accept();
 }
 
-bool AllocationDialog::checkConsistency()
-{
+bool AllocationDialog::checkConsistency() {
     bool flag = false;
     if(method.isEmpty())
         flag = true;
