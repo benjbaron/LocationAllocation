@@ -29,6 +29,33 @@ bool Trace::openTrace(Loader *loader) {
             addPoint(node, ts, x, y);
             loader->loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size(), "");
         }
+    } else if (_filename.contains("ONE")) {
+        QFile* file = new QFile(_filename);
+        if(!file->open(QFile::ReadOnly | QFile::Text))
+            return false;
+
+        // read first line
+        // minTime maxTime minX maxX minY maxY
+        if(!file->atEnd())
+            file->readLine();
+
+        while(!file->atEnd()) {
+            QString line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+            QStringList fields = line.split(" ");
+            QString node = fields.at(1);
+            long long ts = fields.at(0).toLongLong();
+            double lat   = fields.at(3).toDouble();
+            double lon   = fields.at(2).toDouble();
+//            qDebug() << "(" << node << "," << ts << "," << lat << "," << lon << ")";
+            if(ts <= 0)
+                continue;
+            // convert the points to the local projection
+            double x, y;
+            ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
+//            qDebug() << "adding node" << node << "(" << x << "," << y << "," << ts << ")";
+            addPoint(node, ts, x, y);
+            loader->loadProgressChanged(1.0 - file->bytesAvailable() / (qreal)file->size(), "");
+        }
     } else if(_filename.contains("cabspotting")) {
 
         // "filename" is the repertory of the files

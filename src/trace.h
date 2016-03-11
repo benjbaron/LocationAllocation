@@ -64,8 +64,9 @@ public:
     void getNodes(QHash<QString, QMap<long long, QPointF>*>* nodes) {
         *nodes = _nodes;
     }
-    void getNodeTrace(QMap<long long, QPointF>** nodeTrace, QString node) {
-        *nodeTrace = _nodes.value(node);
+    void getNodeTrace(QMap<long long, QPointF>* nodeTrace, QString node) const {
+        qDebug() << node << _nodes.value(node);
+        *nodeTrace = *(_nodes.value(node));
     }
     long long getStartTime() {
         return _startTime;
