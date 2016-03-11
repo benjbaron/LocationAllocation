@@ -7,14 +7,13 @@
 
 #include <QPointF>
 #include <QList>
+#include <QDebug>
 #include <QMap>
 
 
-class ProjFactory
-{
+class ProjFactory {
 public:
-    static ProjFactory & getInstance()
-    {
+    static ProjFactory & getInstance() {
         static ProjFactory instance; // Guaranteed to be destroyed.
                                      // Instantiated on first use.
         return instance;
@@ -43,6 +42,26 @@ public:
         if(_projIn)
             return pj_get_def(_projIn,0);
         return (char*)"";
+    }
+
+    static bool areSameProj(QString proj1, QString proj2) {
+        if(proj1.isEmpty() && proj2.isEmpty())
+            return true;
+
+        projPJ pj1 = pj_init_plus(proj1.toStdString().c_str());
+        projPJ pj2 = pj_init_plus(proj2.toStdString().c_str());
+
+        return strcmp(pj_get_def(pj1,0), pj_get_def(pj2,0)) == 0;
+    }
+
+    static bool isValidProj(QString proj) {
+        projPJ pj = pj_init_plus(proj.toStdString().c_str());
+        bool ret = true;
+        if(!pj) {
+            ret = false;
+        }
+        pj_free(pj);
+        return ret;
     }
 
 private:

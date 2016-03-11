@@ -1,21 +1,15 @@
 #include "proj_factory.h"
 
 #include <QDebug>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QJsonDocument>
 
-#include "constants.h"
-
-ProjFactory::ProjFactory(QString projIn, QString projOut)
-{
+ProjFactory::ProjFactory(QString projIn, QString projOut) {
     // construct the in-projections and out-projections
     setProj(projIn, projOut);
 }
 
-void ProjFactory::transformCoordinates(double lat, double lon, double *x, double *y)
-{
-    double x1=0,y1=0;
+void ProjFactory::transformCoordinates(double lat, double lon, double *x, double *y) {
+    double x1 = 0;
+    double y1 = 0;
     // Transformation of the lat/lon coordinates to projected coordinates
     if(_projIn && _projOut) {
         x1 = lon * DEG_TO_RAD;
@@ -30,9 +24,9 @@ void ProjFactory::transformCoordinates(double lat, double lon, double *x, double
     *y = y1;
 }
 
-void ProjFactory::revertCoordinates(double x, double y, double *lat, double *lon)
-{
-    double lon1=0,lat1=0;
+void ProjFactory::revertCoordinates(double x, double y, double *lat, double *lon) {
+    double lon1 = 0;
+    double lat1 = 0;
     // Transformation of the lat/lon coordinates to projected coordinates
     if(_projIn && _projOut) {
         lon1 = x, lat1 = y;
@@ -43,6 +37,7 @@ void ProjFactory::revertCoordinates(double x, double y, double *lat, double *lon
         lon1 = x;
         lat1 = y;
     }
+
     *lat = lat1;
     *lon = lon1;
 }
