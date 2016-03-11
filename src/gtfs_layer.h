@@ -171,7 +171,7 @@ private:
     QMap<QString, QMap<int,QPointF>*> _shapes;
 
     // helper methods
-    void parseTrips();
+    void parseTrips(Loader* loader);
     long long toSeconds(QString time);
 
 };
