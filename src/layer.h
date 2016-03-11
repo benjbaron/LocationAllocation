@@ -37,12 +37,13 @@ public:
     virtual QString getInformation() { return "Layer: " + _name; }
 
     template<typename Class, typename ...A1, typename ...A2>
-    void loadWithProgressDialog(Class* object, bool (Class::*f) (A1 ...), A2&&... args) {
+    QFuture<bool> loadWithProgressDialog(Class* object, bool (Class::*f) (A1 ...), A2&&... args) {
         Loader l;
         ProgressDialog p(_parent);
         connect(&l, &Loader::loadProgressChanged, &p, &ProgressDialog::updateProgress);
-        l.load(object, f, &l, std::forward<A2>(args)...);
+        QFuture<bool> future = l.load(object, f, &l, std::forward<A2>(args)...);
         p.exec();
+        return future;
     }
 
     // menu bar methods
