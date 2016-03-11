@@ -31,14 +31,11 @@ public:
     QRectF getSceneRect() {
         return _scene->sceneRect();
     }
-    GraphicsScene* scene() {
+    QGraphicsScene* scene() {
         return _scene;
     }
     void addMenu(QMenu* menu);
     void createLayer(QString name = 0, Layer* layer = 0, Loader* loader = 0);
-
-signals:
-    void mousePressedEvent(QGraphicsSceneMouseEvent*);
 
 private slots:
     void openShapefile();
@@ -50,17 +47,17 @@ private slots:
     void addGrid();
     void showLayerPanel();
     void closedLayerPanel();
-    void onMousePressEvent();
     void changeLayerOrder(int oldIndex, int newIndex);
 
 private:
     void changeProjection(QString filename = 0, QString projOut = 0);
 
     Ui::MainWindow *ui;
-    QString _projIn = 0, _projOut = 0;
+    QString _projIn = QString();
+    QString _projOut = QString();
     QList<Layer*> _layers;
     LayerPanel* _layerPanel = 0;
-    GraphicsScene* _scene = 0;
+    QGraphicsScene* _scene = 0;
     QMenu* _layerMenu = 0;
     QAction* _showLayersAction = 0;
 };

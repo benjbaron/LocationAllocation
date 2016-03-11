@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmapCache::setCacheLimit(102400);
 
     // initialize the graphics scene
-    _scene = new GraphicsScene();
+    _scene = new QGraphicsScene();
     GraphicsView* v = new GraphicsView(_scene, this);
     setCentralWidget(v);
 
@@ -49,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen_Flickr, &QAction::triggered, this, &MainWindow::openFlickrFile);
     connect(ui->actionSet_projection, &QAction::triggered, this, &MainWindow::setProjection);
     connect(_showLayersAction, &QAction::triggered, this, &MainWindow::showLayerPanel);
-    connect(_scene, &GraphicsScene::mousePressedEvent, this, &MainWindow::onMousePressEvent);
     connect(_layerPanel, &LayerPanel::closedEvent, this, &MainWindow::closedLayerPanel);
     connect(_layerPanel, &LayerPanel::reorderEvent, this, &MainWindow::changeLayerOrder);
     connect(ui->actionAdd_Grid, &QAction::triggered, this, &MainWindow::addGrid);
@@ -205,8 +204,6 @@ void MainWindow::showLayerPanel() {
         _layerPanel->setVisible(true);
     }
 }
-
-void MainWindow::onMousePressEvent() { }
 
 void MainWindow::changeLayerOrder(int oldIndex, int newIndex) {
     int nbLayers = _layers.size();
