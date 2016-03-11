@@ -88,7 +88,7 @@ set(HEADER_FILES
         gtfs_layer.h
         csv_parser.h
         linestring_layer.h
-        flickr_layer.h spatial_stats_layer.cpp spatial_stats_layer.h compute_allocation_layer.cpp compute_allocation_layer.h trace.cpp trace.h)
+        flickr_layer.h spatial_stats_layer.cpp spatial_stats_layer.h compute_allocation_layer.cpp compute_allocation_layer.h trace.cpp trace.h export_dialog.cpp export_dialog.h trace_inspector_layer.cpp trace_inspector_layer.h trace_inspector_dialog.cpp trace_inspector_dialog.h)
 
 add_executable(LocAll ${SOURCE_FILES}
                       ${HEADER_FILES}
