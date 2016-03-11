@@ -9,8 +9,8 @@
 
 class LineStringLayer: public Layer {
 public:
-    LineStringLayer(MainWindow* parent = 0, QString name = 0, const QList<QList<QPointF>*>& ls = QList<QList<QPointF>*>()):
-            Layer(parent, name), _linestrings(ls) {}
+    LineStringLayer(MainWindow* parent = 0, const QString& name = 0, const QList<QList<QPointF>*>& ls = QList<QList<QPointF>*>()):
+            Layer(parent, name), _linestrings(ls) { }
     QGraphicsItemGroup* draw();
     virtual bool load(Loader* loader);
 

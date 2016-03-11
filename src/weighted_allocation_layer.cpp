@@ -3,8 +3,7 @@
 #include "loader.h"
 #include "qdebug.h"
 
-QGraphicsItemGroup *WeightedAllocationLayer::draw()
-{
+QGraphicsItemGroup *WeightedAllocationLayer::draw() {
     int radius = 20;
     int demandRadius = 10;
     int deletedCandiateRadius = 7;
