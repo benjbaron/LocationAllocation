@@ -159,6 +159,22 @@ static bool toggleBoldFont(QLineEdit *lineEdit, bool isValid) {
     return isValid;
 }
 
+static bool toggleBoldFont(QLabel *label, bool isValid) {
+    QFont prevFont(label->font()); // Get previous font
+    if(isValid) {
+        prevFont.setBold(false);
+        label->setFont(prevFont);
+    } else {
+        prevFont.setBold(true);
+        label->setFont(prevFont);
+    }
+    return isValid;
+}
+
+static QPointF interpolatePoint(long long time, QPointF ptBefore, long long timeBefore, QPointF ptAfter, long long timeAfter) {
+    return ( (timeAfter - time)*ptBefore + (time - timeBefore)*ptAfter) / (timeAfter - timeBefore);
+}
+
 static void verticalFlipQGraphicsItem(QGraphicsItem* item) {
     QTransform transform(item->transform());
 
