@@ -1,3 +1,4 @@
+#include <qmap.h>
 #include "trace_layer.h"
 
 #include "proj_factory.h"
@@ -5,6 +6,9 @@
 #include "spatial_stats_dialog.h"
 #include "spatial_stats.h"
 #include "spatial_stats_layer.h"
+#include "export_dialog.h"
+#include "trace_inspector_dialog.h"
+#include "trace_inspector_layer.h"
 
 QGraphicsItemGroup* TraceLayer::draw() {
     int radius = 10;
@@ -125,9 +129,13 @@ bool TraceLayer::exportLayer(Loader* loader, QString output) {
     return true;
 }
 
-bool TraceLayer::exportLayerONE(Loader* loader, QString output) {
+bool TraceLayer::exportLayerONE(Loader* loader, QString output, long long sampling, long long startTime, long long endTime) {
     loader->loadProgressChanged((qreal) 0.0, "");
-    // <timestamp, <node id, positions, state(UP|DOWN)>
+
+    /* Output trace format:
+     * <timestamp, <node id, positions, state(UP|DOWN)> */
+
+    qDebug() << output << startTime << endTime << sampling;
     QMap<long long, QMap<int, QPair<QPointF,bool>>> points;
     QMap<int,QPair<QPointF,long long>> initPos;
 
@@ -145,53 +153,94 @@ bool TraceLayer::exportLayerONE(Loader* loader, QString output) {
     _trace->getNodes(&nodes);
 
     for(auto it = nodes.begin(); it != nodes.end(); ++it) {
-        auto jt = it.value()->begin();
-        long long currentTimestamp = jt.key();
-        QPointF currentPoint = jt.value();
-        initPos.insert(nodeCounter, qMakePair(currentPoint,currentTimestamp));
 
-        if(currentTimestamp < minTime) minTime = currentTimestamp;
-        if(currentTimestamp > maxTime) maxTime = currentTimestamp;
-        if(currentPoint.x() < minX) minX = currentPoint.x();
-        if(currentPoint.x() > maxX) maxX = currentPoint.x();
-        if(currentPoint.y() < minY) minY = currentPoint.y();
-        if(currentPoint.y() > maxY) maxY = currentPoint.y();
+        QMap<long long, QPointF>* nodeTimeline = it.value();
 
-        jt++;
-        for(; jt != it.value()->end(); ++jt) {
-            long long nextTimestamp = jt.key();
-            QPointF nextPoint = jt.value();
+        long long first = nodeTimeline->firstKey();
+        long long last  = nodeTimeline->lastKey();
 
-            // determine state
-            bool state = true; // UP
-            if((nextTimestamp - currentTimestamp) > 300) {
-                state = false; // DOWN
+        // ignore timelines that are outside of the export time window
+        if(last < startTime || first > endTime || qMin(endTime, last) - qMax(startTime, first) < 2500)
+            continue;
+
+        qDebug() << it.key() << startTime << "->" << endTime << "/" << first << "->" << last << " / " << (qMin(endTime, last) - qMax(startTime, first));
+
+        // max(startTime, first), first multiple of sampling
+        long long currentTimestamp = qMax(startTime,
+                                          startTime + sampling * qCeil((double) (first-startTime) / (double) sampling));
+
+        // get the first value corresponding to "first" -> low (iterator) < value < up (iterator)
+        QMap<long long, QPointF>::const_iterator low = nodeTimeline->lowerBound(currentTimestamp);
+        if(low == nodeTimeline->constEnd())
+            continue; // should never happen
+
+        if(low != nodeTimeline->constBegin() && low.key() - (low - 1).key() < 300)
+            low -= 1; // not at the beginning of the trace
+
+        QMap<long long, QPointF>::const_iterator up = low+1;
+        QPointF currentPoint = interpolatePoint(currentTimestamp, low.value(), low.key(), up.value(), up.key());
+
+        initPos.insert(nodeCounter, qMakePair(currentPoint, currentTimestamp-startTime));
+        bool prevState = true;
+
+        while(up.key() <= endTime && up != nodeTimeline->constEnd()) {
+            up = low+1;
+
+            qDebug() << "low" << low.key() << "up" << up.key();
+
+            currentPoint = interpolatePoint(currentTimestamp, low.value(), low.key(), up.value(), up.key());
+            while(currentTimestamp < up.key() && currentTimestamp <= endTime) {
+                long long nextTimestamp = currentTimestamp + sampling;
+
+                QPointF nextPoint;
+                if(nextTimestamp <= nodeTimeline->lastKey())
+                    nextPoint = interpolatePoint(nextTimestamp, low.value(), low.key(), up.value(), up.key());
+
+                qDebug() << "\t" << currentTimestamp << nextTimestamp << currentPoint << nextPoint;
+
+                // determine state
+                bool state = true; // UP
+                if((nextTimestamp - currentTimestamp) > 300 || nextPoint.isNull()) {
+                    state = false; // DOWN
+                }
+
+                if(prevState || state) {
+                    // add current point
+                    long long shiftedTimestamp = currentTimestamp - startTime;
+                    if(!points.contains(shiftedTimestamp)) {
+                        points.insert(shiftedTimestamp, QMap<int, QPair<QPointF,bool>>());
+                    }
+                    points[shiftedTimestamp][nodeCounter] = qMakePair(currentPoint, state);
+
+                    PointSampling* ps = new PointSampling();
+                    ps->low = low.value();
+                    ps->lowTime = low.key();
+                    ps->point = currentPoint;
+                    ps->time = currentTimestamp;
+                    ps->up = up.value();
+                    ps->upTime = up.key();
+
+                    pointSampling.append(ps);
+
+                    // update the boundaries
+                    if(shiftedTimestamp < minTime) minTime = shiftedTimestamp;
+                    if(shiftedTimestamp > maxTime) maxTime = shiftedTimestamp;
+                    if(currentPoint.x() < minX) minX = currentPoint.x();
+                    if(currentPoint.x() > maxX) maxX = currentPoint.x();
+                    if(currentPoint.y() < minY) minY = currentPoint.y();
+                    if(currentPoint.y() > maxY) maxY = currentPoint.y();
+                }
+
+                currentTimestamp = nextTimestamp;
+                currentPoint = nextPoint;
+                prevState = state;
             }
-            // add current point
-            if(!points.contains(currentTimestamp)) {
-                points.insert(currentTimestamp, QMap<int, QPair<QPointF,bool>>());
-            }
-            points[currentTimestamp][nodeCounter] = qMakePair(currentPoint, state);
 
-            // update the boundaries
-            if(nextTimestamp < minTime) minTime = nextTimestamp;
-            if(nextTimestamp > maxTime) maxTime = nextTimestamp;
-            if(nextPoint.x() < minX) minX = nextPoint.x();
-            if(nextPoint.x() > maxX) maxX = nextPoint.x();
-            if(nextPoint.y() < minY) minY = nextPoint.y();
-            if(nextPoint.y() > maxY) maxY = nextPoint.y();
-
-            currentTimestamp = nextTimestamp;
-            currentPoint = nextPoint;
+            low = up;
         }
-        //insert last timestamp
-        if(!points.contains(currentTimestamp)) {
-            points.insert(currentTimestamp, QMap<int, QPair<QPointF,bool>>());
-        }
-        points[currentTimestamp][nodeCounter] = qMakePair(currentPoint, false);
 
         nodeCounter++;
-        loader->loadProgressChanged(0.5 * ((qreal) nodeCounter / (qreal) size), "");
+        loader->loadProgressChanged(0.8 * ((qreal) nodeCounter / (qreal) size), "");
     }
     loader->loadProgressChanged((qreal) 0.5, "");
 
@@ -205,7 +254,6 @@ bool TraceLayer::exportLayerONE(Loader* loader, QString output) {
     QTextStream out(&file);
     // write first line
     // minTime maxTime minX maxX minY maxY [minZ maxZ]
-    QString::number(minTime, 'f', 2);
     out << QString::number(minTime, 'f', 0) << " "
         << QString::number(maxTime, 'f', 0) << " "
         << QString::number(minX - 500, 'f', 0) << " "
@@ -221,9 +269,9 @@ bool TraceLayer::exportLayerONE(Loader* loader, QString output) {
         QPointF pos = jt.value().first;
         long long timestamp = jt.value().second;
         out << QString::number(firstTimestamp, 'f', 0) << " "
-            << QString::number(nodeID, 'f', 0) << " "
-            << QString::number(pos.x(), 'f', 0) << " "
-            << QString::number(pos.y(), 'f', 0) << " "
+            << QString::number(nodeID,         'f', 0) << " "
+            << QString::number(pos.x(),        'f', 2) << " "
+            << QString::number(pos.y(),        'f', 2) << " "
             << ((timestamp == firstTimestamp) ? "UP" : "DOWN") << "\n";
     }
     it++;
@@ -241,15 +289,18 @@ bool TraceLayer::exportLayerONE(Loader* loader, QString output) {
             // write line
             // time id xPos yPos
             out << QString::number(timestamp, 'f', 0) << " "
-                << QString::number(nodeID, 'f', 0) << " "
-                << QString::number(pos.x(), 'f', 4) << " "
-                << QString::number(pos.y(), 'f', 4) << " "
+                << QString::number(nodeID,    'f', 0) << " "
+                << QString::number(pos.x(),   'f', 2) << " "
+                << QString::number(pos.y(),   'f', 2) << " "
                 << (state ? "UP" : "DOWN") << "\n";
         }
-        loader->loadProgressChanged(0.5 + ((qreal) ++count / (qreal) size), "");
+        loader->loadProgressChanged(0.8 + 0.2 * ((qreal) ++count / (qreal) size), "");
     }
     loader->loadProgressChanged((qreal) 1.0, "Done");
     file.close();
+    qDebug() << QString("MovementModel.worldSize = %1, %2").arg(QString::number(1000+(int)(maxX-minX)),
+                                                                QString::number(1000+(int)(maxY-minY)));
+    qDebug() << QString("Group1.nrofHosts = %1").arg(QString::number(nodeCounter));
     qDebug() << "[DONE] finished writing in file" << output;
 
     return true;
@@ -404,6 +455,7 @@ bool TraceLayer::exportLayerText(Loader* loader, QString output, long long durat
 void TraceLayer::addMenuBar() {
     _menu = new QMenu("Trace");
     QAction* actionShowIntermediatePoints = _menu->addAction("Show intermediate points");
+    QAction* actionShowTraceInspector = _menu->addAction("Show trace inspector");
     QAction* actionExportTraceTxt = _menu->addAction("Export trace (text)");
     QAction* actionExportTraceShp = _menu->addAction("Export trace (shapefile)");
     QAction* actionExportONETrace = _menu->addAction("Export trace (ONE)");
@@ -419,6 +471,20 @@ void TraceLayer::addMenuBar() {
         IntermediatePosLayer* layer = new IntermediatePosLayer(_parent, name, _trace);
         Loader loader;
         _parent->createLayer(name, layer, &loader);
+    });
+
+    connect(actionShowTraceInspector, &QAction::triggered, [=](bool checked){
+        QString name = "Trace inspector";
+        TraceInspectorDialog diag(_parent, name, _trace);
+        diag.exec(); // sync
+        QString nodeId = diag.getNodeId();
+
+        qDebug() << "nodeId" << nodeId;
+
+        TraceInspectorLayer* traceInspectorLayer = new TraceInspectorLayer(_parent, name, _trace, nodeId);
+
+        Loader loader;
+        _parent->createLayer(name, traceInspectorLayer, &loader);
     });
 
     connect(actionExportTraceTxt, &QAction::triggered, [=](bool checked){
@@ -463,14 +529,34 @@ void TraceLayer::addMenuBar() {
         if(filename.isEmpty())
             return;
 
+        ExportDialog exportDiag(_parent, "Set export attributes", _trace->getStartTime(), _trace->getEndTime());
+
+        int ret = exportDiag.exec(); // synchronous
+        if (ret == QDialog::Rejected) {
+            return;
+        }
+        long long sampling  = exportDiag.getSampling();
+        long long starttime = exportDiag.getStartTime();
+        long long endtime   = exportDiag.getEndTime();
+
         qDebug() << "Exporting ONE trace" << filename;
-        loadWithProgressDialog(this, &TraceLayer::exportLayerONE, filename);
-//        ProgressDialog progressDialog(_parent, "Writing ONE "+QFileInfo(filename).fileName());
-//        connect(this, &TraceLayer::loadProgressChanged, &progressDialog, &ProgressDialog::updateProgress);
-//        QtConcurrent::run([&](QString filename){
-//            exportLayerONE(filename);
-//        }, filename);
-//        progressDialog.exec();
+        QFuture<bool> future = loadWithProgressDialog(this, &TraceLayer::exportLayerONE, filename, sampling, starttime, endtime);
+        future.result(); // sync
+
+        if(!pointSampling.isEmpty()) {
+            TraceInspectorDialog diag(0, "Trace inspector", _trace);
+            if (diag.exec() == QDialog::Rejected) {
+                return;
+            }
+
+            QString nodeId = diag.getNodeId();
+            QString layerName = "Node inspector for "+nodeId;
+            TraceSamplingInspectorLayer* layer = new TraceSamplingInspectorLayer(_parent, layerName, _trace, pointSampling, nodeId);
+
+            // load the layer
+            Loader l;
+            _parent->createLayer(layerName, layer, &l);
+        }
     });
 
     connect(actionExportTraceGrid, &QAction::triggered, [=](bool checked){
@@ -498,6 +584,7 @@ void TraceLayer::addMenuBar() {
             if (ret == QDialog::Rejected) {
                 return;
             }
+
             double sampling  = spatialStatsDialog.getSampling();
             double startTime = spatialStatsDialog.getStartTime();
             double endTime   = spatialStatsDialog.getEndTime();

@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "progress_dialog.h"
 #include "trace.h"
+#include "trace_inspector_layer.h"
 #include <QAction>
 
 class SpatialStatsLayer;
@@ -27,13 +28,14 @@ public:
 
     /* Export functions */
     bool exportLayer(Loader* loader, QString output);
-    bool exportLayerONE(Loader* loader, QString output);
+    bool exportLayerONE(Loader* loader, QString output, long long sampling, long long startTime, long long endTime);
     bool exportLayerText(Loader* loader, QString output, long long duration = 86400);
     bool exportLayerGrid(Loader* loader, QString output, int cellSize = 200, long long duration = 86400);
 
 protected:
     SpatialStatsLayer* _spatialStatsLayer = 0;
     Trace* _trace;
+    QList<PointSampling*> pointSampling;
 
 };
 
