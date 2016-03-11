@@ -24,7 +24,6 @@ private slots:
 
 private:
     bool checkConsistency();
-    bool isValidProj(QString proj);
     bool toggleBoldFont(QComboBox* combo, bool isValid);
 
     Ui::ProjectionDialog *ui;

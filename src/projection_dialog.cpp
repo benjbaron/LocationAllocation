@@ -4,14 +4,15 @@
 #include <QPushButton>
 #include <QSettings>
 
-#include "proj_api.h"
+#include "proj_factory.h"
+#include <QDebug>
 
 ProjectionDialog::ProjectionDialog(QWidget* parent, QString filename, QString projOut) :
-    QDialog(parent),
-    ui(new Ui::ProjectionDialog),
-    _filename(filename),
-    _projOut(projOut)
-{
+        QDialog(parent),
+        ui(new Ui::ProjectionDialog),
+        _filename(filename),
+        _projOut(projOut) {
+
     ui->setupUi(this);
     this->setWindowTitle("Set projection for " + _filename);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
@@ -23,7 +24,7 @@ ProjectionDialog::ProjectionDialog(QWidget* parent, QString filename, QString pr
         ui->comboBox_projIn->addItems(_projIns);
     }
     _projIn = ui->comboBox_projIn->currentText();
-    _isProjInValid = toggleBoldFont(ui->comboBox_projIn, isValidProj(_projIn));
+    _isProjInValid = toggleBoldFont(ui->comboBox_projIn, ProjFactory::isValidProj(_projIn));
 
     if(_projOut.isEmpty()) {
         _projOuts = settings.value("savedProjOuts", QStringList()).toStringList();
@@ -35,7 +36,7 @@ ProjectionDialog::ProjectionDialog(QWidget* parent, QString filename, QString pr
         ui->comboBox_projOut->setCurrentText(_projOut);
         ui->comboBox_projOut->setDisabled(true);
     }
-    _isProjOutValid = toggleBoldFont(ui->comboBox_projOut, isValidProj(_projOut));
+    _isProjOutValid = toggleBoldFont(ui->comboBox_projOut, ProjFactory::isValidProj(_projOut));
 
     // connect the combo boxes signals
     connect(ui->comboBox_projIn, &QComboBox::editTextChanged, this, &ProjectionDialog::projInEdited);
@@ -45,41 +46,43 @@ ProjectionDialog::ProjectionDialog(QWidget* parent, QString filename, QString pr
     checkConsistency();
 }
 
-ProjectionDialog::~ProjectionDialog()
-{
+ProjectionDialog::~ProjectionDialog() {
     delete ui;
 }
 
-void ProjectionDialog::getProjections(QString* projIn, QString* projOut)
-{
-    *projIn  = ui->comboBox_projIn->currentText();
-    *projOut = ui->comboBox_projOut->currentText();
+void ProjectionDialog::getProjections(QString* projIn, QString* projOut) {
+    QString pIn  = ui->comboBox_projIn->currentText();
+    QString pOut = ui->comboBox_projOut->currentText();
+
+    qDebug() << ProjFactory::areSameProj(pIn, pOut) << pIn << pOut;
+
+    if(!ProjFactory::areSameProj(pIn, pOut)) {
+        *projIn  = pIn;
+        *projOut = pOut;
+    }
 }
 
-void ProjectionDialog::projInEdited(QString text)
-{
+void ProjectionDialog::projInEdited(QString text) {
     _projIn = text;
     if(!text.isEmpty()) {
-        _isProjInValid = toggleBoldFont(ui->comboBox_projIn, isValidProj(text));
+        _isProjInValid = toggleBoldFont(ui->comboBox_projIn, ProjFactory::isValidProj(text));
     } else {
         _isProjInValid = true;
     }
     checkConsistency();
 }
 
-void ProjectionDialog::projOutEdited(QString text)
-{
+void ProjectionDialog::projOutEdited(QString text) {
     _projOut = text;
     if(!text.isEmpty()) {
-        _isProjOutValid = toggleBoldFont(ui->comboBox_projOut, isValidProj(text));
+        _isProjOutValid = toggleBoldFont(ui->comboBox_projOut, ProjFactory::isValidProj(text));
     } else {
         _isProjOutValid = true;
     }
     checkConsistency();
 }
 
-void ProjectionDialog::onAccepted()
-{
+void ProjectionDialog::onAccepted() {
     // save the current projections
     if(!ui->comboBox_projIn->currentText().isEmpty()){
         QString projIn = ui->comboBox_projIn->currentText();
@@ -113,8 +116,7 @@ void ProjectionDialog::onAccepted()
     QDialog::accept();
 }
 
-bool ProjectionDialog::checkConsistency()
-{
+bool ProjectionDialog::checkConsistency() {
     bool flag = false;
     if( (_projIn.isEmpty() && !_projOut.isEmpty()) || (!_projIn.isEmpty() && _projOut.isEmpty()) ) {
         flag = true;
@@ -126,13 +128,12 @@ bool ProjectionDialog::checkConsistency()
         flag = false;
     }
 
-    // Disable the "OK" button dependng on the final value of flag
+    // Disable the "OK" button depending on the final value of flag
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(flag);
     return flag;
 }
 
-bool ProjectionDialog::toggleBoldFont(QComboBox* combo, bool isValid)
-{
+bool ProjectionDialog::toggleBoldFont(QComboBox* combo, bool isValid) {
     QFont prevFont(combo->font()); // Get previous font
     if(isValid) {
         prevFont.setBold(false);
@@ -144,13 +145,3 @@ bool ProjectionDialog::toggleBoldFont(QComboBox* combo, bool isValid)
     return isValid;
 }
 
-bool ProjectionDialog::isValidProj(QString proj)
-{
-    projPJ pj = pj_init_plus(proj.toStdString().c_str());
-    bool ret = true;
-    if(!pj) {
-        ret = false;
-    }
-    pj_free(pj);
-    return ret;
-}
