@@ -39,11 +39,10 @@ GTFSTrace::GTFSTrace(QString filename, bool snapToShape):
         qWarning() << "One file is missing from the directory";
     }
 
-    _trajectories = QMap<QString, Trajectory *>();
+    _trajectories = QMap<QString, Trajectory*>();
 }
 
-void GTFSTrace::parseTrips()
-{
+void GTFSTrace::parseTrips(Loader* loader) {
     QVector<QMap<QString, QString>> stopList  = QVector<QMap<QString, QString>>();
     QVector<QMap<QString, QString>> timesList = QVector<QMap<QString, QString>>();
     QVector<QMap<QString, QString>> tripsList = QVector<QMap<QString, QString>>();
@@ -59,6 +58,10 @@ void GTFSTrace::parseTrips()
     qDebug() << stopList.count() << " / " << timesList.count() << " / " << tripsList.count() << " / " << shapesList.count();
 
     // get all the trips (trajectories)
+    QString progressMsg    = "Parse trip";
+    double  progressFactor = _snapToShape ? 0.1 : 0.3;
+    int size = tripsList.size();
+    int count = 0;
     QMap<QString,Trip*> tripsMap = QMap<QString,Trip*>();
     foreach (auto trip, tripsList) {
         QString routeId = trip.value("route_id");
@@ -69,6 +72,9 @@ void GTFSTrace::parseTrips()
         QString shapeId = trip.value("shape_id");
         tripsMap.insert(tripId,
                         new Trip(routeId, serviceId, tripId, tripHeadsign, directionId, shapeId));
+
+        loader->loadProgressChanged(progressFactor*((double)count / (double)size), progressMsg+" "+tripId);
+        count ++;
     }
 
     qDebug() << "trajectories count: " << tripsMap.count();
@@ -154,7 +160,7 @@ void GTFSTrace::parseTrips()
     if(_snapToShape) {
         for(auto it = trajectories.begin(); it != trajectories.end(); ++it) {
             QString tripId = it.key();
-            Trip * trip = tripsMap.value(tripId);
+            Trip* trip = tripsMap.value(tripId);
             QString shapeId = trip->getShapeId();
 
             // convert the corresponding shape into a LineString
@@ -240,7 +246,7 @@ long long GTFSTrace::toSeconds(QString time) {
 bool GTFSTrace::openTrace(Loader* loader) {
     qDebug() << "Begin parsing trips";
     loader->loadProgressChanged(0.0, "Parsing the trips");
-    parseTrips();
+    parseTrips(loader);
 
     loader->loadProgressChanged(0.1, "Adding trajectories");
 
@@ -250,7 +256,7 @@ bool GTFSTrace::openTrace(Loader* loader) {
         Trajectory* traj = _trajectories.value(trajId);
         for (auto mvt: traj->getTrajectory().keys()) {
             WayPoint* stop = traj->getTrajectory().value(mvt);
-            addPoint(QString::number(id), mvt,
+            addPoint(trajId, mvt,
                      stop->getCoords().x(), stop->getCoords().y());
         }
         id++;
@@ -325,12 +331,13 @@ void GTFSLayer::exportStops() {
         return;
 
     // choose radius
-    NumberDialog numDiag(_parent, "Radius");
+    NumberDialog numDiag(_parent, "Set radius");
+    numDiag.addField("Radius", 0);
     int ret = numDiag.exec(); // synchronous
     if (ret == QDialog::Rejected) {
         return;
     }
-    int radius = numDiag.getNumber();
+    int radius = (int)numDiag.getNumber(0);
     GTFSTrace* ptrace = static_cast<GTFSTrace*>(_trace);
     qDebug() << "Exporting" << ptrace->getStops()->size() << "stops in" << filename;
     QFile file(filename);

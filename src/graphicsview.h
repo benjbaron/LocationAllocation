@@ -7,18 +7,17 @@
 #include <qpixmapcache.h>
 
 
-class GraphicsView: public QGraphicsView
-{
+class GraphicsView: public QGraphicsView {
 public:
     GraphicsView(QGraphicsScene* scene, QWidget* parent) :
-        QGraphicsView(scene, parent)
-    {
+        QGraphicsView(scene, parent) {
         _scale = 1;
 //        setDragMode(ScrollHandDrag);
+//        setMouseTracking(true);
+//        viewport()->setMouseTracking(true);
     }
 
-    void wheelEvent(QWheelEvent* e)
-    {
+    void wheelEvent(QWheelEvent* e) {
         setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
         // Scale the view / do the zoom
         double scaleFactor = 1.15;
