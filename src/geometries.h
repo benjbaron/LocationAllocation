@@ -111,8 +111,7 @@ signals:
     void mousePressedEvent(Geometry*, bool);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event)
-    {
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) {
         if(event->button() == Qt::LeftButton) {
             event->accept();
             emit mousePressedEvent(_geom, (event->modifiers() == Qt::ShiftModifier));
