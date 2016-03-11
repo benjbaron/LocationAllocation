@@ -207,12 +207,13 @@ void ShapefileLayer::exportIntersectionPoints() {
         return;
 
     // choose radius
-    NumberDialog numDiag(_parent, "Radius");
+    NumberDialog numDiag(_parent, "Set radius");
+    numDiag.addField("Radius", 0);
     int ret = numDiag.exec(); // synchronous
     if (ret == QDialog::Rejected) {
         return;
     }
-    int radius = numDiag.getNumber();
+    int radius = (int)numDiag.getNumber(0);
 
     qDebug() << "Exporting" << _pointLayer->get_points().size() << "intersection points in" << filename;
     QFile file(filename);
