@@ -44,7 +44,7 @@ public:
     double averageSampling() {
         if(_sampling < 0.0) {
             // compute the sampling
-            long long sum = 0;
+            double sum = 0.0;
             long long count = 0;
             for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
                 auto jt = it.value()->begin();
@@ -56,7 +56,7 @@ public:
                     prevTimeStamp = curTimeStamp;
                 }
             }
-            _sampling = ((double)sum) / ((double) count);
+            _sampling = sum / ((double) count);
         }
         return _sampling;
     }
@@ -68,6 +68,7 @@ public:
         qDebug() << node << _nodes.value(node);
         *nodeTrace = *(_nodes.value(node));
     }
+
     long long getStartTime() {
         return _startTime;
     }
@@ -78,6 +79,8 @@ public:
         return _nodes.size();
     }
     double averageSpeed();
+    double averageSpeed(const QString& nodeId);
+
     QString getName() const {
         qDebug() << "name of the trace: " << _filename;
         return QFileInfo(_filename).fileName();

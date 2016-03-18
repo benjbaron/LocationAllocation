@@ -144,12 +144,10 @@ void Trace::openDieselNetNodeTrace(QString filename, QString node) {
 
     // read the content of the file
     QFile* file = new QFile(filename);
-    if(!file->open(QFile::ReadOnly | QFile::Text))
-    {
+    if(!file->open(QFile::ReadOnly | QFile::Text)) {
         return;
     }
-    while(!file->atEnd())
-    {
+    while(!file->atEnd()) {
         QString line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
         QStringList fields = line.split(" ");
         QString ts = fields.at(0);
@@ -179,29 +177,32 @@ double Trace::averageSpeed() {
     if(_averageSpeeds.isEmpty()) {
         // compute the average speed for each node
         for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
-            int count = 0;
-            double sum = 0.0;
-
-            auto jt = it.value()->begin();
-            long long prevTS = jt.key();
-            QPointF prevPos = jt.value();
-            for(jt++; jt != it.value()->end(); ++jt) {
-                long long curTS = jt.key();
-                QPointF curPos = jt.value();
-                double distance = qSqrt(qPow(prevPos.x() - curPos.x(), 2) + qPow(prevPos.y() - curPos.y(), 2));
-                long long timeDiff = curTS - prevTS;
-                sum += distance / timeDiff;
-                count++;
-//                qDebug() << prevPos << curPos << prevTS << curTS << distance << timeDiff << sum << count;
-                prevPos = curPos;
-                prevTS = curTS;
-            }
-
-            // add the average speed for the current node to the distribution
-            int value = (int) (sum / count);
-            _averageSpeeds.addValue(value);
+            _averageSpeeds.addValue((int) averageSpeed(it.key()));
         }
     }
 
     return _averageSpeeds.getAverage();
+}
+
+double Trace::averageSpeed(const QString& nodeId) {
+    QMap<long long, QPointF>* trace = _nodes.value(nodeId);
+    int count = 0;
+    double sum = 0.0;
+    auto jt = trace->begin();
+    long long prevTS = jt.key();
+    QPointF prevPos = jt.value();
+    for(jt++; jt != trace->end(); ++jt) {
+        long long curTS = jt.key();
+        QPointF curPos = jt.value();
+        double distance = qSqrt(qPow(prevPos.x() - curPos.x(), 2) + qPow(prevPos.y() - curPos.y(), 2));
+        long long timeDiff = curTS - prevTS;
+        sum += distance / timeDiff;
+        count++;
+//                qDebug() << prevPos << curPos << prevTS << curTS << distance << timeDiff << sum << count;
+        prevPos = curPos;
+        prevTS = curTS;
+    }
+
+    // add the average speed for the current node to the distribution
+    return sum / count;
 }

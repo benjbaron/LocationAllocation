@@ -20,13 +20,27 @@ public:
     }
 
     void revertCoordinates(double x, double y, double* lat, double* lon);
+    void transformCoordinates(const QString& projIn, double lat, double lon, double* x, double* y);
     void transformCoordinates(double lat, double lon, double* x, double* y);
-    void setProj(QString projIn, QString projOut) {
+    void setProj(const QString& projIn, const QString& projOut) {
+        setProjIn(projIn);
+        setProjOut(projOut);
+    }
+
+    void setProjIn(const QString& projIn) {
         if(!projIn.isEmpty())
             _projIn  = pj_init_plus(projIn.toStdString().c_str());
+    }
+
+    void setProjOut(const QString& projOut) {
         if(!projOut.isEmpty())
             _projOut = pj_init_plus(projOut.toStdString().c_str());
     }
+
+    void getProj(projPJ* proj, const QString& p) {
+        *proj = pj_init_plus(p.toStdString().c_str());
+    }
+
     void setProj(projPJ projIn, projPJ projOut) {
         _projIn  = projIn;
         _projOut = projOut;
@@ -65,11 +79,12 @@ public:
     }
 
 private:
-    ProjFactory(QString projIn = 0, QString projOut = 0);
+    ProjFactory(const QString& projIn = 0, const QString& projOut = 0);
     ProjFactory(ProjFactory const&)     = delete;
     void operator=(ProjFactory const&)  = delete;
 
-    projPJ _projIn = 0, _projOut = 0;
+    projPJ _projIn  = 0;
+    projPJ _projOut = 0;
 };
 
 #endif // PROJFACTORY_H

@@ -2,7 +2,11 @@
 #define UTILS_H
 
 #include <iostream>
+#include <ogr_geometry.h>
 #include "qcustomplot.h"
+#include <geos/geom/LineString.h>
+#include <geos/geom/GeometryFactory.h>
+#include <geos/geom/CoordinateArraySequence.h>
 
 enum WithinOperator { And, Or, NoneWithin };
 enum TravelTimeStat { NoneTT, Med, Avg };
@@ -21,6 +25,42 @@ static double euclideanDistance(double x1, double y1, double x2, double y2) {
 static double euclideanDistance(QPointF a, QPointF b) {
     return euclideanDistance(a.x(), a.y(), b.x(), b.y());
 }
+
+static void getLineStringGraphicsItem(OGRLineString* ls, QGraphicsPathItem*& item) {
+    QPainterPath path;
+    OGRPoint pt;
+    ls->getPoint(0,&pt);
+    path.moveTo(QPointF(pt.getX(), -1*pt.getY()));
+    for(int i = 1; i < ls->getNumPoints(); ++i) {
+        ls->getPoint(i,&pt);
+        path.lineTo(QPointF(pt.getX(), -1*pt.getY()));
+    }
+    item = new QGraphicsPathItem(path);
+}
+
+static void convertFromOGRtoGEOS(OGRLineString* in, geos::geom::LineString*& out) {
+    geos::geom::CoordinateSequence* coordinates = new geos::geom::CoordinateArraySequence();
+    for(int i = 0; i < in->getNumPoints(); ++i) {
+        OGRPoint pt;
+        in->getPoint(i, &pt);
+        geos::geom::Coordinate coord(pt.getX(), pt.getY());
+        qDebug() << "\t" << pt.getX() << pt.getY() << QString::fromStdString(coord.toString());
+        coordinates->add(coord);
+    }
+    geos::geom::GeometryFactory globalFactory;
+    out = globalFactory.createLineString(coordinates);
+}
+
+static void convertFromGEOStoOGR(geos::geom::LineString *in, OGRLineString *out) {
+    out->empty(); // empty the linestring
+    geos::geom::CoordinateSequence* seq = in->getCoordinates();
+
+    for(int i = 0; i < seq->getSize(); ++i) {
+        geos::geom::Coordinate coord = seq->getAt(i);
+        out->addPoint(coord.x, coord.y);
+    }
+}
+
 
 class Distribution {
 public:

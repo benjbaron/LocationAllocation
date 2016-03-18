@@ -66,7 +66,7 @@ void MainWindow::openShapefile() {
     QSettings settings;
     QString filename = QFileDialog::getOpenFileName(this,
                        "Open a Shapefile",
-                       settings.value("defaultShapefilePath",
+                       settings.value("defaultShapefileFilePath",
                                       QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString(),
                        "Shapefile (*.shp);;WKT files (*.wkt)");
 
@@ -74,24 +74,26 @@ void MainWindow::openShapefile() {
         return;
     }
     // Save the filename path in the app settings
-    settings.setValue("defaultShapefilePath", QFileInfo(filename).absolutePath());
+    settings.setValue("defaultShapefileFilePath", QFileInfo(filename).absolutePath());
     QString name = QFileInfo(filename).fileName();
 
     changeProjection(name, _projOut);
 
     // instantiate a new layer and a new loader
-    ShapefileLayer* layer = new ShapefileLayer(this, name, filename);
+    Shapefile* shapefile = new Shapefile(filename);
+    ShapefileLayer* layer = new ShapefileLayer(this, name, shapefile);
     Loader loader;
     createLayer(name, layer, &loader);
 }
 
 void MainWindow::openTrace() {
     QSettings settings;
-    QFileDialog d(this, "Open a trace directory");
+    QFileDialog d(this, "Open a trace file");
     d.setFileMode(QFileDialog::Directory);
     QString filename = d.getOpenFileName(this,
                                          "Open a trace directory",
-                                         settings.value("defaultTracePath", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString());
+                                         settings.value("defaultTracePath",
+                                                        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString());
 
 
     if(filename.isEmpty()) {
@@ -106,7 +108,7 @@ void MainWindow::openTrace() {
 
     // instantiate a new layer and a new loader
     Trace* t = new Trace(filename);
-    TraceLayer* layer  = new TraceLayer(this, name, t);
+    TraceLayer* layer = new TraceLayer(this, name, t);
     Loader loader;
     createLayer(name, layer, &loader);
 }
@@ -131,8 +133,8 @@ void MainWindow::openTraceDirectory() {
     changeProjection(name, _projOut);
 
     // instantiate a new layer and a new loader
-    Trace t(path);
-    TraceLayer* layer  = new TraceLayer(this, name, &t);
+    Trace* t = new Trace(path);
+    TraceLayer* layer  = new TraceLayer(this, name, t);
     Loader loader;
     createLayer(name, layer, &loader);
     qDebug() << "[DONE] opening directory" << path;
@@ -186,6 +188,24 @@ void MainWindow::changeProjection(QString filename, QString projOut) {
     projectionDialog.getProjections(&_projIn, &_projOut);
     ProjFactory::getInstance().setProj(_projIn, _projOut);
 }
+
+QString MainWindow::getProjIn(QString filename, QString projOut) {
+    // execute the projection dialog
+    ProjectionDialog projectionDialog(this, filename, projOut);
+    int ret = projectionDialog.exec(); // synchronous
+    if (ret == QDialog::Rejected) {
+        return QString();
+    }
+
+    QString pIn;
+    QString pOut;
+
+    // Get the projections
+    projectionDialog.getProjections(&pIn, &pOut);
+
+    return pIn;
+}
+
 
 void MainWindow::closedLayerPanel() {
     // received a close event from the layer panel

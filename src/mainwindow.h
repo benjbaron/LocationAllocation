@@ -36,6 +36,8 @@ public:
     }
     void addMenu(QMenu* menu);
     void createLayer(QString name = 0, Layer* layer = 0, Loader* loader = 0);
+    void changeProjection(QString filename = 0, QString projOut = 0);
+    QString getProjIn(QString filename = 0, QString projOut = 0);
 
 private slots:
     void openShapefile();
@@ -50,8 +52,6 @@ private slots:
     void changeLayerOrder(int oldIndex, int newIndex);
 
 private:
-    void changeProjection(QString filename = 0, QString projOut = 0);
-
     Ui::MainWindow *ui;
     QString _projIn = QString();
     QString _projOut = QString();
