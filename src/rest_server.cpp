@@ -104,7 +104,9 @@ public slots:
                         Loader l;
                         ProgressConsole p;
                         connect(&l, &Loader::loadProgressChanged, &p, &ProgressConsole::updateProgress);
-                        l.load(_computeAllocation, &ComputeAllocation::processAllocationMethod, &l, &params, &allocation);
+                        QFuture<bool> future = l.load(_computeAllocation, &ComputeAllocation::processAllocationMethod, &l, &params, &allocation);
+
+                        future.result(); // wait for the results
 
                         originalReq = QString(
                                 "{\"method\":\"%1\",\"nbFacilities\":\"%2\",\"deadline\":\"%3\",\"delFactor\":\"%4\",\"travelTime\":\"%5\",\"distance\":\"%6\"}").arg(
@@ -122,7 +124,8 @@ public slots:
                         Loader l;
                         ProgressConsole p;
                         connect(&l, &Loader::loadProgressChanged, &p, &ProgressConsole::updateProgress);
-                        l.load(_computeAllocation, &ComputeAllocation::runRandomAllocation, &l, nbFacilities, &allocation);
+                        QFuture<bool> future = l.load(_computeAllocation, &ComputeAllocation::runRandomAllocation, &l, nbFacilities, &allocation);
+                        future.result(); // wait for the results
 
                         originalReq = QString("{\"method\":\"%1\",\"nbFacilities\":\"%2\"}").arg(method,
                                                                                                 QString::number(nbFacilities));
@@ -134,7 +137,6 @@ public slots:
                     res->setStatusCode(qhttp::ESTATUS_OK);
                     res->addHeader("Content-Type", "application/json");
                     res->end(respBody.toUtf8());
-
                 }
 
             });
