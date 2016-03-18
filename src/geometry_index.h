@@ -9,8 +9,7 @@
 
 class Geometry;
 
-class GeometryIndex
-{
+class GeometryIndex {
 public:
     GeometryIndex(QSet<Geometry*>& geometries, double cellSize = 100);
     void getGeometriesAt(QSet<Geometry*>* geometries, double x, double y);
@@ -31,9 +30,11 @@ private:
 
     /* private functions */
     QPoint getGridCellAt(double x, double y) {
-        return QPoint((int)qFloor(x / _cellSize), (int)qFloor(y / _cellSize));
+        return QPoint(qFloor(x / _cellSize), qFloor(y / _cellSize));
     }
-    QPoint getGridCellAt(QPointF p) { return getGridCellAt(p.x(), p.y()); }
+    QPoint getGridCellAt(QPointF p) {
+        return getGridCellAt(p.x(), p.y());
+    }
 };
 
 #endif // GEOMETRYINDEX_H

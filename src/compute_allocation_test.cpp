@@ -7,8 +7,7 @@
 
 
 /* To compile this file and execute the main below, add this file to the CMakeList and remove the main.cpp */
-struct comparePairs
-{
+struct comparePairs {
     bool operator()(const QPair<double, QString>& l, const QPair<double, QString>& r)
     {
         return l.first > r.first;
@@ -59,8 +58,7 @@ int main(int argc, char *argv[]) {
     pq.push(QPair<double, QString>(0.0,"f"));
     pq.push(QPair<double, QString>(9.0,"g"));
 
-    while ( !pq.empty() )
-    {
+    while ( !pq.empty() ) {
         qDebug() << pq.top();
         pq.pop();
     }

@@ -3,8 +3,7 @@
 #include "geometries.h"
 #include "trace_layer.h"
 
-GeometryIndex::GeometryIndex(QSet<Geometry*>& geometries, double cellSize)
-{
+GeometryIndex::GeometryIndex(QSet<Geometry*>& geometries, double cellSize) {
     // save the cell size
     if(cellSize == -1.0) _cellSize = 100; // default cell size
     else _cellSize = cellSize;
@@ -26,10 +25,10 @@ GeometryIndex::GeometryIndex(QSet<Geometry*>& geometries, double cellSize)
     }
 }
 
-void GeometryIndex::getGeometriesAt(QSet<Geometry*>* geometries, double x, double y)
-{
+void GeometryIndex::getGeometriesAt(QSet<Geometry*>* geometries, double x, double y) {
     // get the corresponding grid cell index of the point p
     QPoint cellIdx = getGridCellAt(x,y);
+
     // get the set of Geometries at the index
     QSet<Geometry*>* geoms = _geometryGrid.value(cellIdx);
 //    qDebug() << "point" << x << y << cellIdx << _cellSize << geoms->size() << _geometryGrid.size();
@@ -111,6 +110,7 @@ GeometryIndex* GeometryIndex::make_geometryIndex(Trace* trace,
             geometries.insert(geom);
         }
     }
+
     GeometryIndex* geometryIndex = new GeometryIndex(geometries, geometryCellsSize);
     return geometryIndex;
 }

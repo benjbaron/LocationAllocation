@@ -6,8 +6,7 @@
 #include <qmath.h>
 #include "loader.h"
 
-class IntermediatePosLayer: public Layer
-{
+class IntermediatePosLayer: public Layer {
 public:
     IntermediatePosLayer(MainWindow* parent = 0, QString name = 0, Trace* trace = 0):
         Layer(parent, name), _trace(trace) { }
