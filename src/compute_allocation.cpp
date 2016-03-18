@@ -35,7 +35,6 @@ bool ComputeAllocation::processAllocationMethod(Loader* loader,
 
         if(method == LOCATION_ALLOCATION_MEHTOD_NAME) {
             /* Location allocation */
-            loader->loadProgressChanged(0.0, "Computing location allocation");
             runLocationAllocation(loader, params, allocation);
 
         } else if(method == PAGE_RANK_MEHTOD_NAME) {
