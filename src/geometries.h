@@ -13,6 +13,17 @@
 
 enum GeometryType { NoneType, CircleType, CellType, CoordType };
 
+const QColor TRACE_SELECTED_COL  = QColor(231, 76, 60);
+const QColor LINK_SELECTED_COL   = QColor(153, 14, 240);
+const QColor LINK_UNSELECTED_COL = QColor(52, 73, 94);
+const QColor TRACE_LINK_JOINT_COL = QColor(52, 152, 219);
+
+const int    TRACE_SELECTED_WID  = 3;
+const int    LINK_SELECTED_WID   = 5;
+const int    LINK_UNSELECTED_WID = 2;
+
+
+
 class Bounds {
 public:
     explicit Bounds(double x1, double x2, double y1, double y2) {
@@ -95,7 +106,6 @@ public:
     QString toString() { return "Cell topleft ("+ QString::number(topLeft().x()) +", "+QString::number(topLeft().y())+") width " + QString::number(width()); }
 };
 
-
 /* Corresponding Graphics classes */
 class GeometryGraphics: public QObject, public QGraphicsItem {
     Q_OBJECT
@@ -149,6 +159,149 @@ public:
     QRectF boundingRect() const { return QGraphicsEllipseItem::boundingRect(); }
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) { return QGraphicsEllipseItem::paint(painter, option, widget); }
 };
+
+
+class ArrowLineItem: public QObject, public QGraphicsLineItem {
+    Q_OBJECT
+public:
+    ArrowLineItem(double x1, double y1, double x2, double y2, int nodeId, int linkId, double cutStart = 0, double cutEnd = 0):
+            QGraphicsLineItem(x1,-1*y1,x2,-1*y2), _selectionOffset(10), _nodeId(nodeId), _linkId(linkId), _isTraceSelected(false), _isLinkSelected(false),
+            _unselectedCol(LINK_UNSELECTED_COL), _selectedCol(LINK_SELECTED_COL), _traceSelectedCol(TRACE_SELECTED_COL),
+            _unselectedWid(LINK_UNSELECTED_WID), _selectedWid(LINK_SELECTED_WID), _traceSelectedWid(TRACE_SELECTED_WID) {
+
+        setFlags(QGraphicsItem::ItemIsSelectable);
+        // create subline
+        QLineF cLine = line();
+        double factorStart = cutStart / cLine.length();
+        double factorEnd   = cutEnd   / cLine.length();
+        _subLine = QLineF(cLine.pointAt(0.0+factorStart), cLine.pointAt(1.0-factorEnd));
+        createSelectionPolygon();
+    }
+
+    enum { Type = UserType + 1 };
+    int type() const { return Type; }
+
+    QRectF boundingRect() const {
+        return _selectionPolygon.boundingRect();
+    }
+
+    QPainterPath shape() const {
+        QPainterPath ret;
+        ret.addPolygon(_selectionPolygon);
+        return ret;
+    }
+
+    void setColors(QColor unselectedCol, QColor selectedCol, QColor traceSelectedCol) {
+        _unselectedCol = unselectedCol;
+        _selectedCol = selectedCol;
+        _traceSelectedCol = traceSelectedCol;
+    }
+
+    void setWidths(int unselectedWid, int selectedWid, int traceSelectedWid) {
+        _unselectedWid = unselectedWid;
+        _selectedWid = selectedWid;
+        _traceSelectedWid = traceSelectedWid;
+    }
+
+    void paint( QPainter* aPainter,
+                const QStyleOptionGraphicsItem* aOption,
+                QWidget* aWidget /*= nullptr*/ ) {
+        Q_UNUSED( aOption );
+        Q_UNUSED( aWidget );
+
+        qreal lineAngle = _subLine.angle();
+        QLineF head1 = _subLine;
+        head1.setAngle(lineAngle+32);
+        QLineF head2 = _subLine;
+        head2.setAngle(lineAngle-32);
+
+        QPen pen;
+        pen.setCosmetic(true);
+        pen.setStyle(Qt::SolidLine);
+
+        int size;
+
+        if(_isLinkSelected) {
+            pen.setColor(_selectedCol);
+            pen.setWidth(_selectedWid);
+            size = _selectedWid;
+        } else {
+            if(_isTraceSelected) {
+                pen.setColor(_traceSelectedCol);
+                pen.setWidth(_traceSelectedWid);
+                size = _traceSelectedWid;
+            } else {
+                pen.setColor(_unselectedCol);
+                pen.setWidth(_unselectedWid);
+                size = _unselectedWid;
+            }
+        }
+
+        head1.setLength( size * 4 );
+        head2.setLength( size * 4 );
+
+        aPainter->setPen( pen );
+        aPainter->drawLine( _subLine );
+        aPainter->drawLine( head1 );
+        aPainter->drawLine( head2 );
+    }
+
+    void setLabel(QString label) {
+        _label = new QGraphicsTextItem(label, this);
+        QPointF center = boundingRect().center();
+        _label->setPos(center.x() - (_label->boundingRect().width()  / 2.0),
+                       center.y() - (_label->boundingRect().height() / 2.0));
+    }
+
+    void setTraceSelected(bool selected) {
+        _isTraceSelected = selected;
+        update();
+    }
+    void setLinkSelected(bool selected) {
+        _isLinkSelected = selected;
+        update();
+    }
+
+signals:
+    void mousePressedEvent(int, int, bool);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) {
+        qDebug() << "[ArrowLineItem] Link clicked / Node" << _nodeId << "link" << _linkId << _isTraceSelected << _isLinkSelected;
+        bool mod = (event->modifiers() == Qt::ShiftModifier);
+        emit mousePressedEvent(_nodeId, _linkId, mod);
+    }
+
+private:
+    QGraphicsTextItem* _label;
+    QLineF _subLine;
+    qreal _selectionOffset;
+    QPolygonF _selectionPolygon;
+    int _nodeId;
+    int _linkId;
+    bool _isTraceSelected;
+    bool _isLinkSelected;
+
+    QColor _unselectedCol, _selectedCol, _traceSelectedCol;
+    int _unselectedWid, _selectedWid, _traceSelectedWid;
+
+    void createSelectionPolygon() {
+        QPolygonF nPolygon;
+        qreal pi = 3.141592653589793238463;
+        qreal radAngle = line().angle()* pi / 180;
+        qreal dx = _selectionOffset * sin(radAngle);
+        qreal dy = _selectionOffset * cos(radAngle);
+        QPointF offset1 = QPointF(dx, dy);
+        QPointF offset2 = QPointF(-dx, -dy);
+        nPolygon << line().p1() + offset1
+        << line().p1() + offset2
+        << line().p2() + offset2
+        << line().p2() + offset1;
+        _selectionPolygon = nPolygon;
+        update();
+    }
+};
+
 
 #endif // GEOMETRIES_H
 
