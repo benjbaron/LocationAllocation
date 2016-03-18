@@ -149,7 +149,8 @@ def run(settings, key, values, key2="", values2=[]):
 def get_options():
     optParser = optparse.OptionParser()
     optParser.add_option("-f", "--file", action="store", dest='file', help="setting file")
-    optParser.add_option("-m", "--mobility", action="store", dest='mobility', help='type of mobility')
+    optParser.add_option("-m", "--mobility", action="store", dest='mobility', help='type of mobility', default="")
+    optParser.add_option("-a", "--mobility-file", action="store", dest='mobilityFile', help='mobility file', default="")
     optParser.add_option("-d", "--deadline", action="store", dest='deadline', help='deadline of the requests',
                          default=120, type="int")
     optParser.add_option("-s", "--max-storage", action="store", dest='maxStorage',
@@ -175,6 +176,7 @@ def build_settings_file(settings):
     nrofHostGroups = 1
     movementModel = ""
     mobility = settings["mobility"]
+    mobilityFile = settings["mobilityFile"]
     simTime = settings["simTime"]
     nrofMobileUsers = settings["nrofMobileUsers"]
 
@@ -246,6 +248,11 @@ Group2.movementModel = MapBasedMovement
 MapBasedMovement.nrofMapFiles = 1
 MapBasedMovement.mapFile1 = /Users/ben/Documents/workspace/ONE/src/one_1.4.1/data/FileSystem/world.wkt
 """.format(mobility=mobility, nrofMobileUsers=nrofMobileUsers)
+    elif mobility == "" and mobilityFile != "":
+        with open(mobilityFile, "r") as file_mobility:
+            nrofHostGroups = 1+int(next(file_mobility))
+            for line in file_mobility:
+                movementModel += line
 
     if settings["facilityPlacement"] in ["random", "grid", "file"]:
         facilityPlacement = settings["facilityPlacement"]
@@ -285,12 +292,14 @@ Group.nrofInterfaces = 1
 Group.interface1 = wifi
 Group.speed = 2.7, 13.9
 
-Group1.groupID = f
-Group1.nrofHosts = {nrofFacilities}
-Group1.movementModel = StationaryMovement
-# Group1.movementModel = RandomWaypoint # To make the facilities move
-Group1.nodeLocation = -1, -1
 {movementModel}
+
+Group{nrofHostGroups}.groupID = f
+Group{nrofHostGroups}.nrofHosts = {nrofFacilities}
+Group{nrofHostGroups}.movementModel = StationaryMovement
+# Group{nrofHostGroups}.movementModel = RandomWaypoint # To make the facilities move
+Group{nrofHostGroups}.nodeLocation = -1, -1
+
 Report.nrofReports = 1
 Report.warmup = 0
 Report.reportDir = reports/
@@ -333,9 +342,10 @@ if __name__ == '__main__':
     options = get_options()
     settings = {
         "file": options.file,
-        "simTime": 10000,
+        "simTime": 10800,
         "deadline": 3600,  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
-        "mobility": "MapBasedMovement",  # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", # options.mobility,
+        "mobility": "MapBasedMovement",  # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", "" # options.mobility,
+        "mobilityFile": "settings.txt", 
         "nrofFacilities": 50,  # options.nrofFacilities,
         "nrofMobileUsers": 50,
         "b": 1,  # number of simulations in batch to launch
@@ -349,10 +359,10 @@ if __name__ == '__main__':
         "propagationTimer": -1,
         "nrofFileCopies": -1,
         "useGlobalInformation": False,
-        "useBackendNodes": True,
+        "useBackendNodes": False,
         "putPolicy": "first"  # {"all", "first"}
     }
 
-    out = run(settings, "nrofFacilities", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], "nrofFileCopies", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
+    out = run(settings, "nrofFacilities", [1,2,3], "deadline", [2000, 2500, 3000, 3600])
     for o in out:
         print o
