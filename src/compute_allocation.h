@@ -42,7 +42,7 @@ private:
     SpatialStats* _spatialStats;
 
     /* Returns the cells from "cells" that are within distance "distance" and/or travel time "travelTime" of "cell" in "cellsWithinDistance", depending on "op" */
-    void geomWithin(QSet<Geometry*>* cellsWithin, QSet<Geometry*> cells, Geometry* cell, double distance = -1.0, double travelTime = -1.0, DistanceStat ds = Auto, TravelTimeStat ts = Med);
+    void geomWithin(QSet<Geometry*>* cellsWithin, const QSet<Geometry*>& cells, Geometry* cell, double distance = -1.0, double travelTime = -1.0, DistanceStat ds = Auto, TravelTimeStat ts = Med);
 
 
     // private methods for the location allocation computation
