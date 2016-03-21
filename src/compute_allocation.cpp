@@ -54,7 +54,7 @@ bool ComputeAllocation::processAllocationMethod(Loader* loader,
 }
 
 void ComputeAllocation::geomWithin(QSet<Geometry*>* geomWithin,
-                                   QSet<Geometry*> geoms,
+                                   const QSet<Geometry*>& geoms,
                                    Geometry* geom,
                                    double distance,
                                    double travelTime,
@@ -66,23 +66,32 @@ void ComputeAllocation::geomWithin(QSet<Geometry*>* geomWithin,
 
 //    QRectF cell1(cell.x()*_geometriesize, cell.y()*+_geometriesize, _geometriesize, _geometriesize);
     foreach(Geometry* g, geoms) {
-        if(g == geom) continue; // skip the geometry itself
-        bool distance_flag = false, travelTime_flag = false;
-        double dist, tt;
+        if(g == geom)
+            continue; // skip the geometry itself
+
+        bool distance_flag = false;
+        bool travelTime_flag = false;
+        double dist;
+        double tt;
+
         if(ds != NoneD && distance > 0.0) {
             dist = g->distance(geom);
             if(std::islessequal(dist,distance)) {
                 distance_flag = true;
             }
         }
-        if(ts != NoneTT && travelTime > 0.0) {
+        if(ts != NoneTT || travelTime > 0.0) {
             GeometryMatrixValue* val;
-            _spatialStats->getValue(&val, g,geom);
+            _spatialStats->getValue(&val, g, geom);
             if(val) {
-                if(ts == Avg)
+                if(ts == Avg) {
                     tt = val->travelTimeDist.getAverage();
-                else if(ts == Med)
+                }
+
+                else if(ts == Med) {
                     tt = val->travelTimeDist.getMedian();
+                }
+
                 if(std::islessequal(tt,travelTime)) {
                     travelTime_flag = true;
                 }
@@ -108,7 +117,7 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
     // demands are the geometries
     // candidates are the geometries
 
-    // get the allocation parameters from the AllocationParams srtucture
+    // get the allocation parameters from the AllocationParams structure
     long long      deadline     = params->deadline;
     int            nbFacilities = params->nbFacilities;
     double         delFactor    = params->delFactor;   // deletion factor
