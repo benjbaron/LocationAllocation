@@ -249,6 +249,7 @@ MapBasedMovement.nrofMapFiles = 1
 MapBasedMovement.mapFile1 = /Users/ben/Documents/workspace/ONE/src/one_1.4.1/data/FileSystem/world.wkt
 """.format(mobility=mobility, nrofMobileUsers=nrofMobileUsers)
     elif mobility == "" and mobilityFile != "":
+        print "hello", mobilityFile
         with open(mobilityFile, "r") as file_mobility:
             nrofHostGroups = 1+int(next(file_mobility))
             for line in file_mobility:
@@ -344,7 +345,7 @@ if __name__ == '__main__':
         "file": options.file,
         "simTime": 10800,
         "deadline": 3600,  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
-        "mobility": "MapBasedMovement",  # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", "" # options.mobility,
+        "mobility": "",  # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", "" # options.mobility,
         "mobilityFile": "settings.txt", 
         "nrofFacilities": 50,  # options.nrofFacilities,
         "nrofMobileUsers": 50,
