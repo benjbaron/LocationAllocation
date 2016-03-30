@@ -1,6 +1,7 @@
 #ifndef WEIGHTEDALLOCATIONLAYER_H
 #define WEIGHTEDALLOCATIONLAYER_H
 
+/*
 #include "geometries.h"
 
 // forward class declarations
@@ -61,5 +62,5 @@ private:
     QSet<QPointF> _selectedPoints;
     const QHash<Geometry*,Allocation*>* _alloc;
 };
-
+*/
 #endif // WEIGHTEDALLOCATIONLAYER_H
