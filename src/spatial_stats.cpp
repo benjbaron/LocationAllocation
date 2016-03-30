@@ -1,7 +1,5 @@
 #include "spatial_stats.h"
 
-#include "loader.h"
-
 SpatialStats::SpatialStats(Trace* trace,
                            long long sampling,
                            long long startTime,
@@ -51,6 +49,116 @@ void SpatialStats::populateMobileNodes(Loader* loader) {
     }
 }
 
+void SpatialStats::computeVisitMatrix(QString& node) {
+    MobileNode* mobileNode = _mobileNodes.value(node);
+    auto geoms = mobileNode->getGeometries(); // get the set of geometries the node visits
+    qDebug() << "Node" << mobileNode->getId();
+    for(auto it = geoms.begin(); it != geoms.end(); ++it) {
+        long long start1 = it.key();
+
+        // loop through the geometries visited at the same start time start1
+        for (auto kt = it.value()->begin(); kt != it.value()->end(); ++kt) {
+            Geometry *geom1 = kt.key();
+            long long end1 = kt.value();
+
+            _geometriesMutex.lock();
+            // add the geometry to the set of visited geometries
+            if (!_geometries.contains(geom1))
+                _geometries.insert(geom1, new GeometryValue(geom1));
+
+            // update the corresponding geometry value
+            GeometryValue *val = _geometries.value(geom1);
+            val->visits.insert(start1, end1);
+            val->visitFrequency.append(start1);
+            val->nodes.insert(mobileNode->getId());
+            _geometriesMutex.unlock();
+
+            // examine the subsequent visited geometries
+            QSet<Geometry *> visitedGeometries; // remember the cells the node visited
+            // to avoid accounting for them multiple times
+            for (auto jt = it + 1; jt != geoms.end(); ++jt) {
+                long long start2 = jt.key();
+
+                // loop through the geometries visited at the same start time start2
+                for (auto lt = jt.value()->begin(); lt != jt.value()->end(); ++lt) {
+                    Geometry *geom2 = lt.key();
+                    long long end2 = lt.value();
+
+                    // stop when the node visits the same starting geometry again
+                    if (geom1 == geom2) break;
+
+                    // do not take account already visited geometries
+                    if (visitedGeometries.contains(geom2))
+                        continue;
+
+                    _geometryMatrixMutex.lock();
+                    // add the geometry to the matrix of visited geometries
+                    if (!_geometryMatrix.contains(geom1)) {
+                        _geometryMatrix.insert(geom1, new QHash<Geometry *, GeometryMatrixValue *>());
+                    }
+                    if (!_geometryMatrix.value(geom1)->contains(geom2)) {
+                        _geometryMatrix.value(geom1)->insert(geom2, new GeometryMatrixValue(geom1, geom2));
+                    }
+
+                    GeometryMatrixValue *matVal = _geometryMatrix.value(geom1)->value(geom2);
+                    matVal->travelTimeDist.addValue((int) qMax((long long) 0, start2 - start1));
+                    matVal->visitFrequency.append(start1);
+                    matVal->visits.insert(start1, end1);
+                    matVal->nodes.insert(mobileNode->getId());
+                    _geometryMatrixMutex.unlock();
+
+                    visitedGeometries.insert(geom2);
+                }
+            }
+        }
+    }
+}
+
+void SpatialStats::computeInterVisits(Geometry* geom) {
+    GeometryValue* val = _geometries.value(geom);
+    auto visits = val->visits;
+    long long prevStartTime = visits.firstKey();
+    for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
+        long long start = kt.key();
+        foreach(long long end, visits.values(start)) {
+            val->interVisitDurationDist.addValue((int) (start-prevStartTime));
+            prevStartTime = start;
+        }
+    }
+    val->localStat = computeLocalStat(val->cell);
+    val->color = selectColorForLocalStat(val->localStat);
+}
+
+void SpatialStats::computeInterVisitsMatrix(Geometry* geom1) {
+    auto geoms = _geometryMatrix.value(geom1);
+    for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
+        Geometry* geom2 = jt.key();
+        GeometryMatrixValue* val = jt.value();
+        auto visits = val->visits;
+        long long prevStartTime = visits.firstKey();
+        for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
+            long long start = kt.key();
+            foreach(long long end, visits.values(start)) {
+                val->interVisitDurationDist.addValue((int) (start-prevStartTime));
+                prevStartTime = start;
+            }
+        }
+
+        // update the connections counters
+        if(_geometryMatrix.contains(geom2)) {
+            if(_geometryMatrix.value(geom2)->contains(geom1)) {
+                _geometriesMutex.lock();
+                if(_geometries.contains(geom2)) {
+                    _geometries.value(geom2)->connections++;
+                    int travelTime = qCeil(_geometryMatrix.value(geom2)->value(geom1)->travelTimeDist.getAverage());
+                    _geometries.value(geom2)->travelTimes.addValue(travelTime);
+                }
+                _geometriesMutex.unlock();
+            }
+        }
+    }
+}
+
 bool SpatialStats::computeStats(Loader* loader) {
     QString currentMsg = "Populate the nodes";
     loader->loadProgressChanged(0.0, currentMsg);
@@ -63,71 +171,36 @@ bool SpatialStats::computeStats(Loader* loader) {
     currentMsg = "Compute visit matrix ("+QString::number(nbNodes)+" nodes)";
     loader->loadProgressChanged(0.1, currentMsg);
 
-    int count = 0;
-    for(auto it_mobileNode = _mobileNodes.begin(); it_mobileNode != _mobileNodes.end(); ++it_mobileNode) {
-        MobileNode* mobileNode = it_mobileNode.value();
-        auto geoms = mobileNode->getGeometries(); // get the set of geometries the node visits
-        for(auto it = geoms.begin(); it != geoms.end(); ++it) {
-            long long start1 = it.key();
 
-            // loop through the geometries visited at the same start time start1
-            for(auto kt = it.value()->begin(); kt != it.value()->end(); ++kt) {
-                Geometry* geom1 = kt.key();
-                long long end1  = kt.value();
+    /** Compute the visit matrix
+     *  -> populate _geometryMatrix and _geometries for each mobile node examined */
+//    double count = 0.0;
+//    for(auto it = _mobileNodes.begin(); it != _mobileNodes.end(); ++it) {
+//        computeVisitMatrix(it.value());
+//        loader->loadProgressChanged(0.1 + 0.4 * (count / (qreal) nbNodes), currentMsg);
+//        count++;
+//    }
+    {
+        int size = _geometries.size();
+        QEventLoop loop;
+        QFutureWatcher<void> futureWatcher;
+        QObject::connect( &futureWatcher, SIGNAL(finished()), &loop, SLOT(quit()));
+    //        QObject::disconnect(&futureWatcher, &QFutureWatcher<void>::progressValueChanged, 0, 0);
+        QObject::connect(&futureWatcher, &QFutureWatcher<void>::progressValueChanged, [=](int progress) {
+            loader->loadProgressChanged(0.1 + 0.4 * (progress / (qreal) nbNodes), currentMsg);
+        });
 
-                // add the geometry to the set of visited geometries
-                if(!_geometries.contains(geom1))
-                    _geometries.insert(geom1, new GeometryValue(geom1));
-
-                // update the corresponding geometry value
-                GeometryValue* val = _geometries.value(geom1);
-                val->visits.insert(start1, end1);
-                val->visitFrequency.append(start1);
-                val->nodes.insert(it_mobileNode.key());
-
-                // examine the subsequent visited geometries
-                QSet<Geometry*> visitedGeometries; // remember the cells the node visited
-                                                   // to avoid accounting for them multiple times
-                for(auto jt = it+1; jt != geoms.end(); ++jt) {
-                    long long start2 = jt.key();
-
-                    // loop through the geometries visited at the same start time start2
-                    for(auto lt = jt.value()->begin(); lt != jt.value()->end(); ++lt) {
-                        Geometry* geom2 = lt.key();
-                        long long end2  = lt.value();
-
-                        // stop when the node visits the same stating geometry again
-                        if(geom1 == geom2) break;
-
-                        // do not take account already visited geometries
-                        if(visitedGeometries.contains(geom2))
-                            continue;
-
-                        // add the geometry to the matrix of visited geometries
-                        if(!_geometryMatrix.contains(geom1)) {
-                            _geometryMatrix.insert(geom1, new QHash<Geometry*, GeometryMatrixValue*>());
-                        }
-                        if(!_geometryMatrix.value(geom1)->contains(geom2)) {
-                            _geometryMatrix.value(geom1)->insert(geom2, new GeometryMatrixValue(geom1, geom2));
-                        }
-
-                        GeometryMatrixValue* matVal = _geometryMatrix.value(geom1)->value(geom2);
-                        matVal->travelTimeDist.addValue((int) qMax((long long) 0, start2-start1));
-                        matVal->visitFrequency.append(start1);
-                        matVal->visits.insert(start1, end1);
-                        matVal->nodes.insert(it_mobileNode.key());
-
-                        visitedGeometries.insert(geom2);
-                    }
-                }
-            }
-        }
-
-        // update the UI or console
-        count++;
-        loader->loadProgressChanged(0.1 + 0.4 * ((qreal) count / (qreal) nbNodes), currentMsg);
+        /** Compute the inter-visit durations for the cells */
+        QList<QString> nodes = _mobileNodes.keys();
+        futureWatcher.setFuture(QtConcurrent::map(nodes, [this] (QString& node) {
+            computeVisitMatrix(node);
+        }));
+        loop.exec();
+        futureWatcher.waitForFinished();
     }
 
+
+/** Compute the inter-visit matrix */
     currentMsg = "Inter-visit ("
                  +QString::number(_geometryMatrix.size())+")"
                  +" matrix size, ("
@@ -135,72 +208,54 @@ bool SpatialStats::computeStats(Loader* loader) {
                  +" nodes size)";
     loader->loadProgressChanged(0.4, currentMsg);
 
-    currentMsg = "Compute inter-visit durations (cells)";
-    // compute the inter-visit durations for the cells
-    count = 0;
-    int size = _geometries.size();
-    for(auto it = _geometries.begin(); it != _geometries.end(); ++it) {
-        Geometry* geom = it.key();
-        GeometryValue* val = it.value();
-        auto visits = val->visits;
-        long long prevStartTime = visits.firstKey();
-        for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
-            long long start = kt.key();
-            foreach(long long end, visits.values(start)) {
-                val->interVisitDurationDist.addValue((int) (start-prevStartTime));
-                prevStartTime = start;
-            }
-        }
-        val->localStat = computeLocalStat(geom);
-        val->color = selectColorForLocalStat(val->localStat);
+    {
+        currentMsg = "Compute inter-visit durations (cells)";
+        int size = _geometries.size();
+        QEventLoop loop;
+        QFutureWatcher<void> futureWatcher;
+        QObject::connect( &futureWatcher, SIGNAL(finished()), &loop, SLOT(quit()));
+//        QObject::disconnect(&futureWatcher, &QFutureWatcher<void>::progressValueChanged, 0, 0);
+        QObject::connect(&futureWatcher, &QFutureWatcher<void>::progressValueChanged, [=](int progress) {
+            loader->loadProgressChanged(0.5 + 0.16 * ((qreal) progress / (qreal) size), currentMsg);
+        });
 
-        // update the UI
-        count++;
-        loader->loadProgressChanged(0.5 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
+        /** Compute the inter-visit durations for the cells */
+        QList<Geometry*> geoms = _geometries.keys();
+        futureWatcher.setFuture(QtConcurrent::map(geoms, [this] (Geometry* geom) {
+            computeInterVisits(geom);
+        }));
+        loop.exec();
+        futureWatcher.waitForFinished();
     }
 
     currentMsg = "Compute inter-visit durations (matrix)";
     loader->loadProgressChanged(0.66, currentMsg);
 
-    // compute the inter-visit durations for the matrix cells
-    count = 0;
-    size = _geometryMatrix.size();
-    for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
-        Geometry* geom1 = it.key();
-        auto geoms = it.value();
-        for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
-            Geometry* geom2 = jt.key();
-            GeometryMatrixValue* val = jt.value();
-            auto visits = val->visits;
-            long long prevStartTime = visits.firstKey();
-            for(auto kt = visits.begin(); kt != visits.end(); ++kt) {
-                long long start = kt.key();
-                foreach(long long end, visits.values(start)) {
-                    val->interVisitDurationDist.addValue((int) (start-prevStartTime));
-                    prevStartTime = start;
-                }
-            }
+    {
+        int size = _geometryMatrix.size();
+        QEventLoop loop;
+        QFutureWatcher<void> futureWatcher;
+        QObject::connect( &futureWatcher, SIGNAL(finished()), &loop, SLOT(quit()));
+//        QObject::disconnect(&futureWatcher, &QFutureWatcher<void>::progressValueChanged, 0, 0);
+        QObject::connect(&futureWatcher, &QFutureWatcher<void>::progressValueChanged, [=](int progress) {
+            loader->loadProgressChanged(0.66 + 0.16 * ((qreal) progress / (qreal) size), currentMsg);
+        });
 
-            // update the connections counters
-            if(_geometryMatrix.contains(geom2)) {
-                if(_geometryMatrix.value(geom2)->contains(geom1)) {
-                    if(_geometries.contains(geom2)) {
-                        _geometries.value(geom2)->connections++;
-                        int travelTime = (int) qCeil(_geometryMatrix.value(geom2)->value(geom1)->travelTimeDist.getAverage());
-                        _geometries.value(geom2)->travelTimes.addValue(travelTime);
-                    }
-                }
-            }
-        }
-        count++;
-        loader->loadProgressChanged(0.66 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
+        // compute the inter-visit durations for the matrix cells
+        QList<Geometry*> geoms = _geometryMatrix.keys();
+        futureWatcher.setFuture(QtConcurrent::map(geoms, [this] (Geometry* geom) {
+            computeInterVisitsMatrix(geom);
+        }));
+        loop.exec();
+        futureWatcher.waitForFinished();
     }
 
     currentMsg = "Compute scores";
     loader->loadProgressChanged(0.82, currentMsg);
 
-    count = 0;
-    size = _geometryMatrix.size();
+    // compute the scores
+    double count = 0.0;
+    int size = _geometryMatrix.size();
     for(auto it = _geometryMatrix.begin(); it != _geometryMatrix.end(); ++it) {
         Geometry* geom1 = it.key();
         GeometryValue* nodeVal = _geometries.value(geom1);
@@ -228,7 +283,6 @@ bool SpatialStats::computeStats(Loader* loader) {
             edgeVal->avgScore = edgeAvgScore;
         }
 
-        // update the UI and console
         count++;
         loader->loadProgressChanged(0.82 + 0.16 * ((qreal) count / (qreal) size), currentMsg);
     }
@@ -290,7 +344,7 @@ void MobileNode::addPosition(long long time, double x, double y) {
         // number of intermediate positions (with the sampling)
         int nbPos = qMax(1, qCeil((time - _prevTime) / _sampling));
         for(int i = 1; i <= nbPos; ++i) {
-            long long t = _prevTime + i*_sampling; // get the sampling time
+            long long t = _prevTime + i*_sampling; // get the sampling time from the prevTime
             QPointF p = (time - t)*_prevPos + (t - _prevTime)*pos;
             p /= (time - _prevTime);
 
@@ -312,6 +366,8 @@ void MobileNode::addPosition(long long time, double x, double y) {
                 long long startTimeGeom = _startTimeGeometries.value(geom);
                 _visitedGeometries.value(startTimeGeom)->insert(geom, time);
             }
+
+            _prevGeometries = geoms;
         }
     }
     _prevPos = QPointF(x,y);

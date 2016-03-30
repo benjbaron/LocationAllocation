@@ -19,6 +19,7 @@ public:
         _id(id), _sampling(sampling), _spatialStats(spatialStats) { }
 
     void addPosition(long long time, double x, double y);
+    QString getId() { return _id; }
 
     QMap<long long, QHash<Geometry*,long long>*> getGeometries() { return _visitedGeometries; }
 
@@ -40,7 +41,7 @@ public:
 
 private:
     QString _id;
-    int _sampling;                  // linear interoplation at different times
+    int _sampling;                  // linear interpolation at different times
     QSet<Geometry*> _prevGeometries;
     QHash<Geometry*, long long> _startTimeGeometries;   // record the start time of each geometry (reverse hash)
     long long _prevTime = 0;        // node previous time of the point recording
@@ -84,8 +85,8 @@ struct GeometryMatrixValue {
 };
 
 
-class SpatialStats {
-
+class SpatialStats : public QObject {
+    Q_OBJECT
 public:
     SpatialStats(Trace* trace = nullptr,
                  long long sampling = -1,
@@ -165,9 +166,11 @@ public:
 
 private:
     Trace* _trace;
-    QHash<QString, MobileNode*> _mobileNodes;
+    QHash<QString, MobileNode*> _mobileNodes; // <mobileNodeId, mobileNode>
     QHash<Geometry*, QHash<Geometry*, GeometryMatrixValue*>* > _geometryMatrix;
+    QMutex _geometryMatrixMutex;
     QHash<Geometry*, GeometryValue*> _geometries;
+    QMutex _geometriesMutex;
     GeometryIndex* _geometryIndex;
 
     long long _sampling = 1; // each 1 second
@@ -175,6 +178,10 @@ private:
     long long _endTime;
 
     QColor selectColorForLocalStat(qreal zScore);
+    void computeVisitMatrix(QString& node);
+    void computeInterVisits(Geometry* geom);
+    void computeInterVisitsMatrix(Geometry* geom1);
+
 };
 
 #endif // SPATIALSTATS_H
