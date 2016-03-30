@@ -52,7 +52,7 @@ public slots:
                     QUrlQuery query(queryStr);
 
                     QString originalReq = "{}";
-                    QHash<Geometry *, Allocation *> allocation;
+                    QHash<Geometry*, Allocation*> allocation;
 
                     // convert the method name
                     if (method == "loc") method = LOCATION_ALLOCATION_MEHTOD_NAME;
@@ -75,7 +75,10 @@ public slots:
                                 QString stat = exp1.capturedTexts()[1];
                                 if (stat == "med") ttStat = Med;
                                 else if (stat == "avg") ttStat = Avg;
-                                travelTime = stat.toDouble();
+                                else { // a number
+                                    ttStat = Avg;
+                                    travelTime = stat.toDouble();
+                                }
                             }
                         }
 
@@ -96,16 +99,11 @@ public slots:
 
                         AllocationParams params(deadline,nbFacilities,delFactor,ttStat,dStat,travelTime,distance,method);
 
-                        qDebug() << "Method" << method << "nbFacilities" << nbFacilities << "deadline" << deadline <<
-                        "delFactor" << delFactor << "travelStat" << ttStat << "travelTime" << travelTime << "dstat" <<
-                        dStat << "distance" << distance;
-
                         /* run the allocation function */
                         Loader l;
                         ProgressConsole p;
                         connect(&l, &Loader::loadProgressChanged, &p, &ProgressConsole::updateProgress);
                         QFuture<bool> future = l.load(_computeAllocation, &ComputeAllocation::processAllocationMethod, &l, &params, &allocation);
-
                         future.result(); // wait for the results
 
                         originalReq = QString(
@@ -268,9 +266,16 @@ QString ClientHandler::constructResponse(QHash<Geometry*, Allocation*> const &al
     QString allocationStr = "{";
     int allocationCtr = 0;
     for (auto it = allocation.begin(); it != allocation.end(); ++it) {
+        qDebug() << "candidate" << it.key()->getCenter().x() << it.value()->rank
+                 << "allocated" << it.value()->weight << "(demand weight)"
+                 << it.value()->backendWeight << "(backend weight)" << it.value()->backends.size()
+                 << it.value()->incomingWeight << "(incoming weight)"
+                 << "with" << it.value()->demands.size() << "demands"
+                 << "and" << it.value()->deletedCandidates.size() << "candidates deleted" ;
+
         allocationStr += QString(
                 "\"%1\": {\"x\":\"%2\", \"y\":\"%3\", \"weight\":\"%4\", \"nbAllocated\":\"%5\", \"nbDeleted\":\"%6\", \"rank\":\"%7\"},").arg(
-                QString::number(it.value()->rank), QString::number(it.key()->getCenter().x()),
+                QString::number(allocationCtr), QString::number(it.key()->getCenter().x()),
                 QString::number(it.key()->getCenter().y()), QString::number(it.value()->weight),
                 QString::number(it.value()->demands.size()),
                 QString::number(it.value()->deletedCandidates.size()),
