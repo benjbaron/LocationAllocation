@@ -34,32 +34,33 @@
     <addaction name="actionOpen_Shapefile"/>
     <addaction name="actionSet_projection"/>
     <addaction name="actionAdd_Grid"/>
+    <addaction name="actionExport_PDF"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
   <action name="actionOpen_Trace">
    <property name="text">
-    <string>Open Trace</string>
+    <string>Open Trace...</string>
    </property>
   </action>
   <action name="actionOpen_TraceDir">
    <property name="text">
-    <string>Open Trace Directory</string>
+    <string>Open Trace Directory...</string>
    </property>
   </action>
   <action name="actionOpen_GTFS">
      <property name="text">
-      <string>Open GTFS Directory</string>
+      <string>Open GTFS Directory...</string>
      </property>
     </action>
   <action name="actionOpen_Flickr">
    <property name="text">
-    <string>Open Flickr file</string>
+    <string>Open Flickr file...</string>
    </property>
   </action>
   <action name="actionOpen_Shapefile">
    <property name="text">
-    <string>Open Shapefile</string>
+    <string>Open Shapefile...</string>
    </property>
   </action>
   <action name="actionSet_projection">
@@ -67,59 +68,14 @@
     <string>Set projection</string>
    </property>
   </action>
-  <action name="actionShow_layer">
-   <property name="text">
-    <string>Show layers</string>
-   </property>
-  </action>
   <action name="actionAdd_Grid">
    <property name="text">
     <string>Add Grid</string>
    </property>
   </action>
-  <action name="actionCompute_allocation">
+  <action name="actionExport_PDF">
    <property name="text">
-    <string>Compute allocation</string>
-   </property>
-  </action>
-  <action name="actionExport_Trace">
-   <property name="text">
-    <string>Export Trace</string>
-   </property>
-  </action>
-  <action name="actionExport_ONETrace">
-   <property name="text">
-    <string>Export ONE Trace</string>
-   </property>
-  </action>
-  <action name="actionExport_facilities">
-   <property name="text">
-    <string>Export facilities</string>
-   </property>
-  </action>
-  <action name="actionSpatial_Stats">
-   <property name="text">
-    <string>Spatial Stats</string>
-   </property>
-  </action>
-  <action name="actionExport_Trace_txt">
-   <property name="text">
-    <string>Export Trace (txt)</string>
-   </property>
-  </action>
-  <action name="actionExport_Trace_grid">
-   <property name="text">
-    <string>Export Trace (grid)</string>
-   </property>
-  </action>
-  <action name="actionShow_intermediate_points">
-   <property name="text">
-    <string>Show intermediate points</string>
-   </property>
-  </action>
-  <action name="actionLaunch_REST_server">
-   <property name="text">
-    <string>Launch REST server</string>
+    <string>Export PDF...</string>
    </property>
   </action>
  </widget>

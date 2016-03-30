@@ -15,8 +15,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -50,6 +49,7 @@ private slots:
     void showLayerPanel();
     void closedLayerPanel();
     void changeLayerOrder(int oldIndex, int newIndex);
+    void exportPDF();
 
 private:
     Ui::MainWindow *ui;

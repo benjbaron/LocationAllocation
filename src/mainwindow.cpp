@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen_GTFS, &QAction::triggered, this, &MainWindow::openGTFSDirectory);
     connect(ui->actionOpen_Flickr, &QAction::triggered, this, &MainWindow::openFlickrFile);
     connect(ui->actionSet_projection, &QAction::triggered, this, &MainWindow::setProjection);
+    connect(ui->actionExport_PDF, &QAction::triggered, this, &MainWindow::exportPDF);
     connect(_showLayersAction, &QAction::triggered, this, &MainWindow::showLayerPanel);
     connect(_layerPanel, &LayerPanel::closedEvent, this, &MainWindow::closedLayerPanel);
     connect(_layerPanel, &LayerPanel::reorderEvent, this, &MainWindow::changeLayerOrder);
@@ -294,4 +295,30 @@ void MainWindow::openFlickrFile() {
     FlickrLayer* layer  = new FlickrLayer(this, name, t);
     Loader loader;
     createLayer(name, layer, &loader);
+}
+
+void MainWindow::exportPDF() {
+    // choose file
+    QString filename = QFileDialog::getSaveFileName(0,
+                                                    tr("Export the PDF file"),
+                                                    QString(),
+                                                    tr("PDF file (*.pdf)"));
+
+    if(filename.isEmpty())
+        return;
+
+    QPrinter pdfPrinter;
+    pdfPrinter.setOutputFormat( QPrinter::PdfFormat );
+    pdfPrinter.setPaperSize( QSize(getSceneRect().width(), getSceneRect().height()), QPrinter::Point );
+    pdfPrinter.setFullPage(true);
+    pdfPrinter.setOutputFileName( filename );
+
+    QPainter pdfPainter;
+    pdfPainter.begin( &pdfPrinter);
+    scene()->render( &pdfPainter );
+
+    pdfPainter.end();
+
+    qDebug() << "[DONE]";
+
 }
