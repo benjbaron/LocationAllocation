@@ -192,8 +192,6 @@ public:
         _menu->setTitle("Shapefile");
         QAction* action_int = _menu->addAction("Compute intersections");
         connect(action_int, &QAction::triggered, this, &ShapefileLayer::computeIntersections);
-        QAction* action_pdf = _menu->addAction("Export PDF");
-        connect(action_pdf, &QAction::triggered, this, &ShapefileLayer::exportPDF);
         QAction* action_wkt = _menu->addAction("Export WKT");
         connect(action_wkt, &QAction::triggered, this, &ShapefileLayer::exportWKT);
         QAction* action_project = _menu->addAction("Project points");
@@ -220,7 +218,6 @@ public:
 private slots:
     void computeIntersections();
     void exportIntersectionPoints();
-    void exportPDF();
     void exportWKT();
     void projectPoints();
 

@@ -478,34 +478,6 @@ void ShapefileLayer::projectPoints() {
     future.result(); // wait for the results
 }
 
-
-
-void ShapefileLayer::exportPDF() {
-    // choose file
-    QString filename = QFileDialog::getSaveFileName(0,
-                                                    tr("Export the PDF file"),
-                                                    QString(),
-                                                    tr("PDF file (*.pdf)"));
-
-    if(filename.isEmpty())
-        return;
-
-    QPrinter pdfPrinter;
-    pdfPrinter.setOutputFormat( QPrinter::PdfFormat );
-    pdfPrinter.setPaperSize( QSize(_parent->getSceneRect().width(), _parent->getSceneRect().height()), QPrinter::Point );
-    pdfPrinter.setFullPage(true);
-    pdfPrinter.setOutputFileName( filename );
-
-    QPainter pdfPainter;
-    pdfPainter.begin( &pdfPrinter);
-    _parent->scene()->render( &pdfPainter );
-
-    pdfPainter.end();
-
-    qDebug() << "[DONE]";
-}
-
-
 void ShapefileLayer::exportWKT() {
 
     QString filename = QFileDialog::getSaveFileName(0,
