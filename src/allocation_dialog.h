@@ -49,6 +49,7 @@ public:
         params->travelTime = travelTime;
         params->distance = distance;
         params->method = method;
+        params->computeAllStorageNodes = allStorageNodesPath;
     }
 
 private slots:
@@ -58,9 +59,18 @@ private:
     QLabel* methodChoiceLabel;
     QComboBox* methodChoiceComboBox;
 
+    QWidget* storageNodeExtension;
+
     QWidget* nbStorageExtension;
+    QRadioButton* nbStorageRadioButton;
     QLabel *nbStorageNodesLabel;
     QLineEdit *nbStorageNodesLineEdit;
+
+    QWidget* allStorageExtension;
+    QRadioButton* allStorageRadioButton;
+    QLabel* allStorageNodesLabel;
+    QLineEdit* allStorageNodesLineEdit;
+    QPushButton* allStorageNodesFileButton;
 
     QWidget* deadlineExtension;
     QLabel *deadlineLabel;
@@ -93,8 +103,11 @@ private:
     bool fixedTravelTime = false;
     bool enableDistance = false;
     bool enableTravelTime = false;
+    bool enableSetNbStorageNode = true;
+    bool enableSetAllStorageNode = false;
     bool showNbStorage, showDeadline, showDel;
     QString method;
+    QString allStorageNodesPath;
     TravelTimeStat ttStat;
     DistanceStat dStat;
 

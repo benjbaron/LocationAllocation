@@ -42,6 +42,18 @@ AllocationDialog::AllocationDialog(QWidget *parent)
         checkConsistency();
     });
 
+    nbStorageRadioButton = new QRadioButton("Set number of storage nodes");
+    connect(nbStorageRadioButton, &QRadioButton::toggled, [=](bool checked) {
+        nbStorageExtension->setVisible(checked);
+        enableSetNbStorageNode = checked;
+        if(checked) {
+            nbStorageNodes = nbStorageNodesLineEdit->text().toInt();
+        } else {
+            nbStorageNodes = -1;
+        }
+        checkConsistency();
+    });
+
     /* Storage extension */
     nbStorageExtension = new QWidget;
     QHBoxLayout *nbStorageLayout = new QHBoxLayout;
@@ -59,6 +71,56 @@ AllocationDialog::AllocationDialog(QWidget *parent)
     nbStorageLayout->addWidget(nbStorageNodesLabel);
     nbStorageLayout->addWidget(nbStorageNodesLineEdit);
     nbStorageExtension->setLayout(nbStorageLayout);
+
+    allStorageRadioButton = new QRadioButton("All storage nodes");
+    connect(allStorageRadioButton, &QRadioButton::toggled, [=](bool checked) {
+        allStorageExtension->setVisible(checked);
+        enableSetAllStorageNode = checked;
+        if(checked) {
+            allStorageNodesPath = allStorageNodesLineEdit->text();
+        } else {
+            allStorageNodesPath = "";
+        }
+        checkConsistency();
+    });
+
+    allStorageExtension = new QWidget;
+    QHBoxLayout *allStorageLayout = new QHBoxLayout;
+    allStorageNodesLabel = new QLabel("Compute every storage nodes:");
+    allStorageNodesLineEdit = new QLineEdit;
+    allStorageNodesLabel->setBuddy(allStorageNodesLineEdit);
+    allStorageNodesFileButton = new QPushButton("Browse");
+
+    connect(allStorageNodesFileButton, &QPushButton::clicked, [=] () {
+        QFileDialog d(this, "Open an output directory for the allocations");
+        d.setFileMode(QFileDialog::Directory);
+        QString path = d.getExistingDirectory(this,
+                                              "Open an output directory",
+                                              allStorageNodesPath.isEmpty()?QFileInfo(allStorageNodesPath).absolutePath():QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+
+        if(path.isEmpty())
+            return;
+
+        allStorageNodesLineEdit->setText(path);
+    });
+    connect(allStorageNodesLineEdit, &QLineEdit::textChanged, [=](QString text) {
+        // record the file path
+        allStorageNodesPath = text;
+        checkConsistency();
+    });
+
+    allStorageLayout->addWidget(allStorageNodesLabel);
+    allStorageLayout->addWidget(allStorageNodesLineEdit);
+    allStorageLayout->addWidget(allStorageNodesFileButton);
+    allStorageExtension->setLayout(allStorageLayout);
+
+    storageNodeExtension = new QWidget;
+    QVBoxLayout* storageNodeLayout = new QVBoxLayout;
+    storageNodeLayout->addWidget(nbStorageRadioButton);
+    storageNodeLayout->addWidget(nbStorageExtension);
+    storageNodeLayout->addWidget(allStorageRadioButton);
+    storageNodeLayout->addWidget(allStorageExtension);
+    storageNodeExtension->setLayout(storageNodeLayout);
 
     /* Deadline extension */
     deadlineExtension = new QWidget;
@@ -206,7 +268,7 @@ AllocationDialog::AllocationDialog(QWidget *parent)
 
     mainLayout->addWidget(methodChoiceLabel);
     mainLayout->addWidget(methodChoiceComboBox);
-    mainLayout->addWidget(nbStorageExtension);
+    mainLayout->addWidget(storageNodeExtension);
     mainLayout->addWidget(deadlineExtension);
     mainLayout->addWidget(delExtension);
     mainLayout->addWidget(buttonBox);
@@ -225,8 +287,18 @@ AllocationDialog::AllocationDialog(QWidget *parent)
         methodChoiceComboBox->setCurrentText(LOCATION_ALLOCATION_MEHTOD_NAME);
     }
 
-    if(showNbStorage && settings.contains("savedNbStorageNodes"))
+    if(showNbStorage && settings.contains("savedNbStorageNodes") && (settings.value("savedNbStorageNodes").toInt() != -1)) {
         nbStorageNodesLineEdit->setText(QString::number(settings.value("savedNbStorageNodes").toInt()));
+        enableSetNbStorageNode = true;
+        enableSetNbStorageNode = false;
+        nbStorageRadioButton->setChecked(true);
+    } else if(showNbStorage && settings.contains("savedAllStorageNodesPath") && !settings.value("savedAllStorageNodesPath").toString().isEmpty()) {
+        allStorageNodesLineEdit->setText(settings.value("savedAllStorageNodesPath").toString());
+        enableSetAllStorageNode = true;
+        enableSetNbStorageNode = false;
+        allStorageRadioButton->setChecked(true);
+    }
+
     if(showDeadline && settings.contains("savedDeadline"))
         deadlineLineEdit->setText(QString::number(settings.value("savedDeadline").toInt()));
 
@@ -324,6 +396,7 @@ void AllocationDialog::done() {
     /* Save all of the attributes */
     QSettings settings;
     settings.setValue("savedNbStorageNodes", nbStorageNodes);
+    settings.setValue("savedAllStorageNodesPath", allStorageNodesPath);
     settings.setValue("savedDeadline", deadline);
     settings.setValue("savedDeletionFactor", deletionFactor);
     settings.setValue("savedEnableTravelTime", enableTravelTime);
@@ -340,9 +413,12 @@ bool AllocationDialog::checkConsistency() {
     bool flag = false;
     if(method.isEmpty())
         flag = true;
-    if((showNbStorage && nbStorageNodes <= 0) || (showDeadline && deadline <= 0) || (showDel && deletionFactor < 0.0)) {
+    if((showNbStorage && enableSetNbStorageNode && nbStorageNodes <= 0)
+       || (showNbStorage && enableSetAllStorageNode && allStorageNodesPath.isEmpty())
+       || (showDeadline && deadline <= 0)
+       || (showDel && deletionFactor < 0.0)) {
         flag = true;
-        qDebug() << "deadline" << deadline << "nbStorageNodes" << nbStorageNodes << "deletionFactor" << deletionFactor;
+        qDebug() << "deadline" << deadline << "nbStorageNodes" << nbStorageNodes << enableSetNbStorageNode << "deletionFactor" << deletionFactor << "allStorageNodesPath" << allStorageNodesPath << enableSetAllStorageNode;
     }
     if(showDel && enableTravelTime && travelTime <= 0.0) {
         flag = true;
@@ -357,7 +433,7 @@ bool AllocationDialog::checkConsistency() {
 
     }
 
-    // Disable the "OK" button dependng on the final value of flag
+    // Disable the "OK" button depending on the final value of flag
     buttonBox->button(QDialogButtonBox::Ok)->setDisabled(flag);
     return flag;
 }
