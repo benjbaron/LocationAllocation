@@ -7,17 +7,21 @@ bool ComputeAllocation::processAllocationMethod(Loader* loader,
                                                 QHash<Geometry*, Allocation*>* allocation) {
 
     // get the allocation parameters from the AllocationParams srtucture
-    long long      deadline     = params->deadline;
-    int            nbFacilities = params->nbFacilities;
-    double         delFactor    = params->delFactor;   // deletion factor
-    TravelTimeStat ttStat       = params->ttStat;
-    DistanceStat   dStat        = params->dStat;
-    double         travelTime   = params->travelTime;
-    double         distance     = params->distance;
-    QString        method       = params->method;
+    long long      deadline               = params->deadline;
+    int            nbFacilities           = params->nbFacilities;
+    double         delFactor              = params->delFactor;   // deletion factor
+    TravelTimeStat ttStat                 = params->ttStat;
+    DistanceStat   dStat                  = params->dStat;
+    double         travelTime             = params->travelTime;
+    double         distance               = params->distance;
+    QString        method                 = params->method;
+    QString        computeAllStorageNodes = params->computeAllStorageNodes;
 
-    qDebug() << "processAllocationMethod" << method << nbFacilities << deadline << delFactor
-             << ttStat << travelTime << dStat << distance;
+
+    qDebug() << "Method" << method << "nbFacilities" << nbFacilities << "deadline" << deadline <<
+    "delFactor" << delFactor << "travelStat" << ttStat << "travelTime" << travelTime << "dstat" <<
+    dStat << "distance" << distance << "allStorageNodes" << computeAllStorageNodes;
+
 
     if(method == LOCATION_ALLOCATION_MEHTOD_NAME || method == PAGE_RANK_MEHTOD_NAME) {
         double maxTravelTime, maxDist;
@@ -99,9 +103,9 @@ void ComputeAllocation::geomWithin(QSet<Geometry*>* geomWithin,
         }
 
         if((ds != NoneD && distance_flag) || (ts != NoneTT && travelTime_flag)) {
-            qDebug() << "or / add" << geom << g->toString()
-                     << "distance" << ds << dist << distance
-                     << "travelTime" << ts << tt << travelTime;
+//            qDebug() << "or / add" << geom << g->toString()
+//                     << "distance" << ds << dist << distance
+//                     << "travelTime" << ts << tt << travelTime;
             geomWithin->insert(g);
         }
     }
@@ -118,15 +122,20 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
     // candidates are the geometries
 
     // get the allocation parameters from the AllocationParams structure
-    long long      deadline     = params->deadline;
-    int            nbFacilities = params->nbFacilities;
-    double         delFactor    = params->delFactor;   // deletion factor
-    TravelTimeStat ttStat       = params->ttStat;
-    DistanceStat   dStat        = params->dStat;
-    double         travelTime   = params->travelTime;
-    double         distance     = params->distance;
+    long long      deadline        = params->deadline;
+    int            nbFacilities    = params->nbFacilities;
+    double         delFactor       = params->delFactor;   // deletion factor
+    TravelTimeStat ttStat          = params->ttStat;
+    DistanceStat   dStat           = params->dStat;
+    double         travelTime      = params->travelTime;
+    double         distance        = params->distance;
+    QString        allStorageNodes = params->computeAllStorageNodes;
 
-    qDebug() << "runLocationAllocation" << nbFacilities << deadline << ttStat << travelTime << dStat << distance;
+    bool exportAllocation = !allStorageNodes.isEmpty();
+    /* if allStorageNodes is not an empty string, we export the allocation at each iteration of the allocation
+     * id X Y rank weight number_deleted number_allocated */
+
+    qDebug() << "runLocationAllocation" << nbFacilities << deadline << ttStat << travelTime << dStat << distance << allStorageNodes << exportAllocation;
 
     QSet<Geometry*> demandsToCover;
     QSet<Geometry*> allDemands;
@@ -136,6 +145,7 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
     QSet<Geometry*> circlesGeometries;
     QSet<Geometry*> cellsGeometries;
 
+    // get circle geometry types if there are some
     QHash<Geometry*, GeometryValue*> geometries;
     _spatialStats->getGeometries(&geometries);
     for(auto it = geometries.begin(); it != geometries.end(); ++it) {
@@ -144,15 +154,18 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
         else if(geom->getGeometryType() == CircleType) circlesGeometries.insert(geom);
     }
 
-    if(circlesGeometries.size() > 0) allCandidates = circlesGeometries;
-    else allCandidates = cellsGeometries;
+    if(circlesGeometries.size() > 0)
+        allCandidates = circlesGeometries;
+    else
+        allCandidates = cellsGeometries;
     allDemands = cellsGeometries;
 
     candidatesToAllocate = allCandidates;
     demandsToCover = allDemands;
+    int prevAllocated = 0;
 
     // iterate for each storage node to allocate
-    for(int i = 0; i < nbFacilities && !demandsToCover.isEmpty(); ++i) {
+    for(int i = 0; (!exportAllocation && i < nbFacilities && !demandsToCover.isEmpty()) || (exportAllocation && !demandsToCover.isEmpty()); ++i) {
         qreal loaderValue = (qreal) i / (qreal) nbFacilities;
         loader->loadProgressChanged(loaderValue, "Allocate for facility " + QString::number(i));
 
@@ -161,41 +174,98 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
         QList<Allocation> topCandidates;
 
         // find the candidate that covers the most demands
+        double maxCoverageWeights = 0.0; // to normalize the coverage weights (demand weights)
+        double maxBackendWeights  = 0.0; // to normalize the backend weights
+        double maxIncomingWeights = 0.0; // to normalize the incoming weights (connectivity weight)
         foreach(Geometry* k, candidatesToAllocate) {
-//            qDebug() << "\tcandidate" << k;
-
-            QHash<Geometry*, double> demandsCovered; // <demand, weight of the demand>
+            double incomingWeight = 0.0;
+            GeometryValue* geomVal;
+            _spatialStats->getValue(&geomVal, k);
+            incomingWeight = geomVal->avgIncomingScore;
+            if(incomingWeight > maxIncomingWeights)
+                maxIncomingWeights = incomingWeight;
 
             double backendWeight = 0.0;
-            // compute the backend weight for the previously allocated storage nodes
             for(Geometry* c : allocation->keys()) {
                 backendWeight += computeBackendWeight(c,k);
             }
+            if(backendWeight > maxBackendWeights) {
+                maxBackendWeights = backendWeight;
+            }
 
             double coverage = 0.0;
+            QHash<Geometry*, double> demandsCovered; // <demand, weight of the demand>
+            for(Geometry* l : demandsToCover) {
+                coverage += computeCoverageWeight(l, k, deadline, &demandsCovered);
+            }
+            if(coverage > maxCoverageWeights) {
+                maxCoverageWeights = coverage;
+            }
+        }
+
+        foreach(Geometry* k, candidatesToAllocate) {
+//            qDebug() << "\tcandidate" << k;
+            double incomingWeight = 0.0;
+            GeometryValue* geomVal;
+            _spatialStats->getValue(&geomVal, k);
+            incomingWeight = geomVal->avgIncomingScore;
+
+            // compute the backend weight for the previously allocated storage nodes
+            double backendWeight = 0.0;
+            int nbBackendLinks = 0;
+            QHash<Geometry*, double> backendCovered;
+            for(Geometry* c : allocation->keys()) {
+                double w = computeBackendWeight(c,k);
+                backendWeight += w;
+                backendCovered.insert(c, w);
+                if(w > 0.0)
+                    nbBackendLinks++;
+//                qDebug() << "\t\t" << "candidate" << k->toString() << backendWeight << w;
+            }
+
             // Compute the covering score for the candidate
+            double coverage = 0.0;
+            QHash<Geometry*, double> demandsCovered; // <demand, weight of the demand>
             for(Geometry* l : demandsToCover) {
                 coverage += computeCoverageWeight(l, k, deadline, &demandsCovered);
             }
 
             // update the candidate list
-            updateTopCandidates(&topCandidates,k,coverage,backendWeight,demandsCovered);
+            double normalizedBackendWeight  = maxBackendWeights > 0.0  ? backendWeight/maxBackendWeights   : 0.0;
+            double normalizedCoverageWeight = maxCoverageWeights > 0.0 ? coverage/maxCoverageWeights       : 0.0;
+            double normalizedIncomingWeight = maxIncomingWeights > 0.0 ? incomingWeight/maxIncomingWeights : 0.0;
+//            qDebug() << "\tcandidate" << k->toString()
+//                     << "| Backend:"    << normalizedBackendWeight  << backendWeight  << maxBackendWeights
+//                     << "| Coverage:"   << normalizedCoverageWeight << coverage       << maxCoverageWeights
+//                     << "| Incoming"    << normalizedIncomingWeight << incomingWeight << maxIncomingWeights;
+
+
+            if(i == 0 || (i == 1 && normalizedBackendWeight > 0.0)
+               || (i > 1 && normalizedBackendWeight > 0.0 && nbBackendLinks >= 1) ) {
+                // add the candidate to the top candidates
+                Allocation a(k,normalizedCoverageWeight,normalizedBackendWeight,normalizedIncomingWeight,-1,demandsCovered,backendCovered);
+                topCandidates.append(a);
+            }
+//            updateTopCandidates(&topCandidates,k,normalizedCoverageWeight,normalizedBackendWeight,normalizedIncomingWeight,demandsCovered, backendCovered);
         }
 
         Allocation bestCandidate;
         // reduce the set of the population to cover
         if(!topCandidates.isEmpty()) {
-            // get the best candidate (the one with the greater backend weight)
+
+            // get the best candidate (the one with the greater total weight)
             double bestWeight = -1.0;
             for(Allocation c : topCandidates) {
-                if((c.backendWeight+c.weight) > bestWeight) {
-                    bestWeight = c.backendWeight+c.weight;
+                double w = c.weight; // c.getWeight();
+//                qDebug() << "\t" << QString("(Allocation %1)").arg(QString::number(i)) << "candidate" << w << c.weight<< c.backendWeight << c.incomingWeight << bestWeight;
+                if(w > bestWeight) {
+                    bestWeight = w;
                     bestCandidate = c;
                 }
             }
 
             candidatesToAllocate.remove(bestCandidate.geom); // remove the selected cell
-            demandsToCover.remove(bestCandidate.geom);
+            demandsToCover.remove(bestCandidate.geom); // remove the geometry from the demands to cover
 
             // remove the candidate cells in the vicinity of the selected cell
             QSet<Geometry*> candidatesToRemove;
@@ -203,14 +273,16 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
                        distance, travelTime, dStat, ttStat);
             candidatesToAllocate.subtract(candidatesToRemove);
 
-            qDebug() << "\tcell" << bestCandidate.geom->toString() << candidatesToRemove.size();
+//            qDebug() << "\tAllocation" << i << bestCandidate.geom->toString() << candidatesToRemove.size() << bestCandidate.backendWeight << bestCandidate.weight;
 
             demandsToCover.subtract(bestCandidate.demands.keys().toSet());
 
             // add the allocation
-            Allocation* alloc = new Allocation(bestCandidate.geom, bestCandidate.weight, bestCandidate.backendWeight, i,
-                                               bestCandidate.demands, candidatesToRemove);
+            Allocation* alloc = new Allocation(bestCandidate.geom, bestCandidate.weight, bestCandidate.backendWeight, bestCandidate.incomingWeight,
+                                               i, bestCandidate.demands, bestCandidate.backends, candidatesToRemove);
             allocation->insert(bestCandidate.geom, alloc);
+
+//            qDebug() << "best candidate" << bestCandidate.geom->toString() << bestCandidate.weight << bestCandidate.backendWeight;
         }
 
         /* Substitution part of the algorithm */
@@ -220,59 +292,140 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
         loader->loadProgressChanged(loaderValue, "Substitution for facility " + QString::number(i));
 
         for(Geometry* k : allocation->keys()) {
-            // get the demands already covered by the current candidate
+            if(k == bestCandidate.geom)
+                continue; // ignore the best candidate that was picked
+
 
             Allocation* alloc = allocation->value(k);
+
+            // get the demands already covered by the current candidate
             QSet<Geometry*> prevDemandsCovered = alloc->demands.keys().toSet();
-            double prevWeight = alloc->weight;
+
+            double prevWeight = alloc->weight; // previous total weight
             QSet<Geometry*> prevDeletedCandidates = alloc->deletedCandidates;
 
+            // find the top new best candidates that could replace the current allocated candidate
             QList<Allocation> newTopCandidates;
 
+            // find the candidate that covers the most demands
+            double newMaxCoverageWeights = 0.0; // to normalize the coverage weights (demand weights)
+            double newMaxBackendWeights  = 0.0; // to normalize the backend weights
+            double newMaxIncomingWeights = 0.0; // to normalize the incoming weights
             for(Geometry* k1 : allCandidates - allocation->keys().toSet()) {
-                if(k1 == bestCandidate.geom) continue;
+                GeometryValue* geomVal;
+                _spatialStats->getValue(&geomVal, k);
+                double incomingWeight = geomVal->avgIncomingScore;
+                if(incomingWeight > newMaxIncomingWeights)
+                    newMaxIncomingWeights = incomingWeight;
+
+                double backendWeight = 0.0;
+                for(Geometry* c : allocation->keys()) {
+                    double w = computeBackendWeight(c,k1);
+                    backendWeight += w;
+                }
+                if(backendWeight > newMaxBackendWeights) {
+                    newMaxBackendWeights = backendWeight;
+                }
+
+                double coverage = 0.0;
+                QHash<Geometry*, double> demandsCovered; // <demand, weight of the demand>
+                for(Geometry* l : demandsToCover + prevDemandsCovered) {
+                    coverage += computeCoverageWeight(l, k1, deadline, &demandsCovered);
+                }
+                if(coverage > newMaxCoverageWeights) {
+                    newMaxCoverageWeights = coverage;
+                }
+            }
+
+            for(Geometry* k1 : allCandidates - allocation->keys().toSet()) {
+                if(k1 == bestCandidate.geom)
+                    continue;
+
+                GeometryValue* geomVal;
+                _spatialStats->getValue(&geomVal, k1);
+                double incomingWeight = geomVal->avgIncomingScore;
 
                 QHash<Geometry*, double> demandsCovered; // <demand, weight of the demand>
+                QHash<Geometry*, double> backendCovered; // <facility, weight of the facility>
                 double backendWeight = 0.0;
+                int nbBackendLinks = 0;
                 // compute the backend weight for the previously allocated storage nodes
                 for(Geometry* c : allocation->keys()) {
-                    backendWeight += computeBackendWeight(c,k);
+                    double w = computeBackendWeight(c,k1);
+                    backendWeight += w;
+                    backendCovered.insert(c,w);
+                    if(w > 0.0)
+                        nbBackendLinks++;
                 }
 
                 double coverage = 0.0;
                 // all demands to cover + those covered by the current candidate
                 for(Geometry* l : demandsToCover + prevDemandsCovered) {
-                    coverage += computeCoverageWeight(l, k, deadline, &demandsCovered);
+                    coverage += computeCoverageWeight(l, k1, deadline, &demandsCovered);
                 }
 
                 // update the candidate list
-                updateTopCandidates(&newTopCandidates,k,coverage,backendWeight,demandsCovered);
+                double newNormalizedBackendWeight  = newMaxBackendWeights > 0.0  ? backendWeight/newMaxBackendWeights   : 0.0;
+                double newNormalizedCoverageWeight = newMaxCoverageWeights > 0.0 ? coverage/newMaxCoverageWeights       : 0.0;
+                double newNormalizedIncomingWeight = newMaxIncomingWeights > 0.0 ? incomingWeight/newMaxIncomingWeights : 0.0;
+
+//                qDebug() << "\t\tcandidate" << k->toString()
+//                << "| Backend:"    << newNormalizedBackendWeight  << backendWeight  << newMaxBackendWeights
+//                << "| Coverage:"   << newNormalizedCoverageWeight << coverage       << newMaxCoverageWeights
+//                << "| Incoming"    << newNormalizedIncomingWeight << incomingWeight << newMaxIncomingWeights;
+
+                if((i == 1 && newNormalizedBackendWeight > 0.0)
+                   || (i > 1 && newNormalizedBackendWeight > 0.0 && nbBackendLinks >= 1)) {
+                    // add the candidate to the top candidates
+                    Allocation a(k1,newNormalizedCoverageWeight,newNormalizedBackendWeight,newNormalizedIncomingWeight,-1,demandsCovered,backendCovered);
+                    newTopCandidates.append(a);
+                }
+
+//                updateTopCandidates(&newTopCandidates,k1,
+//                                    newNormalizedCoverageWeight,
+//                                    newNormalizedBackendWeight,
+//                                    normalizedIncomingWeight,
+//                                    demandsCovered, backendCovered);
             }
 
             // get the best candidate
             Allocation newBestCandidate;
-            double newBestBackendWeight = 0.0;
+            double newBestWeight = 0.0;
             for(Allocation c : newTopCandidates) {
-                if(c.backendWeight > newBestBackendWeight) {
-                    newBestBackendWeight = c.backendWeight;
+                double w = c.weight; //c.getWeight();
+                if(w > newBestWeight) {
+                    newBestWeight = w;
                     newBestCandidate = c;
                 }
             }
 
-            if(prevWeight < newBestCandidate.weight) {
+            if(prevWeight < newBestWeight) {
                 // change the candidate's current allocation
 //                qDebug() << "changed candidate / old" << prevWeight << "new" << newBestCandidate.weight;
 
-                alloc->weight = newBestCandidate.weight;
-                alloc->backendWeight = newBestCandidate.backendWeight;
-                alloc->demands = newBestCandidate.demands;
+                // delete the current allocation
+                allocation->remove(k);
+
+//                qDebug() << "delete " << k->toString() << newBestCandidate.geom->toString() << prevWeight << newBestCandidate.weight;
                 QSet<Geometry*> candidatesToRemove;
                 geomWithin(&candidatesToRemove,
                            candidatesToAllocate + prevDeletedCandidates,
                            newBestCandidate.geom,
                            distance, travelTime, dStat, ttStat);
-                alloc->deletedCandidates = candidatesToRemove;
-                alloc->geom = k;
+
+                Allocation* a = new Allocation(newBestCandidate.geom, newBestCandidate.weight, newBestCandidate.backendWeight, newBestCandidate.incomingWeight,
+                                               -1, newBestCandidate.demands, newBestCandidate.backends, candidatesToRemove);
+                allocation->insert(newBestCandidate.geom, a);
+
+                // update the candidates and the demands that are deleted and allocated
+                candidatesToAllocate.subtract(candidatesToRemove);
+                candidatesToAllocate.unite(prevDeletedCandidates);
+                candidatesToAllocate.remove(newBestCandidate.geom);
+                candidatesToAllocate.insert(k);
+
+                demandsToCover.unite(prevDemandsCovered);
+                demandsToCover.subtract(newBestCandidate.demands.keys().toSet());
+
                 // TODO Change the new candidate's rank
             }
         }
@@ -280,6 +433,33 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
 //        qDebug() << "candidate" << ((bestCandidate.geom) ? bestCandidate.geom->toString() : "None")
 //                 << "allocated" << bestCandidate.weight << "with" << bestCandidate.demands.size() << "demands"
 //                 << demandsToCover.size() << "demands to cover" << bestCandidate.backendWeight << "backend weight";
+
+        if(prevAllocated == allocation->size())
+            break;
+        prevAllocated = allocation->size();
+
+        if(exportAllocation) {
+            // output the current allocation
+            QString filename = allStorageNodes + "/alloc"+ QString::number(i+1)+"-"+QString::number(deadline)+".txt";
+            qDebug() << "outputing file" << filename;
+            QFile file(filename);
+            if(!file.open(QFile::WriteOnly)) {
+                qDebug() << "Unable to write in file "<< filename;
+                return;
+            }
+            QTextStream out(&file);
+
+            int count = 0;
+            for(auto it = allocation->begin(); it != allocation->end(); ++it) {
+                out << QString::number(count)
+                    << " " << QString::number(it.key()->getCenter().x(), 'f', 2)
+                    << " " << QString::number(it.key()->getCenter().y(), 'f', 2)
+                    << " " << QString::number(it.value()->weight)
+                    << " " << QString::number(it.value()->deletedCandidates.size())
+                    << " " << QString::number(it.value()->demands.size()) << "\n";
+            }
+            file.close();
+        }
     }
 
     loader->loadProgressChanged(1.0, "Done");
@@ -295,11 +475,6 @@ double ComputeAllocation::computeBackendWeight(Geometry* c, Geometry* k) {
         if(visitCount > 1) {
             weight += val->avgScore;
         }
-//                    double interVisitTime = val->interVisitDurationDist.getAverage();
-//                    double visitCount = val->visits.size();
-//                    if(visitCount > 1) {
-//                        coverage += visitCount / interVisitTime;
-//                    }
     }
 
     _spatialStats->getValue(&val,c,k);
@@ -308,11 +483,6 @@ double ComputeAllocation::computeBackendWeight(Geometry* c, Geometry* k) {
         if(visitCount > 1) {
             weight += val->avgScore;
         }
-//                    double interVisitTime = val->interVisitDurationDist.getAverage();
-//                    double visitCount = val->visits.size();
-//                    if(visitCount > 1) {
-//                        coverage += visitCount / interVisitTime;
-//                    }
     }
 
     return weight;
@@ -338,8 +508,9 @@ double ComputeAllocation::computeCoverageWeight(Geometry* l, Geometry* k, double
 }
 
 void ComputeAllocation::updateTopCandidates(QList<Allocation> *c, Geometry *k,
-                                            double coverage, double backendWeight,
-                                            QHash<Geometry *, double> const &demandsCovered) {
+                                            double coverage, double backendWeight, double incomingWeight,
+                                            QHash<Geometry *, double> const &demandsCovered,
+                                            QHash<Geometry *, double> const &backendCovered) {
 
 //    qDebug() << ">>  add candidate" << k->toString() << coverage << backendWeight;
 //    qDebug() << "--- print the content of the top candidates (before) ---";
@@ -348,19 +519,27 @@ void ComputeAllocation::updateTopCandidates(QList<Allocation> *c, Geometry *k,
 //        qDebug() << i++ << a.geom->toString() << a.demands.size() << a.backendWeight << a.weight;
 //    }
 
-    if(c->isEmpty() || coverage > c->last().weight) {
-        // go through the top candidates from the bottom of the list
+    double weight = backendWeight;
+    double lastWeight = c->isEmpty() ? -1.0 : c->last().getWeightRank();
+    if(c->isEmpty() || weight > lastWeight) {
+        // go through the top candidates from the top of the list
         // and insert the current one at the right index
-        Allocation a(k,coverage,backendWeight,-1,QHash<Geometry*, double>(demandsCovered));
+        Allocation a(k,coverage,backendWeight,incomingWeight,-1,demandsCovered,backendCovered);
 
         int idx = 0;
-        while(idx < c->size()-1 && coverage < c->at(idx).weight)
+        double currentWeight = c->isEmpty() ? -1.0 : c->at(idx).getWeightRank();
+        while(idx < c->size()-1 && weight < currentWeight) {
             idx++;
+            currentWeight = c->at(idx).getWeightRank();
+        }
 
-        if(!c->isEmpty() && coverage < c->at(idx).weight) c->push_back(a);
-        else c->insert(idx, a);
+//        if(!c->isEmpty() && weight < currentWeight)
+//            c->push_back(a);
+//        else
+            c->insert(idx, a);
 
-        if(c->size() > 5) c->pop_back(); // keep the top 5 candidates
+        if(c->size() > 10)
+            c->pop_back(); // keep the top 10 candidates
     }
 
 //    qDebug() << "--- print the content of the top candidates (after) ---";

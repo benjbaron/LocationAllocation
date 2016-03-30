@@ -24,10 +24,10 @@ struct AllocationParams {
     double         travelTime;
     double         distance;
     QString        method;
+    QString        computeAllStorageNodes;
 };
 
 class ComputeAllocation {
-
 public:
     ComputeAllocation(SpatialStats* spatialStats):
             _spatialStats(spatialStats) { }
@@ -44,11 +44,11 @@ private:
     /* Returns the cells from "cells" that are within distance "distance" and/or travel time "travelTime" of "cell" in "cellsWithinDistance", depending on "op" */
     void geomWithin(QSet<Geometry*>* cellsWithin, const QSet<Geometry*>& cells, Geometry* cell, double distance = -1.0, double travelTime = -1.0, DistanceStat ds = Auto, TravelTimeStat ts = Med);
 
-
     // private methods for the location allocation computation
     double computeBackendWeight(Geometry* c, Geometry* k);
     double computeCoverageWeight(Geometry* l, Geometry* k, double deadline, QHash<Geometry*, double>* demandsCovered);
-    void updateTopCandidates(QList<Allocation>* c, Geometry* k,double coverage, double backendWeight, QHash<Geometry*, double> const &demandsCovered);
+    void updateTopCandidates(QList<Allocation>* c, Geometry* k,double coverage, double backendWeight, double incomingWeight,
+                             QHash<Geometry*, double> const &demandsCovered, QHash<Geometry *, double> const &backendCovered);
 
     /* Compute the page rank for the given set of cells */
 //    bool pageRank(QHash<Geometry*, double>& x, QSet<Geometry*> cells, double alpha = 0.85, int maxIterations = 100, double tolerance = 1.0e-6);
