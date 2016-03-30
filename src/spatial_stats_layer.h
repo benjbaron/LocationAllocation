@@ -34,7 +34,7 @@ private slots:
 
 private:
     SpatialStats* _spatialStats = nullptr;
-    ComputeAllocationLayer* _computeAllocationLayer = nullptr;
+    ComputeAllocation* _computeAllocation = nullptr;
     Geometry* _selectedGeometry = nullptr;
     QHash<Geometry*, GeometryGraphics*> _geometryGraphics;
     DockWidgetPlots* _plots = nullptr;

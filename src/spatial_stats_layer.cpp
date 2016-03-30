@@ -4,6 +4,7 @@
 
 #include "spatial_stats_layer.h"
 #include "constants.h"
+#include "allocation_dialog.h"
 
 bool SpatialStatsLayer::load(Loader* loader) {
     return _spatialStats->computeStats(loader);
@@ -20,10 +21,13 @@ QGraphicsItemGroup *SpatialStatsLayer::draw() {
     for(auto it = matrix.begin(); it != matrix.end(); ++it) {
         Geometry* geom = it.key();
         GeometryGraphics* item;
-        if(geom->getGeometryType() == CircleType)
+        if(geom->getGeometryType() == CircleType) {
             item = new CircleGraphics(static_cast<Circle*>(geom));
-        else if(geom->getGeometryType() == CellType)
-            item = new CellGraphics(static_cast<Cell*>(geom));
+            item->setZValue(10.0);
+        } else if(geom->getGeometryType() == CellType) {
+            item = new CellGraphics(static_cast<Cell *>(geom));
+            item->setZValue(1.0);
+        }
 
         GeometryValue* val;
         _spatialStats->getValue(&val, it.key());
@@ -188,6 +192,7 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
     // select all the reachable geometries
     // restore the parameters for the previously selected geometry
     if(_selectedGeometry && mod) {
+        // select the link
         if(!_spatialStats->hasMatrixValue(_selectedGeometry, geom))
             return;
 
@@ -201,11 +206,12 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
         _plots->showLinkData(_selectedGeometry, geom);
 
     } else {
+        // select the geometry
         if(_selectedGeometry) {
             // restore the "normal" opacity
             _geometryGraphics[_selectedGeometry]->setOpacity(CELL_OPACITY);
-            // restore the "normal" colors for the neighbor geometries
 
+            // restore the "normal" colors for the neighbor geometries
             QHash<Geometry*, GeometryMatrixValue*>* geoms;
             _spatialStats->getValues(&geoms, _selectedGeometry);
             for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
@@ -222,6 +228,8 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
                 GeometryValue* val;
                 _spatialStats->getValue(&val, _selectedGeometry);
                 _geometryGraphics[_selectedGeometry]->setBrush(val->color);
+                _geometryGraphics[_selectedGeometry]->update();
+
                 _selectedGeometry = NULL;
                 qDebug() << "clicked on same geometry";
                 return;
@@ -234,20 +242,22 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
         for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
             if(jt.key() == geom) continue;
             double score = jt.value()->avgScore;
-            if(score > maxWeight) maxWeight = score;
+            if(score > maxWeight)
+                maxWeight = score;
         }
         _geometryGraphics[geom]->setOpacity(1.0);
-        _geometryGraphics[geom]->setBrush(CELL_COLOR);
+        _geometryGraphics[geom]->setBrush(BLUE);
+        _geometryGraphics[geom]->update();
         for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
             Geometry* g = jt.key();
             if(g == geom) continue;
             auto val = jt.value();
             double score = val->avgScore;
-            int factor = (int) (50.0 + 150.0 * score / maxWeight);
+            int factor = (int) (50.0 + 500.0 * score / maxWeight);
 //                    qDebug() << score << maxWeight << factor;
 
             if(_geometryGraphics.contains(g)) {
-                _geometryGraphics[g]->setBrush(CELL_COLOR.darker(factor));
+                _geometryGraphics[g]->setBrush(BLUE.darker(factor));
                 _geometryGraphics[g]->update();
             }
         }
@@ -262,14 +272,44 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
 
         _selectedGeometry = geom;
     }
-
 }
 
 void SpatialStatsLayer::computeAllocation() {
-    if(!_computeAllocationLayer) {
+    if(!_computeAllocation) {
         // Initialize a new compute allocation layer
-        ComputeAllocation* computeAllocation = new ComputeAllocation(_spatialStats);
-        _computeAllocationLayer = new ComputeAllocationLayer(_parent, "Compute allocation", computeAllocation);
+        _computeAllocation = new ComputeAllocation(_spatialStats);
     }
-    _computeAllocationLayer->computeAllocation();
+
+    AllocationDialog diag(_parent);
+    if (diag.exec() == QDialog::Rejected) {
+        return;
+    }
+
+    QHash<Geometry*, Allocation*> allocation; // resulting allocation
+    AllocationParams params;
+    diag.allocationParams(&params);
+
+    loadWithProgressDialog(_computeAllocation, &ComputeAllocation::processAllocationMethod, &params, &allocation);
+
+    // print the resulting allocation
+    for(auto it = allocation.begin(); it != allocation.end(); ++it) {
+        qDebug() << "candidate" << it.key()->getCenter().x()
+                 << "allocated" << it.value()->weight << "(demand weight)"
+                 << it.value()->backendWeight << "(backend weight)" << it.value()->backends.size()
+                 << it.value()->incomingWeight << "(incoming weight)"
+                 << "with" << it.value()->demands.size() << "demands"
+                 << "and" << it.value()->deletedCandidates.size() << "candidates deleted" ;
+    }
+
+    if(!params.computeAllStorageNodes.isEmpty()) {
+        return; // do not create a layer
+    }
+
+    // create a new layer
+    QString layerName = "Location allocation";
+    ComputeAllocationLayer* allocationLayer = new ComputeAllocationLayer(_parent, layerName, allocation, _spatialStats);
+
+    // load the layer
+    Loader loader;
+    _parent->createLayer(layerName, allocationLayer, &loader);
 }
