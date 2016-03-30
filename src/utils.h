@@ -171,15 +171,24 @@ private:
 
 class Geometry;
 struct Allocation {
-    Allocation(): geom(NULL), weight(0.0), demands(QHash<Geometry*, double>()), deletedCandidates(QSet<Geometry*>()) { }
-    Allocation(Geometry* p, double w, double bw, int rank = -1, const QHash<Geometry*, double>& d = QHash<Geometry*, double>(), const QSet<Geometry*>& c = QSet<Geometry*>()) :
-        geom(p), weight(w), backendWeight(bw), demands(d), deletedCandidates(c), rank(rank) { }
-
+    Allocation(): geom(NULL), weight(0.0), demands(QHash<Geometry*, double>()),
+                  backends(QHash<Geometry*, double>()),
+                  deletedCandidates(QSet<Geometry*>()) { }
+    Allocation(Geometry* p, double w, double bw, double iw, int rank = -1,
+               const QHash<Geometry*, double>& d = QHash<Geometry*, double>(),
+               const QHash<Geometry*, double>& b = QHash<Geometry*, double>(),
+               const QSet<Geometry*>& c = QSet<Geometry*>()) :
+        geom(p), weight(w), backendWeight(bw), incomingWeight(iw), rank(rank),
+        demands(d), backends(b), deletedCandidates(c) { }
+    double getWeight() const { return weight + backendWeight; }
+    double getWeightRank() const { return backendWeight; }
     Geometry* geom;
     double weight;
     double backendWeight;
+    double incomingWeight;
     QHash<Geometry*, double> demands;  // demands assigned to the allocated point
     QSet<Geometry*> deletedCandidates; // candidates deleted
+    QHash<Geometry*, double> backends; // backend node weights
     int rank;
 };
 
