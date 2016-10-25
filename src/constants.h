@@ -18,4 +18,5 @@ const QColor BLUE   = Qt::darkBlue;
 const QColor RED    = Qt::darkRed;
 const QColor BLACK  = Qt::black;
 
+
 #endif // CONSTANTS_H
