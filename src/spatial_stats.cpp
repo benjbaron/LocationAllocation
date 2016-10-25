@@ -317,7 +317,7 @@ qreal SpatialStats::computeLocalStat(Geometry* geom_i) {
         sum5 += qPow(count_j,2);
     }
 
-    //!\\ TODO get p-scores
+    // TODO compute p-scores
 
     qreal mean = sum4 / n;
     qreal S = qSqrt(sum5 / n - qPow(mean, 2));

@@ -57,7 +57,7 @@ struct GeometryValue {
     Geometry* cell;
     GeometryValue(Geometry* c) { cell = c; }
     Distribution interVisitDurationDist;
-    QList<long long> visitFrequency; // timestamp of the begining of the visit
+    QList<long long> visitFrequency; // timestamp of the beginning of the visit
     QMultiMap<long long, long long> visits; // <start, end>
     QSet<QString> nodes; // nodes that visited the cell
     Distribution travelTimes;
@@ -145,6 +145,10 @@ public:
 
     double getAverageSpeed() {
         return _trace->averageSpeed();
+    }
+
+    double getCellSize() {
+        return _geometryIndex->getCellSize();
     }
 
     /* Getis Ord G spatial stats
