@@ -11,7 +11,7 @@ class PointLayer: public Layer {
 public:
     PointLayer(MainWindow* parent = 0, QString name = 0, const QList<QPointF>& points = QList<QPointF>()):
             Layer(parent, name), _points(points) {}
-    QGraphicsItemGroup* draw();
+    virtual QGraphicsItemGroup* draw();
     const QList<QPointF> &get_points() const {
         return _points;
     }
