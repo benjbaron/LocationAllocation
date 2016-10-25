@@ -5,6 +5,7 @@
 #include "spatial_stats_layer.h"
 #include "constants.h"
 #include "allocation_dialog.h"
+#include "polygon_layer.h"
 
 bool SpatialStatsLayer::load(Loader* loader) {
     return _spatialStats->computeStats(loader);
@@ -25,7 +26,7 @@ QGraphicsItemGroup *SpatialStatsLayer::draw() {
             item = new CircleGraphics(static_cast<Circle*>(geom));
             item->setZValue(10.0);
         } else if(geom->getGeometryType() == CellType) {
-            item = new CellGraphics(static_cast<Cell *>(geom));
+            item = new CellGraphics(static_cast<Cell*>(geom));
             item->setZValue(1.0);
         }
 
@@ -61,6 +62,9 @@ void SpatialStatsLayer::addMenuBar() {
     // add action to the menu to launch the REST server
     QAction* actionRestServer = _menu->addAction("Start REST server");
     connect(actionRestServer, &QAction::triggered, this, &SpatialStatsLayer::startRESTServer);
+
+    QAction* actionShowDemandGrid = _menu->addAction("Show demand grid");
+    connect(actionShowDemandGrid, &QAction::triggered, this, &SpatialStatsLayer::showDemandGrid);
 
     // TODO use method addBarMenuItems (see trace_layer.h)
     hideMenu();
@@ -182,6 +186,51 @@ void SpatialStatsLayer::startRESTServer() {
     }
 }
 
+void SpatialStatsLayer::showDemandGrid() {
+    qDebug() << "Show demand grid";
+
+    QHash<Geometry *, QHash<Geometry *, GeometryMatrixValue *> *> matrix;
+    _spatialStats->getGeometryMatrix(&matrix);
+
+    double cellSize = _spatialStats->getCellSize();
+    QString name = "Demand cells grid";
+
+    /* get the top left (xmin,ymin) and bottom right (xmax,ymax) cells */
+    double xmin = 1e10, xmax = 0.0, ymin = 1e10, ymax = 0.0;
+    for (auto it = matrix.begin(); it != matrix.end(); ++it) {
+        Geometry *geom = it.key();
+        if (geom->getGeometryType() == CellType) {
+            if(geom->getBounds().getTopLeft().x() < xmin)
+                xmin = geom->getBounds().getTopLeft().x();
+            if(geom->getBounds().getBottomRight().x() > xmax)
+                xmax = geom->getBounds().getBottomRight().x();
+            if(geom->getBounds().getTopLeft().y() < ymin)
+                ymin = geom->getBounds().getTopLeft().y();
+            if(geom->getBounds().getBottomRight().y() > ymax)
+                ymax = geom->getBounds().getBottomRight().y();
+        }
+    }
+
+    QList<QList<QPointF>*> cells;
+    /* fill the space with cells */
+    for(double x = xmin; x < xmax; x += cellSize) {
+        for(double y = ymin; y < ymax; y += cellSize) {
+            QList<QPointF>* points = new QList<QPointF>();
+            *points << QPointF(x,-1*y)
+                    << QPointF(x+cellSize,-1*y)
+                    << QPointF(x+cellSize,-1*(y+cellSize))
+                    << QPointF(x,-1*(y+cellSize))
+                    << QPointF(x,-1*y);
+            qDebug() << QPointF(x,y) << QPointF(x+cellSize,y+cellSize);
+            cells.append(points);
+        }
+    }
+
+    qDebug() << cells.size() << "cells in the grid" << xmin << ymin << xmax << ymax;
+    PolygonLayer* layer = new PolygonLayer(_parent, name, cells);
+    Loader loader;
+    _parent->createLayer(name, layer, &loader);
+}
 
 void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
 
@@ -210,6 +259,7 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
         if(_selectedGeometry) {
             // restore the "normal" opacity
             _geometryGraphics[_selectedGeometry]->setOpacity(CELL_OPACITY);
+            _pointsGroups[_selectedGeometry]->setVisible(false);
 
             // restore the "normal" colors for the neighbor geometries
             QHash<Geometry*, GeometryMatrixValue*>* geoms;
@@ -248,19 +298,33 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
         _geometryGraphics[geom]->setOpacity(1.0);
         _geometryGraphics[geom]->setBrush(BLUE);
         _geometryGraphics[geom]->update();
+        QGraphicsItemGroup* group = new QGraphicsItemGroup();
         for(auto jt = geoms->begin(); jt != geoms->end(); ++jt) {
             Geometry* g = jt.key();
             if(g == geom) continue;
             auto val = jt.value();
             double score = val->avgScore;
-            int factor = (int) (50.0 + 500.0 * score / maxWeight);
+            int scoreClass = (score == maxWeight) ? 4 : (int) (5.0 * (score / maxWeight));
+            int factor = 50 + 100 * scoreClass;
 //                    qDebug() << score << maxWeight << factor;
 
             if(_geometryGraphics.contains(g)) {
                 _geometryGraphics[g]->setBrush(BLUE.darker(factor));
                 _geometryGraphics[g]->update();
             }
+
+            // add the points to the group
+            QGraphicsEllipseItem* i = new CircleGraphics(new Circle(g->getCenter(), 10));
+            i->setBrush(QBrush(Qt::black));
+            i->setPen(Qt::NoPen);
+            QGraphicsLineItem* line = new QGraphicsLineItem(geom->getCenter().x(), -1*geom->getCenter().y(),
+                                                            g->getCenter().x(), -1*g->getCenter().y());
+            line->setPen(QPen(QBrush(Qt::black),2.0));
+            group->addToGroup(i);
+            group->addToGroup(line);
         }
+        _pointsGroups.insert(geom, group);
+        addGraphicsItem(group);
 
         if(!_plots) {
             _plots = new DockWidgetPlots(_parent, _spatialStats); // see to dock the widget on the mainwindow
@@ -293,7 +357,7 @@ void SpatialStatsLayer::computeAllocation() {
 
     // print the resulting allocation
     for(auto it = allocation.begin(); it != allocation.end(); ++it) {
-        qDebug() << "candidate" << it.key()->getCenter().x()
+        qDebug() << "candidate" << it.value()->rank
                  << "allocated" << it.value()->weight << "(demand weight)"
                  << it.value()->backendWeight << "(backend weight)" << it.value()->backends.size()
                  << it.value()->incomingWeight << "(incoming weight)"

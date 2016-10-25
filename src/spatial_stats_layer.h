@@ -30,6 +30,7 @@ private slots:
     void computeAllocation();
     void exportContourFile();
     void startRESTServer();
+    void showDemandGrid();
     void onMousePress(Geometry* geom, bool mod);
 
 private:
@@ -37,6 +38,7 @@ private:
     ComputeAllocation* _computeAllocation = nullptr;
     Geometry* _selectedGeometry = nullptr;
     QHash<Geometry*, GeometryGraphics*> _geometryGraphics;
+    QHash<Geometry*, QGraphicsItemGroup*> _pointsGroups;
     DockWidgetPlots* _plots = nullptr;
     RESTServer* _restServer = nullptr;
 };
