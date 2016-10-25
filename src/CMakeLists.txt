@@ -42,19 +42,27 @@ set(SOURCE_FILES
         spatial_stats.cpp
         spatial_stats_dialog.cpp
         trace_layer.cpp
-        weighted_allocation_layer.cpp
+#        weighted_allocation_layer.cpp
         point_layer.cpp
         number_dialog.cpp
         gtfs_layer.cpp
         linestring_layer.cpp
+        spatial_stats_layer.cpp
+        compute_allocation_layer.cpp
+        export_dialog.cpp
+        trace_inspector_layer.cpp
+        trace_inspector_dialog.cpp
         flickr_layer.cpp)
+#        gtfs_layer_test.cpp)
 
 set(FORM_FILES
         dockwidget_plots.ui
         layer_panel.ui
         mainwindow.ui
         progress_dialog.ui
-        projection_dialog.ui)
+        projection_dialog.ui
+        road_traffic_examiner_panel.ui
+        waze_alert_cells_panel.ui)
 
 set(HEADER_FILES
         allocation_dialog.h
@@ -81,18 +89,25 @@ set(HEADER_FILES
         spatial_stats_dialog.h
         trace_layer.h
         utils.h
-        weighted_allocation_layer.h
+#        weighted_allocation_layer.h
         point_layer.h
         number_dialog.h
         threadlist.h
         gtfs_layer.h
         csv_parser.h
         linestring_layer.h
-        flickr_layer.h spatial_stats_layer.cpp spatial_stats_layer.h compute_allocation_layer.cpp compute_allocation_layer.h trace.cpp trace.h export_dialog.cpp export_dialog.h trace_inspector_layer.cpp trace_inspector_layer.h trace_inspector_dialog.cpp trace_inspector_dialog.h)
+        flickr_layer.h
+        spatial_stats_layer.h
+        compute_allocation_layer.h
+        trace.cpp trace.h
+        export_dialog.h
+        trace_inspector_layer.h
+        trace_inspector_dialog.h gtfs_trace.cpp gtfs_trace.h polygon_layer.cpp polygon_layer.h road_traffic_open_dialog.cpp road_traffic_open_dialog.h road_traffic.cpp road_traffic.h road_traffic_layer.cpp road_traffic_layer.h road_traffic_examiner_panel.cpp road_traffic_examiner_panel.h waze_alert_file.cpp waze_alert_file.h waze_alert_file_layer.cpp waze_alert_file_layer.h waze_alert_cells_layer.cpp waze_alert_cells_layer.h waze_alert_cells.cpp waze_alert_cells.h waze_alert_cells_panel.cpp waze_alert_cells_panel.h)
 
-add_executable(LocAll ${SOURCE_FILES}
-                      ${HEADER_FILES}
-                      ${FORM_FILES})
+add_executable(LocAll
+        ${SOURCE_FILES}
+        ${HEADER_FILES}
+        ${FORM_FILES})
 
 TARGET_LINK_LIBRARIES(LocAll
         Qt5::Widgets

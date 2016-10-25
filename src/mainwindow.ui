@@ -32,6 +32,9 @@
     <addaction name="actionOpen_GTFS"/>
     <addaction name="actionOpen_Flickr"/>
     <addaction name="actionOpen_Shapefile"/>
+    <addaction name="actionOpen_HWE_data"/>
+    <addaction name="actionOpen_GB_Road_data"/>
+    <addaction name="actionOpen_Waze_file"/>
     <addaction name="actionSet_projection"/>
     <addaction name="actionAdd_Grid"/>
     <addaction name="actionExport_PDF"/>
@@ -49,10 +52,10 @@
    </property>
   </action>
   <action name="actionOpen_GTFS">
-     <property name="text">
-      <string>Open GTFS Directory...</string>
-     </property>
-    </action>
+   <property name="text">
+    <string>Open GTFS Directory...</string>
+   </property>
+  </action>
   <action name="actionOpen_Flickr">
    <property name="text">
     <string>Open Flickr file...</string>
@@ -76,6 +79,21 @@
   <action name="actionExport_PDF">
    <property name="text">
     <string>Export PDF...</string>
+   </property>
+  </action>
+  <action name="actionOpen_HWE_data">
+   <property name="text">
+    <string>Open Highways England data...</string>
+   </property>
+  </action>
+  <action name="actionOpen_GB_Road_data">
+   <property name="text">
+    <string>Open GB Road data...</string>
+   </property>
+  </action>
+  <action name="actionOpen_Waze_file">
+   <property name="text">
+    <string>Open Waze file...</string>
    </property>
   </action>
  </widget>

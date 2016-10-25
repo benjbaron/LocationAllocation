@@ -14,6 +14,11 @@
 #include "proj_factory.h"
 #include "gtfs_layer.h"
 #include "flickr_layer.h"
+#include "road_traffic_open_dialog.h"
+#include "road_traffic.h"
+#include "road_traffic_layer.h"
+#include "waze_alert_file.h"
+#include "waze_alert_file_layer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -47,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen_TraceDir, &QAction::triggered, this, &MainWindow::openTraceDirectory);
     connect(ui->actionOpen_GTFS, &QAction::triggered, this, &MainWindow::openGTFSDirectory);
     connect(ui->actionOpen_Flickr, &QAction::triggered, this, &MainWindow::openFlickrFile);
+    connect(ui->actionOpen_HWE_data, &QAction::triggered, this, &MainWindow::openHWEData);
+    connect(ui->actionOpen_GB_Road_data, &QAction::triggered, this, &MainWindow::openGBRoadData);
+    connect(ui->actionOpen_Waze_file, &QAction::triggered, this, &MainWindow::openWazeData);
     connect(ui->actionSet_projection, &QAction::triggered, this, &MainWindow::setProjection);
     connect(ui->actionExport_PDF, &QAction::triggered, this, &MainWindow::exportPDF);
     connect(_showLayersAction, &QAction::triggered, this, &MainWindow::showLayerPanel);
@@ -295,6 +303,55 @@ void MainWindow::openFlickrFile() {
     FlickrLayer* layer  = new FlickrLayer(this, name, t);
     Loader loader;
     createLayer(name, layer, &loader);
+}
+
+void MainWindow::openGBRoadData() {
+    QString name = "GB Road data";
+    RoadTrafficOpenDialog d(this, name);
+    int ret = d.exec(); // synchronous
+    if (ret == QDialog::Rejected) {
+        return;
+    }
+
+    qDebug() << "Shapefile" << d.getShapefilePath();
+
+    changeProjection(d.getShapefilePath(), _projOut);
+
+    // instantiate a new layer and a new loader
+    RoadTraffic* t = new RoadTraffic(d.getShapefilePath(), d.getDataPath(), RT_ENG);
+    RoadTrafficLayer* layer  = new RoadTrafficLayer(this, name, t);
+    Loader loader;
+    createLayer(name, layer, &loader);
+}
+
+void MainWindow::openHWEData() {
+    qDebug() << "Open Highways England data";
+}
+
+void MainWindow::openWazeData() {
+    QString name = "Waze alert data";
+    QSettings settings;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Open a Waze alert file",
+                                                    settings.value("defaultWazeAlertFilePath",
+                                                                   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString(),
+                                                    "Waze alert file (*.csv)");
+
+    if(filename.isEmpty()) {
+        return;
+    }
+    // Save the filename path in the app settings
+    settings.setValue("defaultWazeAlertFilePath", QFileInfo(filename).absolutePath());
+
+    changeProjection(name, _projOut);
+
+    // instantiate a new layer and a new loader
+    WazeAlertFile* wazeAlertFile = new WazeAlertFile(filename);
+    WazeAlertFileLayer* layer = new WazeAlertFileLayer(this, name, wazeAlertFile);
+    Loader loader;
+    createLayer(name, layer, &loader);
+
+
 }
 
 void MainWindow::exportPDF() {
