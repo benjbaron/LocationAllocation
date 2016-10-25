@@ -56,7 +56,7 @@ QGraphicsItemGroup *ComputeAllocationLayer::draw() {
 
         GraphicsPoint* item = new GraphicsPoint(p, (int) size, p);
         connect(item, &GraphicsPoint::mousePressedEvent, [=](QPointF id, bool mod, bool doubleClicked) {
-            qDebug() << "Clicked on point" << id << mod << doubleClicked;
+            qDebug() << "Clicked on point" << id << mod << doubleClicked << _points.value(id)->rank;
 
             if(doubleClicked) {
                 // select all points

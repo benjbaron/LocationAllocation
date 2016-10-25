@@ -240,8 +240,7 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
 //                     << "| Incoming"    << normalizedIncomingWeight << incomingWeight << maxIncomingWeights;
 
 
-            if(i == 0 || (i == 1 && normalizedBackendWeight > 0.0)
-               || (i > 1 && normalizedBackendWeight > 0.0 && nbBackendLinks >= 1) ) {
+            if(normalizedCoverageWeight > 0 && (i==0 || normalizedBackendWeight > 0.0)) {
                 // add the candidate to the top candidates
                 Allocation a(k,normalizedCoverageWeight,normalizedBackendWeight,normalizedIncomingWeight,-1,demandsCovered,backendCovered);
                 topCandidates.append(a);
@@ -295,7 +294,6 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
             if(k == bestCandidate.geom)
                 continue; // ignore the best candidate that was picked
 
-
             Allocation* alloc = allocation->value(k);
 
             // get the demands already covered by the current candidate
@@ -320,6 +318,7 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
 
                 double backendWeight = 0.0;
                 for(Geometry* c : allocation->keys()) {
+                    if(c == k) continue;
                     double w = computeBackendWeight(c,k1);
                     backendWeight += w;
                 }
@@ -351,6 +350,7 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
                 int nbBackendLinks = 0;
                 // compute the backend weight for the previously allocated storage nodes
                 for(Geometry* c : allocation->keys()) {
+                    if(c == k) continue;
                     double w = computeBackendWeight(c,k1);
                     backendWeight += w;
                     backendCovered.insert(c,w);
@@ -374,8 +374,7 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
 //                << "| Coverage:"   << newNormalizedCoverageWeight << coverage       << newMaxCoverageWeights
 //                << "| Incoming"    << newNormalizedIncomingWeight << incomingWeight << newMaxIncomingWeights;
 
-                if((i == 1 && newNormalizedBackendWeight > 0.0)
-                   || (i > 1 && newNormalizedBackendWeight > 0.0 && nbBackendLinks >= 1)) {
+                if(newNormalizedCoverageWeight > 0 && newNormalizedBackendWeight > 0.0) {
                     // add the candidate to the top candidates
                     Allocation a(k1,newNormalizedCoverageWeight,newNormalizedBackendWeight,newNormalizedIncomingWeight,-1,demandsCovered,backendCovered);
                     newTopCandidates.append(a);
@@ -454,9 +453,11 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
                 out << QString::number(count)
                     << " " << QString::number(it.key()->getCenter().x(), 'f', 2)
                     << " " << QString::number(it.key()->getCenter().y(), 'f', 2)
-                    << " " << QString::number(it.value()->weight)
+                    << " " << QString::number(it.value()->weight, 'f', 2)
                     << " " << QString::number(it.value()->deletedCandidates.size())
                     << " " << QString::number(it.value()->demands.size()) << "\n";
+
+                count++;
             }
             file.close();
         }
