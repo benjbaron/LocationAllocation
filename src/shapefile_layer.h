@@ -90,7 +90,6 @@ public:
         int radius = 10;
         _groupItem = new QGraphicsItemGroup();
         _groupItem->setHandlesChildEvents(false);
-        QColor c = Qt::red;
 
         for(ProjectedPoint* p : _points) {
             QColor c(BLUE);
@@ -102,30 +101,30 @@ public:
             item->setBrush(QBrush(c));
             addGraphicsItem(item);
 
-            connect(item, &CircleGraphics::mousePressedEvent, [=](Geometry* geom, bool mod){
+            connect(static_cast<CircleGraphics*>(item), &CircleGraphics::mousePressedEvent, [=](Geometry* geom, bool mod){
                 ProjectedPoint* projPt = _points.value(geom->getCenter());
 
                 if(projPt->item == nullptr) {
                     // compute the QGraphicsItemGroup
                     QGraphicsItemGroup* group = new QGraphicsItemGroup();
                     for(int lsId : projPt->ls) {
-                        QGraphicsPathItem* item;
-                        getLineStringGraphicsItem((OGRLineString*) _shapefile->getGeometry(lsId), item);
+                        QGraphicsPathItem* pathItem;
+                        getLineStringGraphicsItem((OGRLineString*) _shapefile->getGeometry(lsId), pathItem);
                         QPen pen = QPen(ORANGE);
                         pen.setWidth(5);
                         pen.setCosmetic(true);
                         if(lsId == projPt->projectedId)
                             pen.setColor(Qt::darkRed);
-                        item->setPen(pen);
-                        group->addToGroup(item);
+                        pathItem->setPen(pen);
+                        group->addToGroup(pathItem);
                     }
 
-                    for(QPoint p : projPt->cells) {
-                        QGraphicsRectItem* item = new QGraphicsRectItem(100*p.x(), -100*p.y(), 100, -100);
-                        item->setBrush(Qt::red);
-                        item->setPen(Qt::NoPen);
-                        item->setOpacity(0.5);
-                        group->addToGroup(item);
+                    for(QPoint pt : projPt->cells) {
+                        QGraphicsRectItem* cellItem = new QGraphicsRectItem(100*pt.x(), -100*pt.y(), 100, -100);
+                        cellItem->setBrush(Qt::red);
+                        cellItem->setPen(Qt::NoPen);
+                        cellItem->setOpacity(0.5);
+                        group->addToGroup(cellItem);
                     }
                     projPt->item = group;
                     addGraphicsItem(group);
@@ -142,7 +141,8 @@ public:
             addGraphicsItem(item);
 
             ArrowLineItem* line = new ArrowLineItem(p->projectedPoint.x(), p->projectedPoint.y(),
-                                                    p->originalPoint.x(), p->originalPoint.y(), -1, -1, radius, radius);
+                                                    p->originalPoint.x(), p->originalPoint.y(),
+                                                    -1, -1, nullptr, radius, radius);
             addGraphicsItem(line);
         }
         return _groupItem;

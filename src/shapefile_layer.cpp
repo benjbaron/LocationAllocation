@@ -263,7 +263,7 @@ bool Shapefile::loadWKT(Loader* loader) {
 
 bool Shapefile::loadShapefile(Loader* loader) {
     OGRRegisterAll();
-    OGRDataSource *poDS;
+    OGRDataSource* poDS;
 
     poDS = OGRSFDriverRegistrar::Open(_filename.toStdString().c_str(), FALSE);
     if( poDS == NULL ) {
@@ -276,10 +276,10 @@ bool Shapefile::loadShapefile(Loader* loader) {
     acceptedHWFieldsSet << "primary_link" << "tertiary_link" << "trunk_link" << "motorway" << "road" <<  "secondary_link" << "tertiary" << "motorway_link" << "secondary" << "trunk" << "primary";
 
     for(int i = 0; i < poDS->GetLayerCount(); ++i) {
-        OGRLayer  *poLayer = poDS->GetLayer(i);
+        OGRLayer* poLayer = poDS->GetLayer(i);
         qDebug() << "Loading layer" << QString::fromStdString(poLayer->GetName()) << "...";
-        OGRFeature *poFeature;
-        OGRSpatialReference *poTarget = new OGRSpatialReference();
+        OGRFeature* poFeature;
+        OGRSpatialReference* poTarget = new OGRSpatialReference();
         poTarget->importFromProj4(ProjFactory::getInstance().getOutputProj());
 
         poLayer->ResetReading();
@@ -287,7 +287,7 @@ bool Shapefile::loadShapefile(Loader* loader) {
         int nrofFeatures = 0;
         while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 
-            OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+            OGRGeometry* poGeometry = poFeature->GetGeometryRef();
             if( poGeometry != NULL
                 && wkbFlatten(poGeometry->getGeometryType()) == wkbPoint) {
                 poGeometry->transformTo(poTarget);
@@ -300,6 +300,15 @@ bool Shapefile::loadShapefile(Loader* loader) {
                 poGeometry->transformTo(poTarget);
                 OGRLineString* ls = (OGRLineString*) poGeometry;
                 addGeometry(ls);
+            }
+            else if (poGeometry != NULL
+                     && wkbFlatten(poGeometry->getGeometryType()) == wkbMultiLineString) {
+                poGeometry->transformTo(poTarget);
+                OGRMultiLineString* mls = (OGRMultiLineString*) poGeometry;
+                for(int i = 0; i < mls->getNumGeometries(); ++i) {
+                    OGRLineString* ls = (OGRLineString*) mls->getGeometryRef(i);
+                    addGeometry(ls);
+                }
             }
             else if (poGeometry != NULL
                     && wkbFlatten(poGeometry->getGeometryType()) == wkbPolygon) {
@@ -367,7 +376,7 @@ bool Shapefile::projectPoints(Loader *loader, QHash<QPointF, ProjectedPoint*>* p
     return true;
 }
 
-bool Shapefile::exportWKT(Loader *loader, const QString &output) {
+bool Shapefile::exportWKT(Loader* loader, const QString& output) {
     QFile file(output);
     if(!file.open(QFile::WriteOnly)) {
         loader->loadProgressChanged(1.0, "Done");
