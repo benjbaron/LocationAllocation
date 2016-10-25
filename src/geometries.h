@@ -13,15 +13,14 @@
 
 enum GeometryType { NoneType, CircleType, CellType, CoordType };
 
+// colors taken from http://flatuicolors.com
 const QColor TRACE_SELECTED_COL  = QColor(231, 76, 60);
 const QColor LINK_SELECTED_COL   = QColor(153, 14, 240);
 const QColor LINK_UNSELECTED_COL = QColor(52, 73, 94);
-const QColor TRACE_LINK_JOINT_COL = QColor(52, 152, 219);
 
 const int    TRACE_SELECTED_WID  = 3;
 const int    LINK_SELECTED_WID   = 5;
 const int    LINK_UNSELECTED_WID = 2;
-
 
 
 class Bounds {
@@ -161,11 +160,12 @@ public:
 };
 
 
+// See here: http://www.walletfox.com/course/customqgraphicslineitem.php
 class ArrowLineItem: public QObject, public QGraphicsLineItem {
     Q_OBJECT
 public:
-    ArrowLineItem(double x1, double y1, double x2, double y2, int nodeId, int linkId, double cutStart = 0, double cutEnd = 0):
-            QGraphicsLineItem(x1,-1*y1,x2,-1*y2), _selectionOffset(10), _nodeId(nodeId), _linkId(linkId), _isTraceSelected(false), _isLinkSelected(false),
+    ArrowLineItem(double x1, double y1, double x2, double y2, int nodeId, int linkId, void* ptr = nullptr, double cutStart = 0, double cutEnd = 0):
+            QGraphicsLineItem(x1,-1*y1,x2,-1*y2), _selectionOffset(10), _nodeId(nodeId), _linkId(linkId), _ptr(ptr), _isTraceSelected(false), _isLinkSelected(false),
             _unselectedCol(LINK_UNSELECTED_COL), _selectedCol(LINK_SELECTED_COL), _traceSelectedCol(TRACE_SELECTED_COL),
             _unselectedWid(LINK_UNSELECTED_WID), _selectedWid(LINK_SELECTED_WID), _traceSelectedWid(TRACE_SELECTED_WID) {
 
@@ -189,6 +189,10 @@ public:
         QPainterPath ret;
         ret.addPolygon(_selectionPolygon);
         return ret;
+    }
+
+    void setUnselectedColor(QColor unselectedCol) {
+        _unselectedCol = unselectedCol;
     }
 
     void setColors(QColor unselectedCol, QColor selectedCol, QColor traceSelectedCol) {
@@ -263,13 +267,13 @@ public:
     }
 
 signals:
-    void mousePressedEvent(int, int, bool);
+    void mousePressedEvent(int, int, bool, void*);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) {
         qDebug() << "[ArrowLineItem] Link clicked / Node" << _nodeId << "link" << _linkId << _isTraceSelected << _isLinkSelected;
         bool mod = (event->modifiers() == Qt::ShiftModifier);
-        emit mousePressedEvent(_nodeId, _linkId, mod);
+        emit mousePressedEvent(_nodeId, _linkId, mod, _ptr);
     }
 
 private:
@@ -279,6 +283,7 @@ private:
     QPolygonF _selectionPolygon;
     int _nodeId;
     int _linkId;
+    void* _ptr;
     bool _isTraceSelected;
     bool _isLinkSelected;
 

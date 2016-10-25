@@ -16,6 +16,7 @@ public:
     void getGeometriesAt(QSet<Geometry*>* geometries, QPointF p) {
         return getGeometriesAt(geometries, p.x(), p.y());
     }
+    double getCellSize() { return _cellSize; }
 
     // Factory method
     static GeometryIndex* make_geometryIndex(Trace* trace,

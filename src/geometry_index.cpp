@@ -55,6 +55,7 @@ GeometryIndex* GeometryIndex::make_geometryIndex(Trace* trace,
 
     QSet<QPoint> cellGeometries;
     for(auto it = nodes.begin(); it != nodes.end(); ++it) {
+
         if(it.value()->lastKey() < startTime) {
             continue;
         }
@@ -108,6 +109,12 @@ GeometryIndex* GeometryIndex::make_geometryIndex(Trace* trace,
             double radius = fields.at(2).toDouble();
             Geometry* geom = new Circle(x,y,radius);
             geometries.insert(geom);
+        }
+    }
+
+    for(Geometry* geom : geometries) {
+        if(geom->getGeometryType() == CircleType) {
+            qDebug() << geom->getCenter();
         }
     }
 
