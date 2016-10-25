@@ -10,8 +10,7 @@
 
 class SpatialStatsLayer;
 
-class TraceLayer: public Layer
-{
+class TraceLayer: public Layer {
     Q_OBJECT
 public:
     TraceLayer(MainWindow* parent = 0, QString name = 0, Trace* trace = nullptr, bool showMenu = true):

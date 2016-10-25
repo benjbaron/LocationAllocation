@@ -6,7 +6,7 @@
 #include "proj_factory.h"
 #include "loader.h"
 
-bool Trace::openTrace(Loader *loader) {
+bool Trace::openTrace(Loader* loader) {
     if(_filename.contains("test")) {
         QFile* file = new QFile(_filename);
         if(!file->open(QFile::ReadOnly | QFile::Text))
