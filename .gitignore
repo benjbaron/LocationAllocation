@@ -16,3 +16,5 @@ src/.idea
 src/.qmake.stash
 src/CMakeFiles
 CMakeCache.txt
+scripts/moc_progress.cpp
+scripts/moc_progress.o
