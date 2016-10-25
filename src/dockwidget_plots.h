@@ -2,18 +2,16 @@
 #define DOCKWIDGETPLOTS_H
 
 #include <QDockWidget>
-#include "spatial_stats.h"
 
 class QCustomPlot;
 class Geometry;
 class SpatialStats;
 
 namespace Ui {
-class DockWidgetPlots;
+    class DockWidgetPlots;
 }
 
-class DockWidgetPlots : public QDockWidget
-{
+class DockWidgetPlots : public QDockWidget {
     Q_OBJECT
 
 public:
@@ -22,7 +20,6 @@ public:
 
     void showNodeData(Geometry* geom);
     void showLinkData(Geometry* geom1, Geometry* geom2);
-    void plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlot, long long bins);
 
 private:
     Ui::DockWidgetPlots* ui;

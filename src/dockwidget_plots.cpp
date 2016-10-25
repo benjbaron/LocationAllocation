@@ -2,18 +2,15 @@
 #include "ui_dockwidget_plots.h"
 
 #include "spatial_stats.h"
-#include "constants.h"
 
 DockWidgetPlots::DockWidgetPlots(QWidget* parent, SpatialStats* spatialStats) :
     QDockWidget(parent),
     ui(new Ui::DockWidgetPlots),
-    _spatialStats(spatialStats)
-{
-    ui->setupUi(this);
+    _spatialStats(spatialStats) {
+        ui->setupUi(this);
 }
 
-DockWidgetPlots::~DockWidgetPlots()
-{
+DockWidgetPlots::~DockWidgetPlots() {
     delete ui;
 }
 
@@ -54,8 +51,7 @@ void DockWidgetPlots::showNodeData(Geometry* geom) {
                         + "\nIncoming Score (avg) " + QString::number(value->avgIncomingScore));
 }
 
-void DockWidgetPlots::showLinkData(Geometry *geom1, Geometry *geom2)
-{
+void DockWidgetPlots::showLinkData(Geometry *geom1, Geometry *geom2) {
     GeometryMatrixValue* value;
     _spatialStats->getValue(&value,geom1, geom2);
     int visitCount       = value->visits.size();
@@ -86,52 +82,3 @@ void DockWidgetPlots::showLinkData(Geometry *geom1, Geometry *geom2)
                         + "\nScore (avg) " + QString::number(value->avgScore));
 
 }
-
-void DockWidgetPlots::plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlot, long long bins) {
-    // clear the other plottable graphs
-    customPlot->clearPlottables();
-    for(int i = 0; i < customPlot->plottableCount(); ++i) {
-        customPlot->removePlottable(i);
-    }
-    long long min = MaxTime;
-    long long max = 0;
-    for(long long f : frequencies) {
-        if(f < min) min = f;
-        if(f > max) max = f;
-    }
-    int vectorSize = qMax(1, qCeil((double) (max - min) / bins));
-    QVector<double> ticks(vectorSize), y(vectorSize);
-    QVector<QString> labels(vectorSize);
-    for(long long f : frequencies) {
-        int i = qFloor((f - min) / (double) bins);
-        if(f == max) i = ticks.size()-1;
-        y[i] += 1;
-    }
-
-    double maxValue = 0.0;
-    for(int i = 0; i < vectorSize; ++i) {
-        if(y[i] > maxValue) maxValue = y[i];
-//        qDebug() << i << labels[i] << y[i];
-    }
-
-    for(int i = 0; i < vectorSize; ++i) {
-        ticks[i] = i+1;
-        if(y[i] > 0)
-            labels[i] = QString::number(i);
-        else labels[i] = "";
-    }
-
-
-    QCPBars *bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
-    customPlot->addPlottable(bars);
-    customPlot->xAxis->setAutoTicks(false);
-    customPlot->xAxis->setAutoTickLabels(false);
-    customPlot->xAxis->setTickVector(ticks);
-    customPlot->xAxis->setTickVectorLabels(labels);
-    customPlot->xAxis->setRange(0, ticks.size()+1);
-    customPlot->yAxis->setRange(0, maxValue);
-
-    bars->setData(ticks, y);
-    customPlot->replot();
-}
-

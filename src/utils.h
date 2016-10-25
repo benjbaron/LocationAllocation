@@ -7,11 +7,11 @@
 #include <geos/geom/LineString.h>
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/CoordinateArraySequence.h>
+#include "constants.h"
 
 enum WithinOperator { And, Or, NoneWithin };
 enum TravelTimeStat { NoneTT, Med, Avg };
 enum DistanceStat   { NoneD, Auto, FixedD };
-
 
 /* Define the names of the different allocations */
 const QString LOCATION_ALLOCATION_MEHTOD_NAME = "Location allocation";
@@ -95,8 +95,8 @@ public:
                 int n = it.value();
                 double prevProportion = (double) sum / _count;
                 if(prevProportion <= 0.5) {
-                    double propotion = (double) (sum+1) / _count;
-                    if(propotion >= 0.5) {
+                    double proportion = (double) (sum+1) / _count;
+                    if(proportion >= 0.5) {
                         _median = (it.key() + prevVal) / 2.0;
                     }
                     double nextProportion = (double) (sum+n) / _count;
@@ -196,6 +196,8 @@ inline uint qHash(const QPointF &key) {
     return qHash(key.x()) ^ qHash(key.y());
 }
 
+
+
 static bool toggleBoldFont(QLineEdit *lineEdit, bool isValid) {
     QFont prevFont(lineEdit->font()); // Get previous font
     if(isValid) {
@@ -269,6 +271,55 @@ static void printConsoleProgressBar(double progress, QString const &msg = QStrin
     std::cout << "] " << int(progress * 100.0) << "% " << msg.toUtf8().constData() << "\r";
     std::cout.flush();
 }
+
+static void plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlot, long long bins) {
+    // clear the other plottable graphs
+    customPlot->clearPlottables();
+    for(int i = 0; i < customPlot->plottableCount(); ++i) {
+        customPlot->removePlottable(i);
+    }
+    long long min = MaxTime;
+    long long max = 0;
+    for(long long f : frequencies) {
+        if(f < min) min = f;
+        if(f > max) max = f;
+    }
+    int vectorSize = qMax(1, qCeil((double) (max - min) / bins));
+    QVector<double> ticks(vectorSize), y(vectorSize);
+    QVector<QString> labels(vectorSize);
+    for(long long f : frequencies) {
+        int i = qFloor((f - min) / (double) bins);
+        if(f == max) i = ticks.size()-1;
+        y[i] += 1;
+    }
+
+    double maxValue = 0.0;
+    for(int i = 0; i < vectorSize; ++i) {
+        if(y[i] > maxValue) maxValue = y[i];
+//        qDebug() << i << labels[i] << y[i];
+    }
+
+    for(int i = 0; i < vectorSize; ++i) {
+        ticks[i] = i+1;
+        if(y[i] > 0)
+            labels[i] = QString::number(i);
+        else labels[i] = "";
+    }
+
+
+    QCPBars *bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
+    customPlot->addPlottable(bars);
+    customPlot->xAxis->setAutoTicks(false);
+    customPlot->xAxis->setAutoTickLabels(false);
+    customPlot->xAxis->setTickVector(ticks);
+    customPlot->xAxis->setTickVectorLabels(labels);
+    customPlot->xAxis->setRange(0, ticks.size()+1);
+    customPlot->yAxis->setRange(0, maxValue);
+
+    bars->setData(ticks, y);
+    customPlot->replot();
+}
+
 
 #endif // UTILS_H
 
