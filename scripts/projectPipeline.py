@@ -13,8 +13,8 @@ import urllib2
 import os
 import copy
 
-NB_PROCESSES = 8
-regex = "(?:[\d\.ENaN\-]+\,)+[\d\.ENaN\-]+"
+NB_PROCESSES = 7
+regex = "(?:[\d\.\w\-]+\,)+[\d\.\w\-]+"
 URL_BASE = "http://localhost:8080"
 NB_MAX_REQ = 10
 
@@ -62,9 +62,10 @@ def get_allocation_file(out, method, nbFacilities, deadline, delFactor, travelTi
     results = data.get("allocationResult")
     count = 0
     with open(out, 'w') as f:
-        for rank, facility in results.items():
+        for facility_id, facility in results.items():
             print facility
-            f.write("{x} {y} {rank} {weight} {nbDeleted} {nbAllocated}\n".format(x=facility["x"],
+            f.write("{id} {x} {y} {rank} {weight} {nbDeleted} {nbAllocated}\n".format(id=facility_id,
+                                                                                 x=facility["x"],
                                                                                  y=facility["y"],
                                                                                  rank=facility["rank"],
                                                                                  weight=facility["weight"],
@@ -87,7 +88,7 @@ def run(settings, key, values, key2="", values2=[]):
     :rtype allocation result dictionary
     """
     processes = []
-    file_count = 0
+    file_count = 1
     for v in values:
         settings[key] = v
         s1 = copy.deepcopy(settings)
@@ -112,16 +113,26 @@ def run(settings, key, values, key2="", values2=[]):
         print print_str
 
         if s["facilityPlacement"] == "file":
-            out = os.getcwd() + "/alloc-" + str(count) + ".txt"
-            s["facilitiesFilename"] = out
-            nbFacilities = get_allocation_file(out,
-                                s['method'],
-                                s['nrofFacilities'],
-                                s['deadline'],
-                                s['delFactor'],
-                                s['travelTime'],
-                                s['distance'])
-            s["nrofFacilities"] = nbFacilities
+            if(s["allocPath"]):
+                deadline = s['deadline']
+                if s['deadline'] > 2400:
+                    deadline = 2400
+                alloc_file = s["allocPath"] + "alloc"+str(s['nrofFacilities'])+"-"+str(deadline)+".txt" #+str(s['deadline'])+".txt"
+                s["facilitiesFilename"] = alloc_file
+                print alloc_file, os.path.isfile(alloc_file)
+                if(not os.path.isfile(alloc_file)):
+                    return
+            else:
+                out = os.getcwd() + "/alloc-" + str(count) + ".txt"
+                s["facilitiesFilename"] = out
+                nbFacilities = get_allocation_file(out,
+                                    s['method'],
+                                    s['nrofFacilities'],
+                                    s['deadline'],
+                                    s['delFactor'],
+                                    s['travelTime'],
+                                    s['distance'])
+                s["nrofFacilities"] = nbFacilities
         f = build_settings_file(s)
         print f
         process = Popen("echo \"{str}\" | java -jar ONE.jar -b {b} /dev/stdin".format(str=f, b=s["b"]),
@@ -132,16 +143,18 @@ def run(settings, key, values, key2="", values2=[]):
     outputs = Pool(NB_PROCESSES).map(get_lines, processes)
 
     # remove the file we just created
-    for i in range(file_count):
-        filepath = os.getcwd() + "/alloc-" + str(i) + ".txt"
-        os.remove(filepath)
+    if(not settings["allocPath"]):
+        for i in range(1,file_count):
+            filepath = os.getcwd() + "/alloc-" + str(i) + ".txt"
+            os.remove(filepath)
 
     # process the output of the simulations
     res = []
     for out in outputs:
         print out
-        m = re.findall(regex, out)
-        res += m
+        if out :
+            m = re.findall(regex, out)
+            res += m
 
     return res
 
@@ -261,13 +274,14 @@ MapBasedMovement.mapFile1 = /Users/ben/Documents/workspace/ONE/src/one_1.4.1/dat
         facilityPlacement = "manhattanGrid"
     facilitiesFilename = ""
     if settings["facilityPlacement"] == "file" and settings["facilitiesFilename"]:
-        facilitiesFilename = "FileSystemReport2.facilitiesFilename = %s" % settings["facilitiesFilename"]
+        facilitiesFilename = "FileSystemBackendReport.facilitiesFilename = %s" % settings["facilitiesFilename"]
 
     propagationTimer = settings["propagationTimer"]
     nrofFileCopies = settings["nrofFileCopies"]
     useBackendNodes = "true" if settings["useBackendNodes"] else "false"
     useGlobalInformation = "true" if settings["useGlobalInformation"] else "false"
     putPolicy = settings["putPolicy"]
+    outputAvailabilityTimes = "true" if settings["outputAvailabilityTimes"] else "false"
 
     if settings["nrofFacilities"] != -1:
         nrofFacilities = settings["nrofFacilities"]
@@ -282,8 +296,8 @@ Scenario.endTime = {simTime}
 MovementModel.rngSeed = 42
 
 wifi.type = SimpleBroadcastInterface
-wifi.transmitSpeed = 1M
-wifi.transmitRange = 250
+wifi.transmitSpeed = 10M
+wifi.transmitRange = 150
 
 Events.nrof = 0
 Scenario.nrofHostGroups = {nrofHostGroups}
@@ -305,24 +319,20 @@ Report.nrofReports = 1
 Report.warmup = 0
 Report.reportDir = reports/
 
-Report.report1 = FileSystemReport2
-FileSystemReport2.reqGenRate = 0.016667
-FileSystemReport2.deadline = {deadline}
-FileSystemReport2.facilityPlacement = {facilityPlacement}
-FileSystemReport2.allowNodeContacts = false
-FileSystemReport2.useBackend = false
-FileSystemReport2.replicationType = rep
-FileSystemReport2.putPolicy = {putPolicy}
-FileSystemReport2.useBackendNodes = {useBackendNodes}
-FileSystemReport2.propagationTimer = {propagationTimer}
-FileSystemReport2.useGlobalInformation = {useGlobalInformation}
-FileSystemReport2.nrofFileCopies = {nrofFileCopies}
-{maxStorage}
+Report.report1 = FileSystemBackendReport
+FileSystemBackendReport.reqGenRate = 0.0016667
+FileSystemBackendReport.proportionPutReq = 0.1
+FileSystemBackendReport.deadline = {deadline}
+FileSystemBackendReport.putPolicy = {putPolicy}
+FileSystemBackendReport.useBackendNodes = {useBackendNodes}
+FileSystemBackendReport.propagationTimer = {propagationTimer}
+FileSystemBackendReport.nrofFileCopies = {nrofFileCopies}
 {facilitiesFilename}
+FileSystemBackendReport.outputAvailabilityTimes = {outputAvailabilityTimes}
 """.format(simTime=settings["simTime"], nrofHostGroups=nrofHostGroups, nrofFacilities=nrofFacilities,
            movementModel=movementModel, deadline=deadline, facilityPlacement=facilityPlacement, maxStorage=maxStorage,
            facilitiesFilename=facilitiesFilename, propagationTimer=propagationTimer, nrofFileCopies=nrofFileCopies,
-           useBackendNodes=useBackendNodes,useGlobalInformation=useGlobalInformation,putPolicy=putPolicy)
+           useBackendNodes=useBackendNodes,useGlobalInformation=useGlobalInformation,putPolicy=putPolicy,outputAvailabilityTimes=outputAvailabilityTimes)
     return str
 
 
@@ -343,11 +353,11 @@ if __name__ == '__main__':
     options = get_options()
     settings = {
         "file": options.file,
-        "simTime": 10800,
-        "deadline": 3600,  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
-        "mobility": "",  # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", "" # options.mobility,
+        "simTime": 21400,
+        "deadline": 20000,  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
+        "mobility": "",    # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", "" # options.mobility,
         "mobilityFile": "settings.txt", 
-        "nrofFacilities": 50,  # options.nrofFacilities,
+        "nrofFacilities": 15,  # options.nrofFacilities,
         "nrofMobileUsers": 50,
         "b": 1,  # number of simulations in batch to launch
         "maxStorage": -1,
@@ -355,15 +365,28 @@ if __name__ == '__main__':
         "facilitiesFilename": "",
         "method": "loc",
         "delFactor": 0.5,
-        "travelTime": "avg",
-        "distance": "auto",
+        "travelTime": "1000",
+        "distance": "1000",
         "propagationTimer": -1,
         "nrofFileCopies": -1,
-        "useGlobalInformation": False,
-        "useBackendNodes": False,
-        "putPolicy": "first"  # {"all", "first"}
+        "useGlobalInformation": True,
+        "useBackendNodes": True,
+        "putPolicy": "first",  # {"all", "first"}
+        "allocPath": "../data/sf-muni-ONE/alloc/",
+        "outputAvailabilityTimes": True # "../data/TestSynthetic/alloc/"
     }
 
-    out = run(settings, "nrofFacilities", [1,2,3], "deadline", [2000, 2500, 3000, 3600])
+    count = 0
+    # out = os.getcwd() + "/alloc-" + str(count) + ".txt"
+    # settings["facilitiesFilename"] = out
+    # nbFacilities = get_allocation_file(out,
+    #                     settings['method'],
+    #                     settings['nrofFacilities'],
+    #                     settings['deadline'],
+    #                     settings['delFactor'],
+    #                     settings['travelTime'],
+    #                     settings['distance'])
+
+    out = run(settings, "nrofFacilities", [19,20,21,22])
     for o in out:
         print o
