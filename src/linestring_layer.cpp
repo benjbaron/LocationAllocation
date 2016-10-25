@@ -9,16 +9,17 @@ QGraphicsItemGroup* LineStringLayer::draw() {
     _groupItem = new QGraphicsItemGroup();
     QColor c = Qt::red;
     QPen pen = QPen(c);
-    pen.setWidth(3);
 
-    for(QList<QPointF>* ls : _linestrings) {
+    for(LineStringDisplay* lsd : _linestrings) {
+        QList<QPointF> ls = lsd->_linestring;
         QPainterPath path;
-        path.moveTo(QPointF(ls->first().x(), -1*ls->first().y()));
-        for(int i = 1; i < ls->size(); ++i) {
-            QPointF pt = ls->at(i);
+        path.moveTo(QPointF(ls.first().x(), -1*ls.first().y()));
+        for(int i = 1; i < ls.size(); ++i) {
+            QPointF pt = ls.at(i);
             path.lineTo(QPointF(pt.x(), -1*pt.y()));
         }
         QGraphicsPathItem* item = new QGraphicsPathItem(path);
+        pen.setWidth(lsd->_width);
         item->setPen(pen);
         addGraphicsItem(item);
 //        item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);

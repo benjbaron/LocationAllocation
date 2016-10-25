@@ -7,15 +7,23 @@
 
 #include "layer.h"
 
+struct LineStringDisplay {
+    LineStringDisplay(const QList<QPointF>& ls, int w = -1) :
+            _linestring(ls), _width(w) {}
+    QList<QPointF> _linestring;
+    int _width;
+};
+
 class LineStringLayer: public Layer {
 public:
-    LineStringLayer(MainWindow* parent = 0, const QString& name = 0, const QList<QList<QPointF>*>& ls = QList<QList<QPointF>*>()):
+    LineStringLayer(MainWindow* parent = 0, const QString& name = 0,
+                    const QList<LineStringDisplay*>& ls = QList<LineStringDisplay*>()):
             Layer(parent, name), _linestrings(ls) { }
     QGraphicsItemGroup* draw();
     virtual bool load(Loader* loader);
 
 private:
-    QList<QList<QPointF>*> _linestrings;
+    QList<LineStringDisplay*> _linestrings;
 };
 
 #endif //LOCALL_LINESTRINGLAYER_H
