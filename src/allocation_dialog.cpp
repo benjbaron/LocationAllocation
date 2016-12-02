@@ -170,14 +170,14 @@ AllocationDialog::AllocationDialog(QWidget *parent)
 
     travelTimeMedianRadioButton = new QRadioButton("Median travel time");
     connect(travelTimeMedianRadioButton, &QRadioButton::toggled, [=](bool checked) {
-        if(checked) ttStat = Med;
+        if(checked) ttStat = MedTTStat;
 
         checkConsistency();
     });
 
     travelTimeAverageRadioButton = new QRadioButton("Average travel time");
     connect(travelTimeAverageRadioButton, &QRadioButton::toggled, [=](bool checked) {
-        if(checked) ttStat = Avg;
+        if(checked) ttStat = AvgTTStat;
         checkConsistency();
     });
 
@@ -193,7 +193,7 @@ AllocationDialog::AllocationDialog(QWidget *parent)
         enableTravelTime = checked;
         travelTimeExtension->setVisible(checked);
         checkConsistency();
-        if(!checked) ttStat = NoneTT;
+        if(!checked) ttStat = NoneTTStat;
     });
 
     /* Distance extension */
@@ -216,7 +216,7 @@ AllocationDialog::AllocationDialog(QWidget *parent)
             distanceFixedLineEdit->setFocus();
             double prevDistance = distance < 0 ? distanceFixedLineEdit->text().toDouble() : distance;
             distanceFixedLineEdit->textChanged(QString::number(prevDistance, 'f', 2));
-            dStat = FixedD;
+            dStat = FixedDStat;
         }
         checkConsistency();
     });
@@ -226,10 +226,10 @@ AllocationDialog::AllocationDialog(QWidget *parent)
     distanceFixedLayout->addWidget(distanceFixedRadioButton);
     distanceFixedLayout->addWidget(distanceFixedLineEdit);
 
-    distanceAutoRadioButton = new QRadioButton("Auto");
+    distanceAutoRadioButton = new QRadioButton("AutoDStat");
     connect(distanceAutoRadioButton, &QRadioButton::toggled, [=](bool checked) {
         if(checked) distance = -1.0;
-        if(checked) dStat = Auto;
+        if(checked) dStat = AutoDStat;
         checkConsistency();
     });
 
@@ -244,7 +244,7 @@ AllocationDialog::AllocationDialog(QWidget *parent)
     connect(distanceCheckBox, &QCheckBox::toggled, [=](bool checked) {
         enableDistance = checked;
         distanceExtension->setVisible(checked);
-        if(!checked) dStat = NoneD;
+        if(!checked) dStat = NoneDStat;
         checkConsistency();
     });
     delLayout->addWidget(delFactorLabel);
@@ -314,13 +314,13 @@ AllocationDialog::AllocationDialog(QWidget *parent)
             travelTimeCheckBox->toggled(enabled);
             travelTimeExtension->setVisible(enabled);
             enableTravelTime = enabled;
-            if(!enabled) ttStat = NoneTT;
+            if(!enabled) ttStat = NoneTTStat;
         } else {
             travelTimeCheckBox->setChecked(false);
             travelTimeCheckBox->toggled(false);
             travelTimeExtension->setVisible(false);
             enableTravelTime = false;
-            ttStat = NoneTT;
+            ttStat = NoneTTStat;
         }
 
         if(settings.contains("savedEnableDistance")) {
@@ -329,13 +329,13 @@ AllocationDialog::AllocationDialog(QWidget *parent)
             distanceCheckBox->toggled(enabled);
             distanceExtension->setVisible(enabled);
             enableDistance = enabled;
-            if(!enabled) dStat = NoneD;
+            if(!enabled) dStat = NoneDStat;
         } else {
             distanceCheckBox->setChecked(false);
             distanceCheckBox->toggled(false);
             distanceExtension->setVisible(false);
             enableDistance = false;
-            dStat = NoneD;
+            dStat = NoneDStat;
         }
 
         if(settings.contains("savedTravelTime")) {
@@ -345,23 +345,23 @@ AllocationDialog::AllocationDialog(QWidget *parent)
                 qDebug() << travelTime << settings.value("savedTravelTimeStat");
                 if(settings.contains("savedTravelTimeStat")) {
                     ttStat = static_cast<TravelTimeStat>(settings.value("savedTravelTimeStat").toInt());
-                    if(ttStat == Avg) travelTimeAverageRadioButton->setChecked(true);
-                    if(ttStat == Med) travelTimeMedianRadioButton->setChecked(true);
+                    if(ttStat == AvgTTStat) travelTimeAverageRadioButton->setChecked(true);
+                    if(ttStat == MedTTStat) travelTimeMedianRadioButton->setChecked(true);
                     else {
                         travelTimeAverageRadioButton->setChecked(true);
-                        ttStat = Avg;
+                        ttStat = AvgTTStat;
                     }
                 } else {
                     travelTimeAverageRadioButton->setChecked(true);
-                    ttStat = Avg;
+                    ttStat = AvgTTStat;
                 }
             } else {
                 travelTimeAverageRadioButton->setChecked(true);
-                ttStat = Avg;
+                ttStat = AvgTTStat;
             }
         } else {
             travelTimeAverageRadioButton->setChecked(true);
-            ttStat = Avg;
+            ttStat = AvgTTStat;
         }
 
         if(settings.contains("savedDistance")) {
@@ -369,24 +369,24 @@ AllocationDialog::AllocationDialog(QWidget *parent)
             qDebug() <<"savedDistance" << distance << settings.value("savedDistance") << settings.value("savedDistanceStat");
             if(settings.contains("savedDistanceStat")) {
                 dStat = static_cast<DistanceStat>(settings.value("savedDistanceStat").toInt());
-                if(dStat == FixedD) {
+                if(dStat == FixedDStat) {
                     if(distance > 0.0) {
                         distanceFixedRadioButton->setChecked(true);
                         distanceFixedLineEdit->setText(QString::number(distance));
                     }
-                } else if(dStat == Auto) {
+                } else if(dStat == AutoDStat) {
                     distanceAutoRadioButton->setChecked(true);
                 } else {
                     distanceAutoRadioButton->setChecked(true);
-                    dStat = Auto;
+                    dStat = AutoDStat;
                 }
             } else {
                 distanceAutoRadioButton->setChecked(true);
-                dStat = Auto;
+                dStat = AutoDStat;
             }
         } else {
             distanceAutoRadioButton->setChecked(true);
-            dStat = Auto;
+            dStat = AutoDStat;
         }
     }
     checkConsistency();
@@ -424,10 +424,10 @@ bool AllocationDialog::checkConsistency() {
         flag = true;
         qDebug() << "enableTravelTime" << enableTravelTime << "fixedTravelTime" << fixedTravelTime << "travelTime" << travelTime;
     }
-    if(showDel && enableTravelTime && (ttStat != Med && ttStat != Avg)) {
+    if(showDel && enableTravelTime && (ttStat != MedTTStat && ttStat != AvgTTStat)) {
         flag = true;
     }
-    if(showDel && enableDistance && dStat == FixedD && distance <= 0.0) {
+    if(showDel && enableDistance && dStat == FixedDStat && distance <= 0.0) {
         flag = true;
         qDebug() << "enableDistance" << enableDistance << "fixedDistance" << fixedDistance << "distance" << distance;
 

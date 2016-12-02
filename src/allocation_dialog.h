@@ -26,16 +26,16 @@ public:
     DistanceStat getDistanceStat()     const { return dStat; }
 
     WithinOperator getWithinOperator() const {
-        if(enableTravelTime && enableDistance)   return And;
-        else if(enableTravelTime || enableDistance)   return Or;
+        if(enableTravelTime && enableDistance)   return AndWithin;
+        else if(enableTravelTime || enableDistance)   return OrWithin;
         else return NoneWithin;
     }
 
     bool isTravelTimeEnabled() const { return enableTravelTime; }
     bool isDistanceEnabled()   const { return enableDistance; }
-    bool isMedTravelTime()     const { return ttStat == Med; }
-    bool isAvgTraveTime()      const { return ttStat == Avg; }
-    bool isAutoDistance()      const { return dStat == Auto; }
+    bool isMedTravelTime()     const { return ttStat == MedTTStat; }
+    bool isAvgTraveTime()      const { return ttStat == AvgTTStat; }
+    bool isAutoDistance()      const { return dStat == AutoDStat; }
     double getTravelTime()     const { return travelTime; }
     double getDistance()       const { return distance; }
     QString getMethod()        const { return method; }
