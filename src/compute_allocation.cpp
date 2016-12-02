@@ -25,12 +25,12 @@ bool ComputeAllocation::processAllocationMethod(Loader* loader,
 
     if(method == LOCATION_ALLOCATION_MEHTOD_NAME || method == PAGE_RANK_MEHTOD_NAME) {
         double maxTravelTime, maxDist;
-        if(ttStat != NoneTT)
+        if(ttStat != NoneTTStat)
             maxTravelTime = travelTime;
         else
             maxTravelTime = delFactor * deadline;
 
-        if(dStat == FixedD)
+        if(dStat == FixedDStat)
             maxDist = distance;
         else // use the average speed of the mobile users
             maxDist = delFactor * _spatialStats->getAverageSpeed() * deadline;
@@ -65,34 +65,34 @@ void ComputeAllocation::geomWithin(QSet<Geometry*>* geomWithin,
                                    DistanceStat ds,
                                    TravelTimeStat ts) {
 
-    if(ds == NoneD && ts == NoneTT)
+    if(ds == NoneDStat && ts == NoneTTStat)
         return;
 
 //    QRectF cell1(cell.x()*_geometriesize, cell.y()*+_geometriesize, _geometriesize, _geometriesize);
     foreach(Geometry* g, geoms) {
         if(g == geom)
-            continue; // skip the geometry itself
+            continue; // skip the ogrGeometry itself
 
         bool distance_flag = false;
         bool travelTime_flag = false;
         double dist;
         double tt;
 
-        if(ds != NoneD && distance > 0.0) {
+        if(ds != NoneDStat && distance > 0.0) {
             dist = g->distance(geom);
             if(std::islessequal(dist,distance)) {
                 distance_flag = true;
             }
         }
-        if(ts != NoneTT || travelTime > 0.0) {
+        if(ts != NoneTTStat || travelTime > 0.0) {
             GeometryMatrixValue* val;
             _spatialStats->getValue(&val, g, geom);
             if(val) {
-                if(ts == Avg) {
+                if(ts == AvgTTStat) {
                     tt = val->travelTimeDist.getAverage();
                 }
 
-                else if(ts == Med) {
+                else if(ts == MedTTStat) {
                     tt = val->travelTimeDist.getMedian();
                 }
 
@@ -102,7 +102,7 @@ void ComputeAllocation::geomWithin(QSet<Geometry*>* geomWithin,
             }
         }
 
-        if((ds != NoneD && distance_flag) || (ts != NoneTT && travelTime_flag)) {
+        if((ds != NoneDStat && distance_flag) || (ts != NoneTTStat && travelTime_flag)) {
 //            qDebug() << "or / add" << geom << g->toString()
 //                     << "distance" << ds << dist << distance
 //                     << "travelTime" << ts << tt << travelTime;
@@ -145,13 +145,13 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
     QSet<Geometry*> circlesGeometries;
     QSet<Geometry*> cellsGeometries;
 
-    // get circle geometry types if there are some
+    // get circle ogrGeometry types if there are some
     QHash<Geometry*, GeometryValue*> geometries;
     _spatialStats->getGeometries(&geometries);
     for(auto it = geometries.begin(); it != geometries.end(); ++it) {
         Geometry* geom = it.key();
-        if(geom->getGeometryType() == CellType) cellsGeometries.insert(geom);
-        else if(geom->getGeometryType() == CircleType) circlesGeometries.insert(geom);
+        if(geom->getGeometryType() == CellGeometryType) cellsGeometries.insert(geom);
+        else if(geom->getGeometryType() == CircleGeometryType) circlesGeometries.insert(geom);
     }
 
     if(circlesGeometries.size() > 0)
@@ -264,7 +264,7 @@ void ComputeAllocation::runLocationAllocation(Loader* loader,
             }
 
             candidatesToAllocate.remove(bestCandidate.geom); // remove the selected cell
-            demandsToCover.remove(bestCandidate.geom); // remove the geometry from the demands to cover
+            demandsToCover.remove(bestCandidate.geom); // remove the ogrGeometry from the demands to cover
 
             // remove the candidate cells in the vicinity of the selected cell
             QSet<Geometry*> candidatesToRemove;
