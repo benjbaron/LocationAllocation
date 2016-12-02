@@ -11,8 +11,7 @@
 #include <QVector>
 #include <QFile>
 
-class CSVParser
-{
+class CSVParser  {
 public:
     CSVParser() {}
 
@@ -172,7 +171,7 @@ public:
         return 1;
     }
 
-    static int parseCSV(QString filename, QVector<QMap<QString,QString> > &fields, QString delim, QString quote="\"", QString escape="\\") {
+    static int parseCSV(QString filename, QVector<QMap<QString,QString> >&fields, QString delim, QString quote="\"", QString escape="\\") {
         QFile file(filename);
         if (!file.open(QIODevice::ReadOnly)) {
             return 1;
