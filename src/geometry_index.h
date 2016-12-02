@@ -3,31 +3,33 @@
 
 #include <QPointF>
 #include <QSet>
+#include <QHash>
 #include <qmath.h>
-#include "trace_layer.h"
-#include "geometries.h"
 
+// forward class declaration
 class Geometry;
 
 class GeometryIndex {
 public:
-    GeometryIndex(QSet<Geometry*>& geometries, double cellSize = 100);
-    void getGeometriesAt(QSet<Geometry*>* geometries, double x, double y);
-    void getGeometriesAt(QSet<Geometry*>* geometries, QPointF p) {
-        return getGeometriesAt(geometries, p.x(), p.y());
+    GeometryIndex(const QSet<Geometry*>& geometries, double cellSize = 100);
+    QSet<Geometry*>* getGeometriesAt(double x, double y);
+    QSet<Geometry*>* getGeometriesAt(QPointF p) {
+        return getGeometriesAt(p.x(), p.y());
     }
-    double getCellSize() { return _cellSize; }
+    double getCellSize() {
+        return _cellSize;
+    }
 
-    // Factory method
-    static GeometryIndex* make_geometryIndex(Trace* trace,
-                                             double sampling = -1, double startTime = -1, double endTime = -1,
-                                             double geometryCellsSize = -1,
-                                             GeometryType geometryType = NoneType,
-                                             QString geometryCirclesFile = QString());
+    QSet<Geometry*>* getGeometriesWithin(double x, double y, double distance);
+    QSet<Geometry*>* getGeometriesWithin(QPointF p, double distance) {
+        return getGeometriesWithin(p.x(), p.y(), distance);
+    }
+    const QList<Geometry*>& getGrid();
 
 private:
     double _cellSize;
     QHash<QPoint,QSet<Geometry*>*> _geometryGrid;
+    QList<Geometry*> _grid;
 
     /* private functions */
     QPoint getGridCellAt(double x, double y) {

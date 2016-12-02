@@ -5,6 +5,7 @@
 #include "trace.h"
 #include "proj_factory.h"
 #include "loader.h"
+#include "geometry_index.h"
 
 bool Trace::openTrace(Loader* loader) {
     if(_filename.contains("test")) {
@@ -101,8 +102,7 @@ void Trace::openNodeTrace(QString filename) {
     rx.indexIn(QFileInfo(filename).fileName());
     QString node = rx.cap(1);
 
-    if(!file->open(QFile::ReadOnly | QFile::Text))
-    {
+    if(!file->open(QFile::ReadOnly | QFile::Text)) {
         return;
     }
     while(!file->atEnd())
@@ -205,4 +205,84 @@ double Trace::averageSpeed(const QString& nodeId) {
 
     // add the average speed for the current node to the distribution
     return sum / count;
+}
+
+GeometryIndex* Trace::makeGeometryIndex(double sampling,
+                                         double startTime,
+                                         double endTime,
+                                         double geometryCellsSize,
+                                         GeometryType geometryType,
+                                         QString geometryCirclesFile) {
+    // build the ogrGeometry index
+    QSet<Geometry*> geometries;
+
+    /* build the cells from the trace */
+
+    QSet<QPoint> cellGeometries;
+    for(auto it = _nodes.begin(); it != _nodes.end(); ++it) {
+
+        if(it.value()->lastKey() < startTime) {
+            continue;
+        }
+
+        auto jt = (startTime == -1) ? it.value()->begin() : it.value()->lowerBound(startTime);
+        if(jt == it.value()->end()) {
+            continue;
+        }
+
+        long long prevTimestamp = jt.key(); // previous timestamp
+        QPointF prevPos = jt.value();       // previous position
+        for(++jt; jt != it.value()->end(); ++jt) {
+            // start from the second position
+            long long timestamp = jt.key(); // current timestamp
+            QPointF pos = jt.value();       // current position
+
+            // number of intermediate positions (with the sampling)
+            int nbPos = qMax(1, qCeil((timestamp - prevTimestamp) / sampling));
+            for(int i = 1; i <= nbPos; ++i) {
+                long long t = prevTimestamp + i*sampling; // get the sampling time
+                QPointF p = (timestamp - t)*prevPos + (t - prevTimestamp)*pos;
+                p /= (timestamp - prevTimestamp);
+
+                if(endTime != -1 && t > endTime) break;
+
+                QPoint cellIdx(qFloor(p.x() / geometryCellsSize), (int)qFloor(p.y() / geometryCellsSize));
+                if(!cellGeometries.contains(cellIdx)) {
+                    Geometry* geom = new Cell(cellIdx.x()*geometryCellsSize, cellIdx.y()*geometryCellsSize, geometryCellsSize);
+                    cellGeometries.insert(cellIdx);
+                    geometries.insert(geom);
+                }
+
+                prevPos = pos;
+                prevTimestamp = timestamp;
+            }
+        }
+    }
+
+    // add the circles from the given file
+    if(geometryType == CircleGeometryType) {
+        // build the circles from the given file
+        QFile* file = new QFile(geometryCirclesFile);
+        if(!file->open(QFile::ReadOnly | QFile::Text))
+            return 0;
+        while(!file->atEnd()) {
+            // line format: "x;y;radius"
+            QString line = QString(file->readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+            QStringList fields = line.split(";");
+            double x = fields.at(0).toDouble();
+            double y = fields.at(1).toDouble();
+            double radius = fields.at(2).toDouble();
+            Geometry* geom = new Circle(x,y,radius);
+            geometries.insert(geom);
+        }
+    }
+
+    for(Geometry* geom : geometries) {
+        if(geom->getGeometryType() == CircleGeometryType) {
+            qDebug() << geom->getCenter();
+        }
+    }
+
+    GeometryIndex* geometryIndex = new GeometryIndex(geometries, geometryCellsSize);
+    return geometryIndex;
 }

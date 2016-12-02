@@ -13,6 +13,7 @@
 
 // forward class declarations
 class Loader;
+class GeometryIndex;
 
 class Trace {
 
@@ -85,6 +86,13 @@ public:
         qDebug() << "name of the trace: " << _filename;
         return QFileInfo(_filename).fileName();
     }
+
+    GeometryIndex* makeGeometryIndex(double sampling = -1,
+                                     double startTime = -1,
+                                     double endTime = -1,
+                                     double geometryCellsSize = -1,
+                                     GeometryType geometryType = NoneGeometryType,
+                                     QString geometryCirclesFile = QString());
 
 protected:
     const QString _filename;

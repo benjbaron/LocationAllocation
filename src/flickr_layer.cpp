@@ -93,10 +93,10 @@ void FlickrLayer::addBarMenuItems() {
             double sampling  = spatialStatsDialog.getSampling();
             double startTime = spatialStatsDialog.getStartTime();
             double endTime   = spatialStatsDialog.getEndTime();
-            GeometryIndex* geometryIndex = GeometryIndex::make_geometryIndex(_trace, sampling, startTime, endTime,
-                                                                             spatialStatsDialog.getCellSize(),
-                                                                             spatialStatsDialog.getGeometryType(),
-                                                                             spatialStatsDialog.getCircleFile());
+            GeometryIndex* geometryIndex = _trace->makeGeometryIndex(sampling, startTime, endTime,
+                                                                     spatialStatsDialog.getCellSize(),
+                                                                     spatialStatsDialog.getGeometryType(),
+                                                                     spatialStatsDialog.getCircleFile());
 
             SpatialStats* spatialStats = new SpatialStats(_trace, (long long) sampling, (long long) startTime, (long long) endTime, geometryIndex);
             _spatialStatsLayer = new SpatialStatsLayer(_parent, "Spatial Stats layer", spatialStats);
