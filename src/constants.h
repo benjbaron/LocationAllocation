@@ -14,6 +14,7 @@ const QColor CELL_COLOR = Qt::red;
 const double CELL_OPACITY = 0.5;
 const QColor ORANGE = QColor(255, 127, 0);
 const QColor BLUE   = Qt::darkBlue;
+const QColor GREEN  = Qt::darkGreen;
 const QColor RED    = Qt::darkRed;
 const QColor BLACK  = Qt::black;
 
@@ -48,6 +49,11 @@ const QString RTWDE_DISPLAY_JAM           = "Jam";
 const QString RTWDE_DISPLAY_ROADCLOSED    = "Road closed";
 const QString RTWDE_DISPLAY_WEATHERHAZARD = "Weather hazard";
 const QString RTWDE_DISPLAY_ACCIDENT      = "Accident";
+
+const QString WAZE_ALERT_JAM           = "JAM";
+const QString WAZE_ALERT_WEATHERHAZARD = "WEATHERHAZARD";
+const QString WAZE_ALERT_ROAD_CLOSED   = "ROAD_CLOSED";
+const QString WAZE_ALERT_ACCIDENT      = "ACCIDENT";
 
 
 /* ENUM TYPES */
@@ -120,6 +126,15 @@ static WazeAlertType stringToDisplayToAlertType(const QString &s) {
     else if(s == RTWDE_DISPLAY_WEATHERHAZARD) return WazeAlertType::WAZE_TYPE_WEATHERHAZARD;
     else if(s == RTWDE_DISPLAY_ROADCLOSED) return WazeAlertType::WAZE_TYPE_ROAD_CLOSED;
     else if(s == RTWDE_DISPLAY_ACCIDENT) return WazeAlertType::WAZE_TYPE_ACCIDENT;
+    else return WazeAlertType::WAZE_TYPE_NONE;
+}
+
+
+static WazeAlertType stringToAlertType(const QString& s) {
+    if(s == WAZE_ALERT_JAM) return WazeAlertType::WAZE_TYPE_JAM;
+    else if(s == WAZE_ALERT_WEATHERHAZARD) return WazeAlertType::WAZE_TYPE_WEATHERHAZARD;
+    else if(s == WAZE_ALERT_ROAD_CLOSED) return WazeAlertType::WAZE_TYPE_ROAD_CLOSED;
+    else if(s == WAZE_ALERT_ACCIDENT) return WazeAlertType::WAZE_TYPE_ACCIDENT;
     else return WazeAlertType::WAZE_TYPE_NONE;
 }
 
