@@ -7,36 +7,10 @@
 #include <geos/geom/LineString.h>
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/CoordinateArraySequence.h>
+#include <geos/linearref/LocationIndexedLine.h>
+#include <geos/algorithm/Angle.h>
 #include "constants.h"
-
-enum WithinOperator { And, Or, NoneWithin };
-enum TravelTimeStat { NoneTT, Med, Avg };
-enum DistanceStat   { NoneD, Auto, FixedD };
-
-/* Define the names of the different allocations */
-const QString LOCATION_ALLOCATION_MEHTOD_NAME = "Location allocation";
-const QString PAGE_RANK_MEHTOD_NAME = "Page Rank";
-const QString K_MEANS_MEHTOD_NAME = "k-means";
-const QString RANDOM_METHOD_NAME = "random";
-
-static double euclideanDistance(double x1, double y1, double x2, double y2) {
-    return qSqrt(qPow(x1 - x2,2) + qPow(y1 - y2,2));
-}
-static double euclideanDistance(QPointF a, QPointF b) {
-    return euclideanDistance(a.x(), a.y(), b.x(), b.y());
-}
-
-static void getLineStringGraphicsItem(OGRLineString* ls, QGraphicsPathItem*& item) {
-    QPainterPath path;
-    OGRPoint pt;
-    ls->getPoint(0,&pt);
-    path.moveTo(QPointF(pt.getX(), -1*pt.getY()));
-    for(int i = 1; i < ls->getNumPoints(); ++i) {
-        ls->getPoint(i,&pt);
-        path.lineTo(QPointF(pt.getX(), -1*pt.getY()));
-    }
-    item = new QGraphicsPathItem(path);
-}
+#include "geometries.h"
 
 static void convertFromOGRtoGEOS(OGRLineString* in, geos::geom::LineString*& out) {
     geos::geom::CoordinateSequence* coordinates = new geos::geom::CoordinateArraySequence();
@@ -44,7 +18,7 @@ static void convertFromOGRtoGEOS(OGRLineString* in, geos::geom::LineString*& out
         OGRPoint pt;
         in->getPoint(i, &pt);
         geos::geom::Coordinate coord(pt.getX(), pt.getY());
-        qDebug() << "\t" << pt.getX() << pt.getY() << QString::fromStdString(coord.toString());
+//        qDebug() << "\t" << pt.getX() << pt.getY() << QString::fromStdString(coord.toString());
         coordinates->add(coord);
     }
     geos::geom::GeometryFactory globalFactory;
@@ -61,6 +35,66 @@ static void convertFromGEOStoOGR(geos::geom::LineString *in, OGRLineString *out)
     }
 }
 
+static QString determineCSVDelimiter(const QString& line) {
+    QList<QString> delimiters = {";",",","\t"};
+    int maxFieldCount = 0;
+    QString maxFieldDel = "";
+    for(QString del : delimiters) {
+        int len = line.split(del).size();
+        if(len > maxFieldCount) {
+            maxFieldCount = len;
+            maxFieldDel = del;
+        }
+    }
+    return maxFieldDel;
+}
+
+template<typename T>
+class Series {
+public:
+    Series() {}
+    Series(const QMap<T, double>& values):
+        _values(values) {}
+    void addValue(T idx, double val) {
+        _values.insert(idx, val);
+        _average = (_average * _count + val)/(_count+1);
+        _count++;
+    }
+    bool isEmpty() { return _count == 0; }
+
+    void plot(QCustomPlot* plot) {
+        plot->clearPlottables();
+        QVector<double> x(_count), y(_count);
+        int i = 0;
+        double min = 1e10, max = 0;
+        for(auto it = _values.begin(); it != _values.end(); it++) {
+            double val = it.value();
+
+            x[i] = i;
+            y[i] = val;
+            i++;
+            if(min > val)
+                min = val;
+            if(max < val)
+                max = val;
+        }
+        plot->addGraph();
+        plot->graph(0)->setData(x,y);
+        plot->xAxis->setAutoTicks(true);
+        plot->xAxis->setAutoTickLabels(true);
+        plot->xAxis->setRange(0, _count-1);
+        plot->yAxis->setRange(min, max);
+        plot->replot();
+    }
+
+
+private:
+    QMap<T,double> _values; // ordered values
+    int _cummulativeSum = 0;
+    int _count = 0;
+    double _average = 0;
+    double _median = 0;
+};
 
 class Distribution {
 public:
@@ -196,29 +230,17 @@ inline uint qHash(const QPointF &key) {
     return qHash(key.x()) ^ qHash(key.y());
 }
 
-
-
 static bool toggleBoldFont(QLineEdit *lineEdit, bool isValid) {
     QFont prevFont(lineEdit->font()); // Get previous font
-    if(isValid) {
-        prevFont.setBold(false);
-        lineEdit->setFont(prevFont);
-    } else {
-        prevFont.setBold(true);
-        lineEdit->setFont(prevFont);
-    }
+    prevFont.setBold(!isValid);
+    lineEdit->setFont(prevFont);
     return isValid;
 }
 
 static bool toggleBoldFont(QLabel *label, bool isValid) {
     QFont prevFont(label->font()); // Get previous font
-    if(isValid) {
-        prevFont.setBold(false);
-        label->setFont(prevFont);
-    } else {
-        prevFont.setBold(true);
-        label->setFont(prevFont);
-    }
+    prevFont.setBold(!isValid);
+    label->setFont(prevFont);
     return isValid;
 }
 
@@ -272,7 +294,60 @@ static void printConsoleProgressBar(double progress, QString const &msg = QStrin
     std::cout.flush();
 }
 
-static void plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlot, long long bins) {
+static Geometry* OGRGeometryToGeometry(OGRGeometry* ogr_geom) {
+    if(ogr_geom && wkbFlatten(ogr_geom->getGeometryType()) == wkbLineString) {
+        OGRLineString* ls = (OGRLineString*) ogr_geom;
+
+        QPainterPath path;
+        OGRPoint pt;
+        ls->getPoint(0,&pt);
+        path.moveTo(QPointF(pt.getX(), pt.getY()));
+        for(int i = 1; i < ls->getNumPoints(); ++i) {
+            ls->getPoint(i,&pt);
+            path.lineTo(QPointF(pt.getX(), pt.getY()));
+        }
+        return new Path(path);
+    }
+    else if(ogr_geom && wkbFlatten(ogr_geom->getGeometryType()) == wkbPoint) {
+        OGRPoint* pt = (OGRPoint*) ogr_geom;
+        return new Circle(pt->getX()-SHAPEFILE_WID/2.0, (pt->getY()-SHAPEFILE_WID/2.0), SHAPEFILE_WID);
+    }
+    else if(ogr_geom && wkbFlatten(ogr_geom->getGeometryType()) == wkbPolygon) {
+        OGRPolygon* poly = (OGRPolygon*) ogr_geom;
+        QPolygonF polygon;
+        OGRPoint pt;
+        poly->getExteriorRing()->getPoint(0, &pt);
+        for(int i = 0; i < poly->getExteriorRing()->getNumPoints(); ++i) {
+            poly->getExteriorRing()->getPoint(i, &pt);
+            polygon.append(QPointF(pt.getX(), pt.getY()));
+        }
+        return new Polygon(polygon);
+    } else {
+        return nullptr;
+    }
+}
+
+static QPointF projectPointOnLineString(OGRLineString* ogrls, QPointF p, double* angle = nullptr, QLineF* lineSegment = nullptr) {
+    geos::geom::Coordinate pt(p.x(), p.y());
+
+    // convert to GEOS linestring
+    geos::geom::LineString* ls;
+    convertFromOGRtoGEOS(ogrls, ls);
+
+    // project the point onto the GEOS linestring
+    geos::linearref::LocationIndexedLine lineRef(ls);
+    geos::linearref::LinearLocation loc = lineRef.project(pt);
+    geos::geom::LineSegment* seg = loc.getSegment(ls).get();
+    lineSegment->setP1(QPointF(seg->p0.x, seg->p0.y));
+    lineSegment->setP2(QPointF(seg->p1.x, seg->p1.y));
+    *angle = ((int) geos::algorithm::Angle::toDegrees(loc.getSegment(ls)->angle()) - 90) % 360 ;
+
+    geos::geom::Coordinate ptProj = loc.getCoordinate(ls);
+
+    return QPointF(ptProj.x, ptProj.y);
+}
+
+static void plotFrequencies(const QList<long long>& frequencies, QCustomPlot* customPlot, long long binSize) {
     // clear the other plottable graphs
     customPlot->clearPlottables();
     for(int i = 0; i < customPlot->plottableCount(); ++i) {
@@ -284,12 +359,12 @@ static void plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlo
         if(f < min) min = f;
         if(f > max) max = f;
     }
-    int vectorSize = qMax(1, qCeil((double) (max - min) / bins));
+    int vectorSize = qMax(1, qCeil((double) (max - min) / binSize));
     QVector<double> ticks(vectorSize), y(vectorSize);
     QVector<QString> labels(vectorSize);
     for(long long f : frequencies) {
-        int i = qFloor((f - min) / (double) bins);
-        if(f == max) i = ticks.size()-1;
+        int i = qFloor((f - min) / (double) binSize);
+        if(i == vectorSize) i = ticks.size()-1;
         y[i] += 1;
     }
 
@@ -297,15 +372,12 @@ static void plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlo
     for(int i = 0; i < vectorSize; ++i) {
         if(y[i] > maxValue) maxValue = y[i];
 //        qDebug() << i << labels[i] << y[i];
-    }
-
-    for(int i = 0; i < vectorSize; ++i) {
         ticks[i] = i+1;
         if(y[i] > 0)
             labels[i] = QString::number(i);
         else labels[i] = "";
-    }
 
+    }
 
     QCPBars *bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
     customPlot->addPlottable(bars);
