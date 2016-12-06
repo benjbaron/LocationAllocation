@@ -52,7 +52,25 @@ set(SOURCE_FILES
         export_dialog.cpp
         trace_inspector_layer.cpp
         trace_inspector_dialog.cpp
-        flickr_layer.cpp)
+        flickr_layer.cpp
+        gtfs_trace.cpp
+        polygon_layer.cpp
+        road_traffic_open_dialog.cpp
+        road_traffic.cpp
+        road_traffic_examiner_panel.cpp
+        road_traffic_layer.cpp
+        waze_alert_data.cpp
+        waze_alert_data_layer.cpp
+        waze_alert_cells_layer.cpp
+        waze_alert_cells.cpp
+        waze_alert_cells_panel.cpp
+        shapefile_attribute_dialog.cpp
+        shapefile.cpp
+        waze_alert_road_traffic.cpp
+        waze_alert_road_traffic_layer.cpp
+        geometry_layer.cpp
+        road_traffic_waze_data_examiner_panel.cpp
+        road_traffic_waze_alerts_open_dialog.cpp)
 #        gtfs_layer_test.cpp)
 
 set(FORM_FILES
@@ -102,7 +120,25 @@ set(HEADER_FILES
         trace.cpp trace.h
         export_dialog.h
         trace_inspector_layer.h
-        trace_inspector_dialog.h gtfs_trace.cpp gtfs_trace.h polygon_layer.cpp polygon_layer.h road_traffic_open_dialog.cpp road_traffic_open_dialog.h road_traffic.cpp road_traffic.h road_traffic_layer.cpp road_traffic_layer.h road_traffic_examiner_panel.cpp road_traffic_examiner_panel.h waze_alert_file.cpp waze_alert_file.h waze_alert_file_layer.cpp waze_alert_file_layer.h waze_alert_cells_layer.cpp waze_alert_cells_layer.h waze_alert_cells.cpp waze_alert_cells.h waze_alert_cells_panel.cpp waze_alert_cells_panel.h)
+        trace_inspector_dialog.h
+        gtfs_trace.h
+        polygon_layer.h
+        road_traffic_open_dialog.h
+        road_traffic.h
+        road_traffic_layer.h
+        road_traffic_examiner_panel.h
+        waze_alert_data.h
+        waze_alert_data_layer.h
+        waze_alert_cells_layer.h
+        waze_alert_cells.h
+        waze_alert_cells_panel.h
+        shapefile.h
+        shapefile_attribute_dialog.h
+        waze_alert_road_traffic.h
+        waze_alert_road_traffic_layer.h
+        geometry_layer.h
+        road_traffic_waze_alerts_open_dialog.h
+        road_traffic_waze_data_examiner_panel.h)
 
 add_executable(LocAll
         ${SOURCE_FILES}
