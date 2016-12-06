@@ -8,179 +8,254 @@
 
 #include <QString>
 #include "loader.h"
+#include "road_traffic_open_dialog.h"
 
-enum RoadTrafficType { RT_GB, RT_ENG };
+class RoadLink;
 
 struct RoadTrafficData {
-    RoadTrafficData(QString id, QString desc, QDate date = QDate(), int timePeriod = -1, double journeyTime = 0.0,
-                     double speed = 0.0, int dataQuality = -1, double length = 0.0, double flow = 0.0) {
+    RoadTrafficData(QString id, RoadLink* roadLink, QDate date = QDate(), int timePeriod = -1,
+                    RoadTrafficDataType rtdType = NoneRTDType, double rtdValue = 0.0) {
         this->id = id;
-        this->description = desc;
+        this->roadLink = roadLink;
         this->date = date;
         this->timePeriod = timePeriod;
-        this->speed = speed;
-        this->journeyTime = journeyTime;
-        this->dataQuality = dataQuality;
-        this->length = length;
-        this->flow = flow;
-        this->count = (dataQuality == -1) ? 0 : 1;
+        this->rtdType = rtdType;
+        this->rtdValue = rtdValue;
+        this->count = (timePeriod == -1) ? 0 : 1;
     }
     RoadTrafficData(RoadTrafficData* rtd) {
         this->id = rtd->id;
-        this->description = rtd->description;
+        this->roadLink = rtd->roadLink;
         this->date = rtd->date;
         this->timePeriod = rtd->timePeriod;
-        this->speed = rtd->speed;
-        this->journeyTime = rtd->journeyTime;
-        this->dataQuality = rtd->dataQuality;
-        this->length = rtd->length;
-        this->flow = rtd->flow;
+        this->rtdType = rtd->rtdType;
+        this->rtdValue = rtd->rtdValue;
         this->count = rtd->count;
     }
 
     void computeMeanValues(RoadTrafficData* rtdNew) {
         /* add data from rtdNew to current rtd */
-        speed       = (speed       * count + rtdNew->speed)       / (count + 1);
-        journeyTime = (journeyTime * count + rtdNew->journeyTime) / (count + 1);
-        flow        = (flow        * count + rtdNew->flow)        / (count + 1);
+        rtdValue = (rtdValue * count + rtdNew->rtdValue) / (count + 1);
         count++;
     }
 
+    double getValue() {
+        return rtdValue;
+    }
+
     QString id;
-    QString description;
+    RoadLink* roadLink;
     QDate date;
     int timePeriod;
-    double journeyTime = 0.0;
-    double speed = 0.0;
-    int dataQuality = 0;
-    double length = 0.0;
-    double flow = 0.0;
     int count = 0;
+    RoadTrafficDataType rtdType;
+    double rtdValue;
 };
+
+
+struct RoadTrafficDataAggregate {
+    RoadTrafficDataAggregate(RoadLink* rl, const QDate& d = QDate()) {
+        this->roadLink = rl;
+        this->date = d;
+    }
+
+    void addRoadTrafficData(RoadTrafficData* rtd) {
+        RoadTrafficDataType rtdType = rtd->rtdType;
+        int timePeriod = rtd->timePeriod;
+        if(!roadTrafficData.contains(rtdType)) {
+            roadTrafficData.insert(rtdType, new QMap<int, RoadTrafficData*>());
+        }
+        roadTrafficData.value(rtdType)->insert(timePeriod, rtd);
+        computeMeanValues(rtd);
+    }
+
+    QStringList getAllRoadTrafficDataTypes() {
+        QStringList list;
+        for(auto it = meanRoadTrafficData.begin(); it != meanRoadTrafficData.end(); ++it) {
+            list << roadTrafficDataTypeToString(it.key());
+        }
+        return list;
+    }
+
+    void computeMeanValues(RoadTrafficData* rtd) {
+        RoadTrafficDataType rtdType = rtd->rtdType;
+        if(!meanRoadTrafficData.contains(rtdType)) {
+            meanRoadTrafficData.insert(rtdType, new RoadTrafficData(rtd->id, rtd->roadLink, rtd->date));
+        }
+        meanRoadTrafficData.value(rtdType)->computeMeanValues(rtd);
+    }
+
+    QMap<int, RoadTrafficData*>* getRoadTrafficData(RoadTrafficDataType rtdType) {
+        if(roadTrafficData.contains(rtdType))
+            return roadTrafficData.value(rtdType);
+        return nullptr;
+    }
+
+    double getValue(RoadTrafficDataType rtdType, int timePeriod) {
+        if(timePeriod == -1 && meanRoadTrafficData.contains(rtdType)) {
+            return meanRoadTrafficData.value(rtdType)->getValue();
+        }
+        if(timePeriod != -1 && roadTrafficData.contains(rtdType))
+            return roadTrafficData.value(rtdType)->value(timePeriod)->getValue();
+        return 0.0;
+    }
+
+    double meanValue(RoadTrafficDataType rtdType) {
+        if(meanRoadTrafficData.contains(rtdType))
+            return meanRoadTrafficData.value(rtdType)->getValue();
+        return 0.0;
+    }
+    int getSize(RoadTrafficDataType rtdType) {
+        if(roadTrafficData.contains(rtdType))
+            return roadTrafficData.value(rtdType)->size();
+        return 0;
+    }
+
+    RoadLink* roadLink;
+    QDate date;
+    // indexed by timePeriod
+    QHash<RoadTrafficDataType, QMap<int, RoadTrafficData*>*> roadTrafficData;
+    // mean aggregate of the road traffic data per date
+    QHash<RoadTrafficDataType, RoadTrafficData*> meanRoadTrafficData;
+};
+
 
 class RoadLink {
 public:
-    RoadLink(QString id, QString description, double x1, double y1, double x2, double y2):
-            _id(id), _description(description), _p1(x1,y1), _p2(x2,y2),
-            _meanRoadTrafficData(id,description) {}
+    RoadLink(QString id, ShapefileFeature* shapefileFeature) :
+            _id(id), _shapefileFeature(shapefileFeature),
+            _meanRoadTrafficData(this) {}
 
     QString toString() {
-        return "id: " + _id +
-               " (" + QString::number(_p1.x()) +
-               ", " + QString::number(_p1.y()) +
-               ") -> (" + QString::number(_p2.x()) +
-               ", " + QString::number(_p2.y()) +
-               ")";
-    }
-
-    QLineF getLine() {
-        return QLineF(_p1.x(), _p1.y(), _p2.x(), _p2.y());
+        return "id: \"" + _id + "\" with " + _shapefileFeature->toString() + " features";
     }
 
     QString getId() {
         return _id;
     }
 
-    void addRoadTrafficData(QDate d, int timePeriod, RoadTrafficData* td) {
-        if(!_roadTrafficData.contains(d)) {
-            _roadTrafficData.insert(d, new QMap<int,RoadTrafficData*>());
-            _meanRoadTrafficDataPerDate.insert(d, new RoadTrafficData(_id,_description,d));
-
-        }
-        _roadTrafficData.value(d)->insert(timePeriod, td);
-        _meanRoadTrafficDataPerDate.value(d)->computeMeanValues(td);
-        _meanRoadTrafficData.computeMeanValues(td);
+    void setLinkLength(double linkLength) {
+        _linkLength = linkLength;
     }
 
-    QMap<QDate,QMap<int,RoadTrafficData*>*>* getRoadTrafficData() {
+    double getLinkLength() {
+        return _linkLength;
+    }
+
+    void addRoadTrafficData(QDate d, int timePeriod, RoadTrafficData* rtd) {
+        if(!_roadTrafficData.contains(d)) {
+            _roadTrafficData.insert(d, new RoadTrafficDataAggregate(this, d));
+        }
+        _roadTrafficData.value(d)->addRoadTrafficData(rtd);
+        _meanRoadTrafficData.computeMeanValues(rtd);
+    }
+
+    QMap<QDate,RoadTrafficDataAggregate*>* getRoadTrafficData() {
         return &_roadTrafficData;
     }
 
-    QMap<int,RoadTrafficData*>* getRoadTrafficDataFromDate(QDate d) {
-        if(!_roadTrafficData.contains(d))
-            return nullptr;
-        return _roadTrafficData.value(d);
-    }
-
-    RoadTrafficData* getMeanRoadTrafficDataPerDate(QDate d) {
-        if(_meanRoadTrafficDataPerDate.contains(d))
-            return _meanRoadTrafficDataPerDate.value(d);
+    RoadTrafficDataAggregate* getRoadTrafficDataAtDate(const QDate &d) {
+        if(d.isValid() && _roadTrafficData.contains(d))
+            return _roadTrafficData.value(d);
         return nullptr;
     }
 
-    RoadTrafficData* getMeanRoadTrafficData() {
+    bool containsDataAtDate(const QDate& d) {
+        return _roadTrafficData.contains(d);
+    }
+
+    double getMeanRoadTrafficDataPerDate(const QDate& d, RoadTrafficDataType rtdType) {
+        if(d.isValid() && _roadTrafficData.contains(d))
+            return _roadTrafficData.value(d)->meanValue(rtdType);
+        return 0.0;
+    }
+
+    RoadTrafficDataAggregate* getMeanRoadTrafficData() {
         return &_meanRoadTrafficData;
     }
 
-private:
-    QPointF _p1, _p2;
-    QString _id, _description;
-    QMap<QDate, QMap<int,RoadTrafficData*>*> _roadTrafficData;
-    QMap<QDate, RoadTrafficData*> _meanRoadTrafficDataPerDate;
-    RoadTrafficData _meanRoadTrafficData;
-};
-
-
-class RoadNet {
-public:
-    RoadNet() { }
-    ~RoadNet() { qDeleteAll(_roadLinks); }
-    void addLink(QString id, QString description, double x1, double y1, double x2, double y2) {
-        if(!_roadLinks.contains(id)) {
-            RoadLink* roadLink = new RoadLink(id, description, x1, y1, x2, y2);
-            _roadLinks.insert(id, roadLink);
+    ShapefileFeature* getShapefileFeature() {
+        return _shapefileFeature;
+    }
+    int getMaxPeriod(RoadTrafficDataType rtdType) {
+        int maxPeriod = 0;
+        for(auto it = _roadTrafficData.begin(); it != _roadTrafficData.end(); ++it) {
+            int nbPeriods = it.value()->getSize(rtdType);
+            if(nbPeriods > maxPeriod) maxPeriod = nbPeriods;
         }
+        return maxPeriod;
     }
+    QStringList getAllRoadTrafficDataTypes() {
+        QStringList list = _meanRoadTrafficData.getAllRoadTrafficDataTypes();
+        qDebug() << "\t[list|RoadLink]" << list;
 
-    void addTrafficData(QString id, RoadTrafficData* td) {
-        if(_roadLinks.contains(id)) {
-            _roadLinks.value(id)->addRoadTrafficData(td->date, td->timePeriod, td);
-        } else {
-            qDebug() << "Network does not contain link " << id;
-        }
+        return list;
     }
-
-    bool isEmpty() {
-        return _roadLinks.isEmpty();
+    QDate getMinDate() {
+        return _roadTrafficData.firstKey();
     }
-
-    void getRoadLinks(QHash<QString, RoadLink*>* roadLinks) {
-        *roadLinks = _roadLinks;
+    QDate getMaxDate() {
+        return _roadTrafficData.lastKey();
     }
 
 private:
-    QHash<QString, RoadLink*> _roadLinks;
+    QString _id;
+    double _linkLength = -1;
+    ShapefileFeature* _shapefileFeature;
+    // indexed by time period
+    QMap<QDate, RoadTrafficDataAggregate*> _roadTrafficData;
+    // mean aggregate of the road traffic data for the whole period
+    RoadTrafficDataAggregate _meanRoadTrafficData;
 };
 
 
-class RoadTraffic {
+class RoadTraffic : public Shapefile {
 public:
-    RoadTraffic(const QString& shapefilePath, const QString& dataPath, RoadTrafficType type):
-            _shapefilePath(shapefilePath), _dataPath(dataPath) {
-        // instantiate the road network object
-        _roadNet = new RoadNet;
-    }
+    RoadTraffic(const QString& shapefilePath, const QString& dataPath,
+                ShapefileIndexes* shapefileIdx, RoadTrafficDataIndexes* dataIdx):
+        Shapefile(shapefilePath, shapefileIdx), _dataPath(dataPath), _dataIdx(dataIdx) { }
 
-    virtual bool open(Loader* loader);
+    bool open(Loader* loader);
 
     /* getters and setters */
-    void getLinks(QHash<QString, RoadLink*>* links) {
-        _roadNet->getRoadLinks(links);
+    QHash<QString, RoadLink*>* getRoadLinks() {
+        return &_roadLinks;
+    }
+
+    RoadLink* getRoadLink(const QString& idx) {
+        return _roadLinks.value(idx);
+    }
+
+    RoadLink* getRoadLink(int idx) {
+        /* Get the roadlink corresponding to the shapefile index */
+        int joinIdx = indexes()->join;
+        QString rlIdx = getFeature(idx)->attributes->at(joinIdx);
+        if(_roadLinks.contains(rlIdx))
+            return _roadLinks.value(rlIdx);
+
+        return nullptr;
     }
 
 private:
     /* open different road traffic formats */
-    bool openEnglandDataset(const QString& linkCoordinates, const QString& roadTraffic, Loader* loader);
-    bool openGBDataset(const QString& shapefile, const QString& roadTraffic, Loader* loader) {
-        return true;
+    bool openDataset(const QString& roadTrafficFile, Loader* loader);
+
+    void addTrafficData(QString id, RoadTrafficData* td) {
+        if(!_roadLinks.contains(id)) {
+            ShapefileFeature* feature = getFeature(id);
+            _roadLinks.insert(id, new RoadLink(id, feature));
+            _featureToRoadLink.insert(feature->id, id);
+        }
+        _roadLinks.value(id)->addRoadTrafficData(td->date, td->timePeriod, td);
     }
 
 
-
 protected:
-    const QString _shapefilePath;
     const QString _dataPath;
-    RoadNet* _roadNet;
+    RoadTrafficDataIndexes* _dataIdx;
+    QHash<QString, RoadLink*> _roadLinks;
+    QHash<int, QString> _featureToRoadLink;
+
 };
 
 #endif //LOCALL_ROAD_TRAFFIC_H
