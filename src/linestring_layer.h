@@ -15,6 +15,7 @@ struct LineStringDisplay {
 };
 
 class LineStringLayer: public Layer {
+    Q_OBJECT
 public:
     LineStringLayer(MainWindow* parent = 0, const QString& name = 0,
                     const QList<LineStringDisplay*>& ls = QList<LineStringDisplay*>()):

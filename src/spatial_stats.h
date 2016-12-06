@@ -43,7 +43,7 @@ private:
     QString _id;
     int _sampling;                  // linear interpolation at different times
     QSet<Geometry*> _prevGeometries;
-    QHash<Geometry*, long long> _startTimeGeometries;   // record the start time of each geometry (reverse hash)
+    QHash<Geometry*, long long> _startTimeGeometries;   // record the start time of each ogrGeometry (reverse hash)
     long long _prevTime = 0;        // node previous time of the point recording
     QPointF _prevPos = QPointF();   // node previous position
     SpatialStats* _spatialStats;
@@ -157,15 +157,15 @@ public:
     qreal computeLocalStat(Geometry* geom_i);
 
     /* Returns the Geometry that contains the point (x,y) */
-    void containsPoint(QSet<Geometry*>* geometries, double x, double y) {
-        _geometryIndex->getGeometriesAt(geometries, x,y);
+    QSet<Geometry*>* containsPoint(double x, double y) {
+        return _geometryIndex->getGeometriesAt(x, y);
     }
-    void containsPoint(QSet<Geometry*>* geometries, QPointF p) {
-        containsPoint(geometries, p.x(), p.y());
+    QSet<Geometry*>* containsPoint(QSet<Geometry*>* geometries, QPointF p) {
+        return containsPoint(p.x(), p.y());
     }
 
-    void getGeometriesAt(QSet<Geometry*>* geometries, double x, double y) const {
-        _geometryIndex->getGeometriesAt(geometries,x,y);
+    QSet<Geometry*>* getGeometriesAt(double x, double y) const {
+        return _geometryIndex->getGeometriesAt(x, y);
     }
 
 private:

@@ -7,15 +7,7 @@
 
 #include <QDockWidget>
 #include <QDateTime>
-#include "waze_alert_file.h"
-
-const QString WAZE_ALERT_ALL           = "All alerts";
-const QString WAZE_ALERT_JAM           = "Jam alerts";
-const QString WAZE_ALERT_WEATHERHAZARD = "Weather hazard alerts";
-const QString WAZE_ALERT_ROAD_CLOSED   = "Road closed alerts";
-const QString WAZE_ALERT_ACCIDENT      = "Accident alerts";
-
-
+#include "waze_alert_data.h"
 
 // forward class declarations
 class QCustomPlot;
@@ -47,14 +39,6 @@ private:
     QDateTime _maxDT;
     WazeAlertType _showWazeAlertType;
     QString _showWazeAlertTypeString = "";
-
-    WazeAlertType stringToAlertType(const QString& s) {
-        if(s == WAZE_ALERT_JAM) return WazeAlertType::WAZE_TYPE_JAM;
-        else if(s == WAZE_ALERT_WEATHERHAZARD) return WazeAlertType::WAZE_TYPE_WEATHERHAZARD;
-        else if(s == WAZE_ALERT_ROAD_CLOSED) return WazeAlertType::WAZE_TYPE_ROAD_CLOSED;
-        else if(s == WAZE_ALERT_ACCIDENT) return WazeAlertType::WAZE_TYPE_ACCIDENT;
-        else return WazeAlertType::WAZE_TYPE_NONE;
-    }
 };
 
 

@@ -170,9 +170,9 @@ void GTFSLayer::exportONESettings() {
     ProgressDialog p(_parent);
     QObject::connect(&l, &Loader::loadProgressChanged, &p, &ProgressDialog::updateProgress);
 
-    // opne shapefile and load it
+    // open shapefile and load it
     Shapefile* shapefile = new Shapefile(shapefilepath);
-    future = l.load(shapefile, &Shapefile::openShapefile, &l);
+    future = l.load(shapefile, &Shapefile::open, &l);
     p.exec();
 
     future.result(); // wait for results

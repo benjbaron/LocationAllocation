@@ -457,7 +457,7 @@ void GTFSTrace::outputWorldMap(QList<geos::geom::LineString*>* lines, const QStr
             if(intersection->getNumGeometries() > 0) {
                 it = mlsVector.erase(it);
 
-                // update  the resulting geometry
+                // update  the resulting ogrGeometry
                 result = result->difference(intersection);
                 // get the resulting difference
                 geos::geom::Geometry* diff = lsOther->difference(intersection);

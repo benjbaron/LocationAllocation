@@ -17,10 +17,10 @@ QGraphicsItemGroup *WazeAlertCellsLayer::draw() {
         wcv->color = _wazeAlertCells->selectColorGetisOrdG(_wazeAlertCells->computeGetisOrdG(it.key()));
         Geometry* geom = wcv->cell;
         GeometryGraphics* item;
-        if(geom->getGeometryType() == CircleType) {
+        if(geom->getGeometryType() == CircleGeometryType) {
             item = new CircleGraphics(static_cast<Circle*>(geom));
             item->setZValue(10.0);
-        } else if(geom->getGeometryType() == CellType) {
+        } else if(geom->getGeometryType() == CellGeometryType) {
             item = new CellGraphics(static_cast<Cell*>(geom));
             item->setZValue(1.0);
         }

@@ -25,7 +25,6 @@ public:
 
     void addGraphicsItem(QGraphicsItem* item) {
         _groupItem->addToGroup(item);
-        _graphicsItems.append(item);
     }
     void setVisible(bool visible) { _groupItem->setVisible(visible); }
     bool isVisible() { return _groupItem->isVisible(); }
@@ -70,7 +69,6 @@ protected:
     MainWindow* _parent;
     QString _name;
     QGraphicsItemGroup* _groupItem;
-    QList<QGraphicsItem*> _graphicsItems;
     QMenu* _menu = 0;
 };
 

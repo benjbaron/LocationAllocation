@@ -63,7 +63,7 @@ private:
     long long endTime = -1, maxEndTime;
     QString geometryCirclesFile;
     double geometryCellsSize = -1.0;
-    GeometryType geometryType = NoneType;
+    GeometryType geometryType = NoneGeometryType;
     Trace* _trace;
     QString traceLayerSettingName;
 

@@ -21,11 +21,11 @@ QGraphicsItemGroup *SpatialStatsLayer::draw() {
 
     for(auto it = matrix.begin(); it != matrix.end(); ++it) {
         Geometry* geom = it.key();
-        GeometryGraphics* item;
-        if(geom->getGeometryType() == CircleType) {
+        GeometryGraphics* item = nullptr;
+        if(geom->getGeometryType() == CircleGeometryType) {
             item = new CircleGraphics(static_cast<Circle*>(geom));
             item->setZValue(10.0);
-        } else if(geom->getGeometryType() == CellType) {
+        } else if(geom->getGeometryType() == CellGeometryType) {
             item = new CellGraphics(static_cast<Cell*>(geom));
             item->setZValue(1.0);
         }
@@ -39,7 +39,9 @@ QGraphicsItemGroup *SpatialStatsLayer::draw() {
         _geometryGraphics.insert(it.key(), item);
 
         // add behavior on mouse press
-        connect(item, &GeometryGraphics::mousePressedEvent, this, &SpatialStatsLayer::onMousePress);
+        if(item != nullptr) {
+            connect(item, &GeometryGraphics::mousePressedEvent, this, &SpatialStatsLayer::onMousePress);
+        }
     }
 
     return _groupItem;
@@ -73,7 +75,7 @@ void SpatialStatsLayer::addMenuBar() {
 
 void SpatialStatsLayer::exportContourFile() {
     if(!_selectedGeometry) {
-        QMessageBox q(QMessageBox::Warning, "Error", "No geometry is selected", QMessageBox::Ok);
+        QMessageBox q(QMessageBox::Warning, "Error", "No ogrGeometry is selected", QMessageBox::Ok);
         q.exec(); // synchronous
         return;
     }
@@ -126,24 +128,24 @@ void SpatialStatsLayer::exportContourFile() {
     _spatialStats->getValues(&cells, _selectedGeometry);
     for(double i = topLeft.x(); i < bottomRight.x(); i += 10) {
         for(double j = topLeft.y(); j < bottomRight.y(); j += 10) {
-            QSet<Geometry*> geoms;
-            _spatialStats->getGeometriesAt(&geoms, i, j);
+            QSet<Geometry*>* geoms = _spatialStats->getGeometriesAt(i,j);
             bool foundRightGeom = false;
-            if(!geoms.isEmpty()) {
-                for(Geometry* geom : geoms) {
-                    if(geom->getGeometryType() == CellType) {
-                        // add the geometry to the output
-                        if(cells->contains(geom)) {
-                            GeometryMatrixValue* val = cells->value(geom);
+            if(geoms->isEmpty()) {
+                return;
+            }
+            for(Geometry* geom : *geoms) {
+                if(geom->getGeometryType() == CellGeometryType) {
+                    // add the ogrGeometry to the output
+                    if(cells->contains(geom)) {
+                        GeometryMatrixValue* val = cells->value(geom);
 //                            double x = geom->getCenter().x();
 //                            double y = geom->getCenter().y();
-                            double z = 10 * val->avgScore;
-                            out << QString::number(i, 'f', 0) << ";"
-                            << QString::number(j, 'f', 0) << ";"
-                            << QString::number(z, 'f', 2) << "\n";
-                            foundRightGeom = true;
-                            break;
-                        }
+                        double z = 10 * val->avgScore;
+                        out << QString::number(i, 'f', 0) << ";"
+                        << QString::number(j, 'f', 0) << ";"
+                        << QString::number(z, 'f', 2) << "\n";
+                        foundRightGeom = true;
+                        break;
                     }
                 }
             }
@@ -199,7 +201,7 @@ void SpatialStatsLayer::showDemandGrid() {
     double xmin = 1e10, xmax = 0.0, ymin = 1e10, ymax = 0.0;
     for (auto it = matrix.begin(); it != matrix.end(); ++it) {
         Geometry *geom = it.key();
-        if (geom->getGeometryType() == CellType) {
+        if (geom->getGeometryType() == CellGeometryType) {
             if(geom->getBounds().getTopLeft().x() < xmin)
                 xmin = geom->getBounds().getTopLeft().x();
             if(geom->getBounds().getBottomRight().x() > xmax)
@@ -237,9 +239,9 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
     if(!_spatialStats->hasValue(geom) || !_spatialStats->hasMatrixValue(geom))
         return;
 
-    qDebug() << "Clicked on geometry" << geom->toString() << mod;
+    qDebug() << "Clicked on ogrGeometry" << geom->toString() << mod;
     // select all the reachable geometries
-    // restore the parameters for the previously selected geometry
+    // restore the parameters for the previously selected ogrGeometry
     if(_selectedGeometry && mod) {
         // select the link
         if(!_spatialStats->hasMatrixValue(_selectedGeometry, geom))
@@ -255,7 +257,7 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
         _plots->showLinkData(_selectedGeometry, geom);
 
     } else {
-        // select the geometry
+        // select the ogrGeometry
         if(_selectedGeometry) {
             // restore the "normal" opacity
             _geometryGraphics[_selectedGeometry]->setOpacity(CELL_OPACITY);
@@ -281,7 +283,7 @@ void SpatialStatsLayer::onMousePress(Geometry* geom, bool mod) {
                 _geometryGraphics[_selectedGeometry]->update();
 
                 _selectedGeometry = NULL;
-                qDebug() << "clicked on same geometry";
+                qDebug() << "clicked on same ogrGeometry";
                 return;
             }
         }

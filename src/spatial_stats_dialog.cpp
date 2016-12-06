@@ -1,4 +1,5 @@
 #include "spatial_stats_dialog.h"
+#include "trace.h"
 
 SpatialStatsDialog::SpatialStatsDialog(QWidget* parent, Trace* trace):
     QDialog(parent),
@@ -7,12 +8,12 @@ SpatialStatsDialog::SpatialStatsDialog(QWidget* parent, Trace* trace):
     maxEndTime(trace->getEndTime()) {
 
     geometryTypeExtension = new QWidget;
-    geometryTypeLabel = new QLabel("Choose geometry type");
+    geometryTypeLabel = new QLabel("Choose ogrGeometry type");
 
     /* Cells */
     geometryCellsRadioButton = new QRadioButton("Cells");
     connect(geometryCellsRadioButton, &QRadioButton::toggled, [=](bool checked) {
-        if(checked) geometryType = CellType;
+        if(checked) geometryType = CellGeometryType;
     });
 
     geometryCellsExtension = new QWidget;
@@ -38,7 +39,7 @@ SpatialStatsDialog::SpatialStatsDialog(QWidget* parent, Trace* trace):
     geometryCirclesRadioButton = new QRadioButton("Circles");
     connect(geometryCirclesRadioButton, &QRadioButton::toggled, [=](bool checked) {
         geometryCirclesExtension->setVisible(checked);
-        if(checked) geometryType = CircleType;
+        if(checked) geometryType = CircleGeometryType;
     });
 
     geometryCirclesExtension = new QWidget;
@@ -206,10 +207,10 @@ SpatialStatsDialog::SpatialStatsDialog(QWidget* parent, Trace* trace):
         geometryCirclesFileLineEdit->setText(settings.value("savedSpatialStatsGeometryCirclesFile").toString());
     if(settings.contains("savedSpatialStatsGeometryType")) {
         geometryType = static_cast<GeometryType>(settings.value("savedSpatialStatsGeometryType").toInt());
-        if(geometryType == CellType) {
+        if(geometryType == CellGeometryType) {
             geometryCellsRadioButton->setChecked(true);
             geometryCirclesExtension->setVisible(false);
-        } else if(geometryType == CircleType) {
+        } else if(geometryType == CircleGeometryType) {
             geometryCirclesRadioButton->setChecked(true);
             geometryCirclesExtension->setVisible(true);
         }
@@ -260,11 +261,11 @@ void SpatialStatsDialog::done()
 bool SpatialStatsDialog::checkConsistency()
 {
     bool flag = false;
-    if(geometryType == NoneType)
+    if(geometryType == NoneGeometryType)
         flag = true;
-    if(geometryType == CellType && geometryCellsSize <= 0.0)
+    if(geometryType == CellGeometryType && geometryCellsSize <= 0.0)
         flag = true;
-    if(geometryType == CircleType && geometryCirclesFile.isEmpty())
+    if(geometryType == CircleGeometryType && geometryCirclesFile.isEmpty())
         flag = true;
     if(!(sampling == -1 || sampling >= 0) || !(startTime == -1 || startTime >= minStartTime) || !(endTime == -1 || (endTime >= 0 && endTime <= maxEndTime)))
         flag = true;

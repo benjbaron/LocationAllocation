@@ -6,7 +6,7 @@
 #define LOCALL_WAZE_ALERT_CELLS_H
 
 
-#include "waze_alert_file.h"
+#include "waze_alert_data.h"
 
 struct WazeCellValue {
     WazeCellValue(Geometry* c) {
@@ -28,7 +28,7 @@ struct WazeCellValue {
 class WazeAlertCells : public QObject {
     Q_OBJECT
 public:
-    WazeAlertCells(WazeAlertFile* wazeAlertFile, double geometryCellsSize = 100.0) :
+    WazeAlertCells(WazeAlertData* wazeAlertFile, double geometryCellsSize = 100.0) :
             _wazeAlertFile(wazeAlertFile), _geometryCellsSize(geometryCellsSize) { }
 
     bool computeCells();
@@ -51,7 +51,7 @@ public:
     QColor selectColorGetisOrdG(double zScore);
 
 private:
-    WazeAlertFile* _wazeAlertFile;
+    WazeAlertData* _wazeAlertFile;
     QHash<QPoint,WazeCellValue*> _wazeCells;
     QHash<Geometry*,QPoint> _geomToIndex;
     double _geometryCellsSize;

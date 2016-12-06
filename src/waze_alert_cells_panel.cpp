@@ -67,11 +67,11 @@ void WazeAlertCellsPanel::showWazeAlertCellData(WazeCellValue* wcv) {
 
     /* Display */
     QStringList display;
-    display << WAZE_ALERT_ALL
-             << WAZE_ALERT_JAM
-             << WAZE_ALERT_WEATHERHAZARD
-             << WAZE_ALERT_ROAD_CLOSED
-             << WAZE_ALERT_ACCIDENT;
+    display  << RTWDE_DISPLAY_ALL
+             << RTWDE_DISPLAY_JAM
+             << RTWDE_DISPLAY_WEATHERHAZARD
+             << RTWDE_DISPLAY_ROADCLOSED
+             << RTWDE_DISPLAY_ACCIDENT;
 
     ui->comboBox_alert_types->clear(); // remove previous items
     ui->comboBox_alert_types->addItems(display);
@@ -111,7 +111,7 @@ void WazeAlertCellsPanel::updateWazeAlert() {
         if(it.key() > end)
             break;
 
-        if(_showWazeAlertTypeString == WAZE_ALERT_ALL || it.value()->type == _showWazeAlertType) {
+        if(_showWazeAlertTypeString == RTWDE_DISPLAY_ALL || it.value()->type == _showWazeAlertType) {
             frequencies.append(it.key());
         }
     }

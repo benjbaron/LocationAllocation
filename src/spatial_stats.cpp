@@ -62,11 +62,11 @@ void SpatialStats::computeVisitMatrix(QString& node) {
             long long end1 = kt.value();
 
             _geometriesMutex.lock();
-            // add the geometry to the set of visited geometries
+            // add the ogrGeometry to the set of visited geometries
             if (!_geometries.contains(geom1))
                 _geometries.insert(geom1, new GeometryValue(geom1));
 
-            // update the corresponding geometry value
+            // update the corresponding ogrGeometry value
             GeometryValue *val = _geometries.value(geom1);
             val->visits.insert(start1, end1);
             val->visitFrequency.append(start1);
@@ -84,7 +84,7 @@ void SpatialStats::computeVisitMatrix(QString& node) {
                     Geometry *geom2 = lt.key();
                     long long end2 = lt.value();
 
-                    // stop when the node visits the same starting geometry again
+                    // stop when the node visits the same starting ogrGeometry again
                     if (geom1 == geom2) break;
 
                     // do not take account already visited geometries
@@ -92,7 +92,7 @@ void SpatialStats::computeVisitMatrix(QString& node) {
                         continue;
 
                     _geometryMatrixMutex.lock();
-                    // add the geometry to the matrix of visited geometries
+                    // add the ogrGeometry to the matrix of visited geometries
                     if (!_geometryMatrix.contains(geom1)) {
                         _geometryMatrix.insert(geom1, new QHash<Geometry *, GeometryMatrixValue *>());
                     }
@@ -329,11 +329,10 @@ void MobileNode::addPosition(long long time, double x, double y) {
     // assuming the positions are added sequentially
     if(_prevPos.isNull() || time - _prevTime > 300) { // restart the cell recording
         // get the list of geometries that contain the current position
-        QSet<Geometry*> geoms;
-        _spatialStats->containsPoint(&geoms, x,y);
+        QSet<Geometry*>* geoms = _spatialStats->containsPoint(x,y);
         _startTimeGeometries.clear();
         // record all geometries
-        for(Geometry* geom : geoms) {
+        for(Geometry* geom : *geoms) {
             _startTimeGeometries.insert(geom, time);
             if(!_visitedGeometries.contains(time))
                 _visitedGeometries.insert(time, new QHash<Geometry*,long long>());
