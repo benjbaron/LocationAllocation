@@ -1,17 +1,23 @@
-<ui version="4.0" >
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog" >
-  <property name="geometry" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ShapefileAttributeDialog</class>
+ <widget class="QDialog" name="ShapefileAttributeDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>684</width>
+    <height>404</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>Dialog</string>
+  <property name="windowTitle">
+   <string>Shapefile Attributes</string>
   </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTableView" name="tableView"/>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
