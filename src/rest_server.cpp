@@ -66,32 +66,32 @@ public slots:
                         double deadline = query.queryItemValue("deadline").toDouble();
                         double delFactor = query.queryItemValue("delFactor").toDouble();
 
-                        TravelTimeStat ttStat = NoneTT;
+                        TravelTimeStat ttStat = NoneTTStat;
                         double travelTime = 0.0;
                         if (query.hasQueryItem("travelTime")) {
                             QString tt = query.queryItemValue("travelTime");
                             QRegExp exp1("^(med|avg|[\\d.]+)");
                             if (exp1.indexIn(tt) != -1) {
                                 QString stat = exp1.capturedTexts()[1];
-                                if (stat == "med") ttStat = Med;
-                                else if (stat == "avg") ttStat = Avg;
+                                if (stat == "med") ttStat = MedTTStat;
+                                else if (stat == "avg") ttStat = AvgTTStat;
                                 else { // a number
-                                    ttStat = Avg;
+                                    ttStat = AvgTTStat;
                                     travelTime = stat.toDouble();
                                 }
                             }
                         }
 
-                        DistanceStat dStat = NoneD;
+                        DistanceStat dStat = NoneDStat;
                         double distance = 0.0;
                         if (query.hasQueryItem("distance")) {
                             QString d = query.queryItemValue("distance");
                             QRegExp exp1("^(auto|[\\d.]+)");
                             if (exp1.indexIn(d) != -1) {
                                 QString stat = exp1.capturedTexts()[1];
-                                if (stat == "auto") dStat = Auto;
+                                if (stat == "auto") dStat = AutoDStat;
                                 else {
-                                    dStat = FixedD;
+                                    dStat = FixedDStat;
                                     distance = stat.toDouble();
                                 }
                             }

@@ -88,10 +88,10 @@ int main(int argc, char *argv[]) {
         if (parser.isSet(cellSizeOption))
             cellSize = parser.value(cellSizeOption).toDouble();
 
-        GeometryType pointsType = NoneType;
+        GeometryType pointsType = NoneGeometryType;
         QString pointsFile = QString();
         if (parser.isSet(pointOption)) {
-            pointsType = CircleType;
+            pointsType = CircleGeometryType;
             pointsFile = parser.value(pointOption);
         }
 
@@ -120,9 +120,9 @@ int main(int argc, char *argv[]) {
         // check if the trace is not null
         if(!trace) a->exit(0);
 
-        qDebug() << "Compute geometry index";
-        GeometryIndex* geometryIndex = GeometryIndex::make_geometryIndex(trace, sampling, startTime, endTime,
-                                                                         cellSize, pointsType, pointsFile);
+        qDebug() << "Compute ogrGeometry index";
+        GeometryIndex* geometryIndex = trace->makeGeometryIndex(sampling, startTime, endTime,
+                                                                cellSize, pointsType, pointsFile);
 
         qDebug() << "compute spatial stats";
         SpatialStats* spatialStats = new SpatialStats(trace,
