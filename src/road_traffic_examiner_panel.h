@@ -6,12 +6,9 @@
 #define LOCALL_ROAD_TRAFFIC_EXAMINER_PANEL_H
 
 #include <QDockWidget>
-
-const QString RTE_DISPLAY_JOURNEY_TIME = "Journey time";
-const QString RTE_DISPLAY_SPEED = "Speed";
-const QString RTE_DISPLAY_TRAFFIC_FLOW = "Traffic flow";
-
-enum RTE_DISPLAY_TYPE { DAY, MONTH, ALL, NONE };
+#include <QDate>
+#include <QSet>
+#include "constants.h"
 
 // forward class declarations
 class QCustomPlot;
@@ -29,19 +26,27 @@ public:
     ~RoadTrafficExaminerPanel();
 
     void showRoadTrafficLinkData(RoadLink* rl);
-    void onClosePanel();
-    void plotFrequencies(QList<long long> frequencies, QCustomPlot* customPlot, long long bins) {}
+    virtual void onClosePanel();
+    virtual void connectWidgets();
 
-private:
+protected slots:
+    virtual void onDateTimeEditChanged(const QDate& date);
+    virtual void onComboBoxDisplayCurrentIndexChanged(const QString& text);
+    virtual void onRadioButtonAllToggled(bool checked);
+    virtual void onRadioButtonMonthToggled(bool checked);
+    virtual void onRadioButtonDayToggled(bool checked);
+
+protected:
     void updateRoadTrafficLinkData();
+    void populateDisplays();
+    void restoreSavedSettings();
 
     Ui::RoadTrafficExaminerPanel* ui;
     RoadLink* _roadLink;
-    int _day = -1;
-    int _month = -1;
-    int _year = -1;
+    QDate _date = QDate();
     QString _display = "";
-    RTE_DISPLAY_TYPE _displayType = RTE_DISPLAY_TYPE::NONE;
+    RoadTrafficExaminerDisplayType _displayType = RoadTrafficExaminerDisplayType::NoneRTEType;
+    QSet<QDate> _validDates;
 };
 
 

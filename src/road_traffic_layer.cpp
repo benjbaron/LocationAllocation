@@ -3,24 +3,20 @@
 //
 
 #include "road_traffic_layer.h"
-#include "geometries.h"
 
 QGraphicsItemGroup* RoadTrafficLayer::draw() {
-    QColor c = Qt::red;
-    QPen pen = QPen(c);
-    pen.setCosmetic(true);
-    pen.setWidth(SHAPEFILE_WID);
+    /* Draw the shapefile */
+    ShapefileLayer::draw();
 
-    _groupItem = new QGraphicsItemGroup();
-    _groupItem->setHandlesChildEvents(false);
+    qDebug() << "Shapefile drawn:" << _geometryGraphics.size();
 
-    QHash<QString, RoadLink*> roadLinks;
-    _roadTraffic->getLinks(&roadLinks);
+    RoadTraffic* roadTraffic = static_cast<RoadTraffic*>(_shapefile);
+    QHash<QString, RoadLink*>* roadLinks = roadTraffic->getRoadLinks();
 
     QMap<double, int> sortedRoadFlows;
-    for(auto it = roadLinks.begin(); it != roadLinks.end(); ++it) {
-        RoadTrafficData* rtd = it.value()->getMeanRoadTrafficData();
-        double roadFlow = rtd->flow;
+    for(auto it = roadLinks->begin(); it != roadLinks->end(); ++it) {
+        RoadTrafficDataAggregate* rtd = it.value()->getMeanRoadTrafficData();
+        double roadFlow = rtd->getValue(RoadTrafficDataType::FlowRTDType, -1);
         if(roadFlow <= 0.0)
             continue;
         if(!sortedRoadFlows.contains(roadFlow))
@@ -29,6 +25,9 @@ QGraphicsItemGroup* RoadTrafficLayer::draw() {
             sortedRoadFlows[roadFlow]++;
     }
 
+    qDebug() << roadLinks->size() << " road links " << sortedRoadFlows.size() << " sorted road flows";
+
+
     int cumSum = 0;
     for(auto it = sortedRoadFlows.begin(); it != sortedRoadFlows.end(); ++it) {
         int count = it.value();
@@ -36,64 +35,59 @@ QGraphicsItemGroup* RoadTrafficLayer::draw() {
         sortedRoadFlows[it.key()] = cumSum;
     }
 
-    int counter = 0;
-    for(auto it = roadLinks.begin(); it != roadLinks.end(); ++it) {
-        double roadFlow = it.value()->getMeanRoadTrafficData()->flow;
-        QColor col;
+    for(auto it = _geometryShapefileFeatures.begin(); it != _geometryShapefileFeatures.end(); ++it) {
+        int idx = it.value()->id;
+        RoadLink* rl = roadTraffic->getRoadLink(idx);
+        qDebug() << "index" << idx << "roadLink" << rl;
+        if(rl == nullptr)
+            continue;
+
+        double roadFlow = rl->getMeanRoadTrafficData()->getValue(RoadTrafficDataType::FlowRTDType, -1);
+        qDebug() << "\tRoad flow" << roadFlow;
+        QColor color;
         if(sortedRoadFlows.contains(roadFlow)) {
             if(sortedRoadFlows.value(roadFlow) < (cumSum / 4.0))
-                col = COL_LOW;
+                color = COL_LOW;
             else if(sortedRoadFlows.value(roadFlow) < (cumSum / 2.0))
-                col = COL_MED_LOW;
+                color = COL_MED_LOW;
             else if(sortedRoadFlows.value(roadFlow) < 3*(cumSum / 4.0))
-                col = COL_MED_HIGH;
+                color = COL_MED_HIGH;
             else
-                col = COL_HIGH;
+                color = COL_HIGH;
         }
-
-        ArrowLineItem* link = new ArrowLineItem(
-                it.value()->getLine().x1(),
-                it.value()->getLine().y1(),
-                it.value()->getLine().x2(),
-                it.value()->getLine().y2(),
-                counter,
-                -1,
-                static_cast<void*>(it.value()));
-
-        connect(link, &ArrowLineItem::mousePressedEvent, this, &RoadTrafficLayer::onRoadTrafficLinkSelected);
-
-        link->setPen(pen);
-        if(col.isValid())
-            link->setUnselectedColor(col);
-        addGraphicsItem(link);
-        _linkGraphics.append(link);
-
-        counter++;
+        if(color.isValid()) {
+            qDebug() << "\tColor" << color;
+            _geometryGraphics.value(it.key())->setUnselectedColor(color);
+        }
     }
 
     return _groupItem;
 }
 
 bool RoadTrafficLayer::load(Loader* loader) {
-    bool ret = _roadTraffic->open(loader);
-    return ret;
+    return static_cast<RoadTraffic*>(_shapefile)->open(loader);
 }
 
-void RoadTrafficLayer::onRoadTrafficLinkSelected(int nodeId, int linkId, bool mod, void* ptr) {
-    RoadLink* rl = static_cast<RoadLink*>(ptr);
-    qDebug() << "nodeId" << nodeId << "roadTrafficLinkData" << rl->toString();
-
-
-    if(_selectedRoadLinkId != -1) {
-        // restore the normal attributes
-        _linkGraphics.at(_selectedRoadLinkId)->setLinkSelected(false);
+void RoadTrafficLayer::onFeatureSelectedEvent(Geometry* geom, bool mod) {
+    ShapefileFeature* shpFeature = _geometryShapefileFeatures.value(geom);
+    RoadLink* rl = static_cast<RoadTraffic*>(_shapefile)->getRoadLink(shpFeature->id);
+    if(rl == nullptr) {
+        qDebug() << "no road traffic data associated with this link" << shpFeature->id;
+        return;
     }
+    qDebug() << "roadTrafficLinkData" << rl->toString();
 
-    if(_selectedRoadLinkId != nodeId) {
-        _selectedRoadLinkId = nodeId;
-        _linkGraphics.at(_selectedRoadLinkId)->setLinkSelected(true);
-    } else {
-        _selectedRoadLinkId = -1;
+
+    if(_selectedGeometry == nullptr) {
+        _geometryGraphics.value(geom)->selected(true);
+        _selectedGeometry = geom;
+    } else if (_selectedGeometry != geom) {
+        _geometryGraphics.value(_selectedGeometry)->selected(false);
+        _geometryGraphics.value(geom)->selected(true);
+        _selectedGeometry = geom;
+    } else if (_selectedGeometry == geom) {
+        _geometryGraphics.value(geom)->selected(false);
+        _selectedGeometry = nullptr;
     }
 
     if(_roadTrafficExaminerPanel)

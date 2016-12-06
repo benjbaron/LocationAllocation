@@ -6,141 +6,52 @@
 #include "ui_road_traffic_examiner_panel.h"
 #include "road_traffic.h"
 
-Q_DECLARE_METATYPE(QList<int>)
-
 RoadTrafficExaminerPanel::RoadTrafficExaminerPanel(QWidget* parent) :
-    QDockWidget(parent),
-    ui(new Ui::RoadTrafficExaminerPanel) {
-        ui->setupUi(this);
+        QDockWidget(parent),
+        ui(new Ui::RoadTrafficExaminerPanel) {
+
+    ui->setupUi(this);
+    connectWidgets();
 }
 
 RoadTrafficExaminerPanel::~RoadTrafficExaminerPanel() {
-    delete ui;
+    if(ui != nullptr)
+        delete ui;
 }
 
-void RoadTrafficExaminerPanel::showRoadTrafficLinkData(RoadLink* rl) {
-    _roadLink = rl;
+void RoadTrafficExaminerPanel::connectWidgets() {
+    qDebug() << "RoadTrafficExaminerPanel connectWidgets";
+    connect(ui->dateEdit, &QDateTimeEdit::dateChanged, this, &RoadTrafficExaminerPanel::onDateTimeEditChanged);
 
-    /* update the title */
-    ui->label_description->setText("Road link "+rl->getId());
+    connect(ui->radioButton_all, &QRadioButton::toggled, this, &RoadTrafficExaminerPanel::onRadioButtonAllToggled);
+    connect(ui->radioButton_day, &QRadioButton::toggled, this, &RoadTrafficExaminerPanel::onRadioButtonDayToggled);
+    connect(ui->radioButton_month, &QRadioButton::toggled, this, &RoadTrafficExaminerPanel::onRadioButtonMonthToggled);
 
-    /* fill the date comboboxes */
-    QMap<QDate, QMap<int,RoadTrafficData*>*>* rtd = rl->getRoadTrafficData();
-    QSet<int> days_set, months_set, years_set;
-    QList<int> days, months, years;
+    connect(ui->comboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this,
+            &RoadTrafficExaminerPanel::onComboBoxDisplayCurrentIndexChanged);
+}
 
-    for(QDate d: rtd->keys()) {
-        days_set.insert(d.day());
-        months_set.insert(d.month());
-        years_set.insert(d.year());
-    }
-
-    /* Sort the lists */
-    days    = days_set.toList();    qSort(days);
-    months  = months_set.toList();  qSort(months);
-    years   = years_set.toList();   qSort(years);
-
-    /* clear previous comboboxes */
-    ui->comboBox_day->clear();
-    ui->comboBox_month->clear();
-    ui->comboBox_year->clear();
-
-    /* add items to comboboxes */
-    ui->comboBox_day->addItem("");
-    for(int d : days) {
-        ui->comboBox_day->addItem(QString::number(d));
-    }
-    ui->comboBox_month->addItem("");
-    for(int m : months) {
-        ui->comboBox_month->addItem(QString::number(m));
-    }
-    ui->comboBox_year->addItem("");
-    for(int y : years) {
-        ui->comboBox_year->addItem(QString::number(y));
-        qDebug() << "add month" << y;
-    }
-
-    /* connect their behaviors */
-    ui->comboBox_day->disconnect();
-    connect(ui->comboBox_day, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
-            [=](const QString& text){
-        _day = text.toInt();
-        updateRoadTrafficLinkData();
-    });
-    ui->comboBox_month->disconnect();
-    connect(ui->comboBox_month, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
-            [=](const QString& text){
-        _month = text.toInt();
-        updateRoadTrafficLinkData();
-    });
-    ui->comboBox_year->disconnect();
-    connect(ui->comboBox_year, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
-            [=](const QString& text){
-        _year = text.toInt();
-        updateRoadTrafficLinkData();
-    });
-
-    /* fill the last date saved */
+void RoadTrafficExaminerPanel::restoreSavedSettings() {
     QSettings settings;
-    QString name = "savedDateRoadTrafficExaminer";
-    if(settings.contains(name)) {
-        QList<int> l = settings.value(name).value<QList<int> >();
-        qDebug() << "### Retrieve list" << l;
-        if(l.size() == 3) {
-            _year = l.at(0);
-            ui->comboBox_year->setCurrentText(QString::number(_year));
-            _month =  l.at(1);
-            ui->comboBox_month->setCurrentText(QString::number(_month));
-            _day = l.at(2);
-            ui->comboBox_day->setCurrentText(QString::number(_day));
-        }
+
+    if(settings.contains(SETTINGS_ROAD_TRAFFIC_EXAMINER_DATE)) {
+        ui->dateEdit->setDate(settings.value(SETTINGS_ROAD_TRAFFIC_EXAMINER_DATE).toDate());
     }
 
-    /* Display */
-    QStringList displays;
-    displays << "" << RTE_DISPLAY_JOURNEY_TIME << RTE_DISPLAY_SPEED << RTE_DISPLAY_TRAFFIC_FLOW;
-    ui->comboBox->clear(); // remove previous items
-    ui->comboBox->addItems(displays);
-    ui->comboBox->disconnect();
-    connect(ui->comboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
-            [=](QString text){
-        _display = text;
-        updateRoadTrafficLinkData();
-    });
-
-    name = "savedDisplayRoadTrafficExaminer";
-    if(settings.contains(name)) {
-        _display = settings.value(name).toString();
-        ui->comboBox->setCurrentText(_display);
+    if(settings.contains(SETTINGS_ROAD_TRAFFIC_EXAMINER_DISPLAY)) {
+        ui->comboBox->setCurrentText(settings.value(SETTINGS_ROAD_TRAFFIC_EXAMINER_DISPLAY).toString());
     }
 
     /* Display granularity */
-    connect(ui->radioButton_all, &QRadioButton::toggled, [=](bool checked) {
-        if(checked) _displayType = RTE_DISPLAY_TYPE::ALL;
-        updateRoadTrafficLinkData();
-    });
-    connect(ui->radioButton_day, &QRadioButton::toggled, [=](bool checked) {
-        if(checked) _displayType = RTE_DISPLAY_TYPE::DAY;
-        updateRoadTrafficLinkData();
-    });
-    connect(ui->radioButton_month, &QRadioButton::toggled, [=](bool checked) {
-        if(checked) _displayType = RTE_DISPLAY_TYPE::MONTH;
-        updateRoadTrafficLinkData();
-    });
-
-    name = "savedDisplayTypeRoadTrafficExaminer";
-    if(settings.contains(name)) {
-        switch (settings.value(name).toInt()) {
-            case RTE_DISPLAY_TYPE::ALL:
-                _displayType = RTE_DISPLAY_TYPE::ALL;
+    if(settings.contains(SETTINGS_ROAD_TRAFFIC_EXAMINER_DISPLAY_TYPE)) {
+        switch (settings.value(SETTINGS_ROAD_TRAFFIC_EXAMINER_DISPLAY_TYPE).toInt()) {
+            case RoadTrafficExaminerDisplayType::AllPeriodRTEType:
                 ui->radioButton_all->setChecked(true);
                 break;
-            case RTE_DISPLAY_TYPE::DAY:
-                _displayType = RTE_DISPLAY_TYPE::DAY;
+            case RoadTrafficExaminerDisplayType::DayRTEType:
                 ui->radioButton_day->setChecked(true);
                 break;
-            case RTE_DISPLAY_TYPE::MONTH:
-                _displayType = RTE_DISPLAY_TYPE::MONTH;
+            case RoadTrafficExaminerDisplayType::MonthRTEType:
                 ui->radioButton_month->setChecked(true);
                 break;
             default:
@@ -149,111 +60,122 @@ void RoadTrafficExaminerPanel::showRoadTrafficLinkData(RoadLink* rl) {
     }
 }
 
+void RoadTrafficExaminerPanel::showRoadTrafficLinkData(RoadLink* rl) {
+    _roadLink = rl;
+
+    /* update the title */
+    ui->label_description->setText("Road link "+rl->getId());
+
+    /* fill the valid dates */
+    QMap<QDate, RoadTrafficDataAggregate*>* rtd = rl->getRoadTrafficData();
+
+    QDate minDate(QDate::currentDate()), maxDate(1970,0,0);
+    for(QDate d: rtd->keys()) {
+        if(d < minDate) minDate = d;
+        if(d > maxDate) maxDate = d;
+        _validDates.insert(d);
+    }
+
+    ui->dateEdit->setMinimumDate(minDate);
+    ui->dateEdit->setMaximumDate(maxDate.addDays(365));
+    ui->dateEdit->setDate(minDate);
+
+
+    /* Display */
+    populateDisplays();
+
+    /* Restore settings */
+    restoreSavedSettings();
+
+    updateRoadTrafficLinkData();
+}
+
+void RoadTrafficExaminerPanel::populateDisplays() {
+    if(!_roadLink->containsDataAtDate(_date)) {
+        ui->comboBox->clear(); // remove previous items
+        _display = "";
+        return;
+    }
+
+    // get the previous display selected
+    QString previousDisplay = _display;
+
+    QStringList displays;
+    displays << "" << _roadLink->getAllRoadTrafficDataTypes();
+
+
+    ui->comboBox->clear(); // remove previous items
+    ui->comboBox->addItems(displays);
+
+    if(displays.contains(previousDisplay)) {
+        ui->comboBox->setCurrentText(previousDisplay);
+    }
+}
+
 void RoadTrafficExaminerPanel::updateRoadTrafficLinkData() {
-    qDebug() << "### update road traffic link data" << _year << _month << _day;
-    QDate date(_year, _month, _day);
-    if(!date.isValid())
+    qDebug() << "### update road traffic link data" << _date << "display \"" << _display << "\" Display granularity" << _displayType;
+    ui->plot->clearPlottables();
+
+    if(!_date.isValid() || _display == "") {
         return;
-
-    qDebug() << "\t" << date.toString("yyyy MM dd");
-    QMap<int, RoadTrafficData*>* rd = _roadLink->getRoadTrafficDataFromDate(date);
-
-    if(rd == nullptr)
-        return;
-    if(_display != "" && _displayType == RTE_DISPLAY_TYPE::DAY) {
-        ui->plot->clearPlottables();
-        QVector<double> x(rd->size()), y(rd->size());
-        int i = 0;
-        double min = 1e10, max = 0;
-        for(auto it = rd->begin(); it != rd->end(); it++) {
-            double val;
-            if(_display == RTE_DISPLAY_JOURNEY_TIME) {
-                val = it.value()->journeyTime;
-            } else if(_display == RTE_DISPLAY_SPEED) {
-                val = it.value()->speed;
-            } else if(_display == RTE_DISPLAY_TRAFFIC_FLOW) {
-                val = it.value()->flow;
-            }
-
-            x[i] = i;
-            y[i] = val;
-            i++;
-            if(min > val)
-                min = val;
-            if(max < val)
-                max = val;
-
-            qDebug() << i << "\t" << val;
-        }
-        ui->plot->addGraph();
-        ui->plot->graph(0)->setData(x,y);
-        ui->plot->xAxis->setAutoTicks(true);
-        ui->plot->xAxis->setAutoTickLabels(true);
-        ui->plot->xAxis->setRange(rd->firstKey(), rd->lastKey());
-        ui->plot->yAxis->setRange(min, max);
-        ui->plot->replot();
     }
 
-    if(_display != "" && _displayType == RTE_DISPLAY_TYPE::MONTH) {
-        ui->plot->clearPlottables();
+    Series<int> s;
+    RoadTrafficDataType rtdType = stringToRoadTrafficDataType(_display);
 
-        int vectorSize = 0;
-        for(int i = 1; i <= date.daysInMonth(); i++) {
-            QDate dateCurrent(_year, _month, i);
-            QMap<int, RoadTrafficData *>* rdCurrent = _roadLink->getRoadTrafficDataFromDate(dateCurrent);
-            if(rdCurrent == nullptr)
-                continue;
+    QDate start, end;
+    if(_displayType == RoadTrafficExaminerDisplayType::DayRTEType) {
+        start = end = _date;
+    } else if(_displayType == RoadTrafficExaminerDisplayType::MonthRTEType) {
+        QDate startMonth(_date.year(), _date.month(), 1), endMonth(_date.year(), _date.month(), _date.daysInMonth());
+        start = qMax(_roadLink->getMinDate(), startMonth);
+        end = qMin(_roadLink->getMaxDate(), endMonth);
+    } else if(_displayType == RoadTrafficExaminerDisplayType::AllPeriodRTEType) {
+        start = _roadLink->getMinDate();
+        end = _roadLink->getMaxDate();
+    } else {
+        return;
+    }
+    long long nbDays = start.daysTo(end);
+    int maxPeriodLength = _roadLink->getMaxPeriod(rtdType);
 
-            vectorSize += rdCurrent->size();
-        }
+    qDebug() << "start" << start << "end" << end << "maxPeriod" << maxPeriodLength << "nbDays" << nbDays;
 
-        QVector<double> x(vectorSize), y(vectorSize);
-        int idx = 0;
-        double min = 1e10, max = 0;
-        for(int i = 1; i <= date.daysInMonth(); i++) {
-            QDate dateCurrent(_year, _month, i);
-            QMap<int, RoadTrafficData*>* rdCurrent = _roadLink->getRoadTrafficDataFromDate(dateCurrent);
-            if(rdCurrent == nullptr)
-                continue;
 
-            for(auto it = rdCurrent->begin(); it != rdCurrent->end(); it++) {
-                double val;
-                if(_display == RTE_DISPLAY_JOURNEY_TIME) {
-                    val = it.value()->journeyTime;
-                } else if(_display == RTE_DISPLAY_SPEED) {
-                    val = it.value()->speed;
-                } else if(_display == RTE_DISPLAY_TRAFFIC_FLOW) {
-                    val = it.value()->flow;
+    double sum = 0.0;
+    int idxCounter = 1;
+    for(long long i = 0; i <= nbDays; ++i) {
+        QDate date(start.addDays(i));
+        RoadTrafficDataAggregate* rd = _roadLink->getRoadTrafficDataAtDate(date);
+        int count = 1;
+        if (rd == nullptr) {
+            for(int j = 1; j <= maxPeriodLength; ++j) {
+                s.addValue(idxCounter, 0.0);
+                idxCounter++;
+                count++;
+            }
+        } else {
+            QMap<int, RoadTrafficData*>* rtd = rd->getRoadTrafficData(rtdType);
+            int inflate = qFloor(maxPeriodLength / rtd->size());
+            int prevIdx = 0;
+            for (auto it = rtd->begin(); it != rtd->end(); it++) {
+                int idx = count * inflate;
+                for(int j = idx; j > prevIdx; --j) {
+                    double value = it.value()->getValue() / inflate;
+                    s.addValue(idxCounter, value);
+                    idxCounter++;
+                    count++;
+                    sum += value;
                 }
-
-                x[idx] = idx;
-                y[idx] = val;
-                idx++;
-                if(min > val)
-                    min = val;
-                if(max < val)
-                    max = val;
+                prevIdx = idx;
             }
         }
-
-        ui->plot->addGraph();
-        ui->plot->graph(0)->setData(x,y);
-        ui->plot->xAxis->setAutoTicks(true);
-        ui->plot->xAxis->setAutoTickLabels(true);
-        ui->plot->xAxis->setRange(0, idx);
-        ui->plot->yAxis->setRange(min, max);
-        ui->plot->replot();
     }
+    s.plot(ui->plot);
 
-    double sumFlows = 0.0;
-    double sumSpeeds = 0.0;
-    double sumJourneyTimes = 0.0;
-    for(auto it = rd->begin(); it != rd->end(); it++) {
-        sumFlows += it.value()->flow;
-        sumJourneyTimes += it.value()->speed;
-        sumSpeeds += it.value()->journeyTime;
-    }
-    qDebug() << "\t" << sumFlows / rd->size() << sumJourneyTimes / rd->size() << sumSpeeds / rd->size();
+    // fill the table
+    ui->tableWidget->setItem(0,0,new QTableWidgetItem(QString::number(sum / idxCounter)));
+
 }
 
 void RoadTrafficExaminerPanel::onClosePanel() {
@@ -261,19 +183,40 @@ void RoadTrafficExaminerPanel::onClosePanel() {
     QSettings settings;
 
     /* save the date */
-    qRegisterMetaTypeStreamOperators<QList<int> >("QList<int>");
-    QString name = "savedDateRoadTrafficExaminer";
-    QList<int> l;
-    l << _year << _month << _day;
-    settings.setValue(name, QVariant::fromValue(l));
-
-    qDebug() << "### Save list" << l;
+    settings.setValue(SETTINGS_ROAD_TRAFFIC_EXAMINER_DATE, _date);
 
     /* save the display mode */
-    name = "savedDisplayRoadTrafficExaminer";
-    settings.setValue(name, _display);
+    settings.setValue(SETTINGS_ROAD_TRAFFIC_EXAMINER_DISPLAY, _display);
+    settings.setValue(SETTINGS_ROAD_TRAFFIC_EXAMINER_DISPLAY_TYPE, _displayType);
+}
 
-    name = "savedDisplayTypeRoadTrafficExaminer";
-    settings.setValue(name, _displayType);
+void RoadTrafficExaminerPanel::onDateTimeEditChanged(const QDate& date) {
+    _date = date;
 
+    if(!_validDates.contains(_date)) {
+        qDebug() << "Date" << _date << "is not valid for road link" << _roadLink->getId();
+    }
+
+    populateDisplays();
+    qDebug() << "### Date changed" << _date << _display;
+
+    updateRoadTrafficLinkData();
+}
+
+void RoadTrafficExaminerPanel::onComboBoxDisplayCurrentIndexChanged(const QString& text) {
+    _display = text;
+    updateRoadTrafficLinkData();
+}
+
+void RoadTrafficExaminerPanel::onRadioButtonAllToggled(bool checked) {
+    if(checked) _displayType = RoadTrafficExaminerDisplayType::AllPeriodRTEType;
+    updateRoadTrafficLinkData();
+}
+void RoadTrafficExaminerPanel::onRadioButtonMonthToggled(bool checked) {
+    if(checked) _displayType = RoadTrafficExaminerDisplayType::MonthRTEType;
+    updateRoadTrafficLinkData();
+}
+void RoadTrafficExaminerPanel::onRadioButtonDayToggled(bool checked) {
+    if(checked) _displayType = RoadTrafficExaminerDisplayType::DayRTEType;
+    updateRoadTrafficLinkData();
 }

@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>274</width>
+    <width>298</width>
     <height>577</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>274</width>
-    <height>460</height>
+    <width>298</width>
+    <height>535</height>
    </size>
   </property>
   <property name="floating">
@@ -30,6 +30,19 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="1" column="0">
+     <widget class="QDateEdit" name="dateEdit"/>
+    </item>
+    <item row="14" column="0">
+     <widget class="QCustomPlot" name="plot" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <widget class="QTableWidget" name="tableWidget">
       <property name="sizePolicy">
@@ -38,50 +51,32 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="showGrid">
+       <bool>false</bool>
+      </property>
+      <property name="cornerButtonEnabled">
+       <bool>false</bool>
+      </property>
+      <property name="rowCount">
+       <number>5</number>
+      </property>
+      <property name="columnCount">
+       <number>2</number>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <column/>
+      <column/>
      </widget>
-    </item>
-    <item row="1" column="0">
-     <layout class="QGridLayout" name="gridLayout">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetNoConstraint</enum>
-      </property>
-      <property name="leftMargin">
-       <number>7</number>
-      </property>
-      <property name="rightMargin">
-       <number>7</number>
-      </property>
-      <item row="0" column="0" alignment="Qt::AlignTop">
-       <widget class="QLabel" name="label_day">
-        <property name="text">
-         <string>Day</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBox_year"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_month">
-        <property name="text">
-         <string>Month</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBox_month"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_year">
-        <property name="text">
-         <string>Year</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBox_day"/>
-      </item>
-     </layout>
     </item>
     <item row="5" column="0" rowspan="2">
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -113,13 +108,6 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_description">
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </item>
     <item row="9" column="0" rowspan="3">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="sizeConstraint">
@@ -148,13 +136,17 @@
       </item>
      </layout>
     </item>
-    <item row="14" column="0">
-     <widget class="QCustomPlot" name="plot" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_description">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Road traffic</string>
       </property>
      </widget>
     </item>
