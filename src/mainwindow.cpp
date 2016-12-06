@@ -17,8 +17,8 @@
 #include "road_traffic_open_dialog.h"
 #include "road_traffic.h"
 #include "road_traffic_layer.h"
-#include "waze_alert_file.h"
-#include "waze_alert_file_layer.h"
+#include "waze_alert_data.h"
+#include "waze_alert_data_layer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -52,8 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen_TraceDir, &QAction::triggered, this, &MainWindow::openTraceDirectory);
     connect(ui->actionOpen_GTFS, &QAction::triggered, this, &MainWindow::openGTFSDirectory);
     connect(ui->actionOpen_Flickr, &QAction::triggered, this, &MainWindow::openFlickrFile);
-    connect(ui->actionOpen_HWE_data, &QAction::triggered, this, &MainWindow::openHWEData);
-    connect(ui->actionOpen_GB_Road_data, &QAction::triggered, this, &MainWindow::openGBRoadData);
+    connect(ui->actionOpen_Road_traffic_data, &QAction::triggered, this, &MainWindow::openRoadTrafficData);
     connect(ui->actionOpen_Waze_file, &QAction::triggered, this, &MainWindow::openWazeData);
     connect(ui->actionSet_projection, &QAction::triggered, this, &MainWindow::setProjection);
     connect(ui->actionExport_PDF, &QAction::triggered, this, &MainWindow::exportPDF);
@@ -305,8 +304,8 @@ void MainWindow::openFlickrFile() {
     createLayer(name, layer, &loader);
 }
 
-void MainWindow::openGBRoadData() {
-    QString name = "GB Road data";
+void MainWindow::openRoadTrafficData() {
+    QString name = "Road Traffic Data";
     RoadTrafficOpenDialog d(this, name);
     int ret = d.exec(); // synchronous
     if (ret == QDialog::Rejected) {
@@ -318,14 +317,10 @@ void MainWindow::openGBRoadData() {
     changeProjection(d.getShapefilePath(), _projOut);
 
     // instantiate a new layer and a new loader
-    RoadTraffic* t = new RoadTraffic(d.getShapefilePath(), d.getDataPath(), RT_ENG);
+    RoadTraffic* t = new RoadTraffic(d.getShapefilePath(), d.getDataPath(), d.getRoadLinkIdx(), d.getDataIdx());
     RoadTrafficLayer* layer  = new RoadTrafficLayer(this, name, t);
     Loader loader;
     createLayer(name, layer, &loader);
-}
-
-void MainWindow::openHWEData() {
-    qDebug() << "Open Highways England data";
 }
 
 void MainWindow::openWazeData() {
@@ -346,12 +341,10 @@ void MainWindow::openWazeData() {
     changeProjection(name, _projOut);
 
     // instantiate a new layer and a new loader
-    WazeAlertFile* wazeAlertFile = new WazeAlertFile(filename);
-    WazeAlertFileLayer* layer = new WazeAlertFileLayer(this, name, wazeAlertFile);
+    WazeAlertData* wazeAlertFile = new WazeAlertData(filename);
+    WazeAlertDataLayer* layer = new WazeAlertDataLayer(this, name, wazeAlertFile);
     Loader loader;
     createLayer(name, layer, &loader);
-
-
 }
 
 void MainWindow::exportPDF() {

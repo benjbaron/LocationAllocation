@@ -44,8 +44,7 @@ private slots:
     void openTraceDirectory();
     void openGTFSDirectory();
     void openFlickrFile();
-    void openHWEData();
-    void openGBRoadData();
+    void openRoadTrafficData();
     void openWazeData();
     void setProjection();
     void addGrid();
