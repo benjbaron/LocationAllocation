@@ -80,7 +80,6 @@ void RoadTrafficExaminerPanel::showRoadTrafficLinkData(RoadLink* rl) {
     ui->dateEdit->setMaximumDate(maxDate.addDays(365));
     ui->dateEdit->setDate(minDate);
 
-
     /* Display */
     populateDisplays();
 
@@ -100,6 +99,7 @@ void RoadTrafficExaminerPanel::populateDisplays() {
     // get the previous display selected
     QString previousDisplay = _display;
 
+    // Get the different options to display the road traffic data
     QStringList displays;
     displays << "" << _roadLink->getAllRoadTrafficDataTypes();
 
@@ -120,8 +120,8 @@ void RoadTrafficExaminerPanel::updateRoadTrafficLinkData() {
         return;
     }
 
-    Series<int> s;
     RoadTrafficDataType rtdType = stringToRoadTrafficDataType(_display);
+    int maxPeriodLength = _roadLink->getMaxPeriod(rtdType);
 
     QDate start, end;
     if(_displayType == RoadTrafficExaminerDisplayType::DayRTEType) {
@@ -137,11 +137,28 @@ void RoadTrafficExaminerPanel::updateRoadTrafficLinkData() {
         return;
     }
     long long nbDays = start.daysTo(end);
-    int maxPeriodLength = _roadLink->getMaxPeriod(rtdType);
 
-    qDebug() << "start" << start << "end" << end << "maxPeriod" << maxPeriodLength << "nbDays" << nbDays;
+    qDebug() << "start" << start << "end" << end << "nbDays" << nbDays;
+    if(rtdType != RoadTrafficDataType::SpeedClassRTDType) {
+        Series<int> s;
 
+        populateSeries(&s,rtdType,start,nbDays,maxPeriodLength);
+        // plot the graph
+        s.plot(ui->plot);
+        // fill the table
+        ui->tableWidget->setItem(0,0,new QTableWidgetItem(QString::number(s.getAverage())));
 
+    } else {
+        QMap<RoadTrafficDataType, Series<int>*> s;
+        populateSeriesSpeedClasses(&s, rtdType, start, nbDays, maxPeriodLength);
+        qDebug() << "\tSeries size" << s.size();
+        // plot the graph
+        plotSpeedClasses(&s);
+    }
+}
+
+void RoadTrafficExaminerPanel::populateSeries(Series<int>* s, RoadTrafficDataType rtdType, QDate start,
+                                              long long nbDays, int maxPeriodLength) {
     double sum = 0.0;
     int idxCounter = 1;
     for(long long i = 0; i <= nbDays; ++i) {
@@ -150,7 +167,7 @@ void RoadTrafficExaminerPanel::updateRoadTrafficLinkData() {
         int count = 1;
         if (rd == nullptr) {
             for(int j = 1; j <= maxPeriodLength; ++j) {
-                s.addValue(idxCounter, 0.0);
+                s->addValue(idxCounter, 0.0);
                 idxCounter++;
                 count++;
             }
@@ -162,7 +179,7 @@ void RoadTrafficExaminerPanel::updateRoadTrafficLinkData() {
                 int idx = count * inflate;
                 for(int j = idx; j > prevIdx; --j) {
                     double value = it.value()->getValue() / inflate;
-                    s.addValue(idxCounter, value);
+                    s->addValue(idxCounter, value);
                     idxCounter++;
                     count++;
                     sum += value;
@@ -171,11 +188,73 @@ void RoadTrafficExaminerPanel::updateRoadTrafficLinkData() {
             }
         }
     }
-    s.plot(ui->plot);
+}
 
-    // fill the table
-    ui->tableWidget->setItem(0,0,new QTableWidgetItem(QString::number(sum / idxCounter)));
+void RoadTrafficExaminerPanel::populateSeriesSpeedClasses(QMap<RoadTrafficDataType, Series<int>*>* s, RoadTrafficDataType rtdType,
+                                                          QDate start, long long nbDays, int maxPeriodLength) {
+    // loop for all speed classes
+//    qDebug() << "start speed class" << RoadTrafficDataType::Speed0RTDType << "end speed class" << RoadTrafficDataType::Speed14RTDType;
+    for(int speedClass = RoadTrafficDataType::Speed0RTDType; speedClass <= RoadTrafficDataType::Speed14RTDType; ++speedClass) {
+        Series<int>* series = new Series<int>();
+        populateSeries(series, (RoadTrafficDataType) speedClass, start, nbDays, maxPeriodLength);
+//        qDebug() << "\tSpeed class" << speedClass << "size" << series->getValues()->size() << series->getAverage();
+        s->insert((RoadTrafficDataType) speedClass, series);
+    }
+}
 
+void RoadTrafficExaminerPanel::plotSpeedClasses(QMap<RoadTrafficDataType, Series<int>*>* s) {
+    double max = 0;
+    int maxCount = 0;
+    for(RoadTrafficDataType rtdType : s->keys()) {
+        int count = s->value(rtdType)->getSize();
+        if(maxCount < count)
+            maxCount = count;
+    }
+
+    QVector<double> yCum(maxCount);
+    for(int i = 0; i < maxCount; ++i) {
+        yCum[i] = 0.0;
+    }
+
+    int gi = 0;
+    for(RoadTrafficDataType rtdType : s->keys()) {
+        Series<int>* series = s->value(rtdType);
+        if(series == nullptr)
+            continue;
+
+        ui->plot->addGraph();
+        QColor color(20+11.0*rtdType, 90*(3.5-rtdType/5.5), 150, 150);
+        ui->plot->graph(gi)->setLineStyle(QCPGraph::lsLine);
+        ui->plot->graph(gi)->setPen(QPen(color.lighter(200)));
+        ui->plot->graph(gi)->setBrush(QBrush(color));
+        ui->plot->graph(gi)->setName(speedClassToLabel(rtdType));
+
+        QMap<int, double>* values = s->value(rtdType)->getValues();
+        QVector<double> x(maxCount), y(maxCount);
+        int i = 0;
+        for(auto it = values->begin(); it != values->end(); it++) {
+            double val = it.value();
+            x[i] = i;
+            yCum[i] += val;
+            y[i] = yCum[i];
+            if(max < yCum[i])
+                max = yCum[i];
+            i++;
+        }
+
+        ui->plot->graph(gi)->setData(x,y);
+        if(gi > 0) {
+            ui->plot->graph(gi)->setChannelFillGraph(ui->plot->graph(gi-1));
+        }
+        gi++;
+    }
+    ui->plot->xAxis->setAutoTicks(true);
+    ui->plot->xAxis->setAutoTickLabels(true);
+    ui->plot->xAxis->setRange(0, maxCount-1);
+    ui->plot->yAxis->setRange(0, max);
+    ui->plot->legend->setVisible(true);
+    ui->plot->legend->setBrush(QColor(255, 255, 255, 150));
+    ui->plot->replot();
 }
 
 void RoadTrafficExaminerPanel::onClosePanel() {
@@ -207,7 +286,6 @@ void RoadTrafficExaminerPanel::onComboBoxDisplayCurrentIndexChanged(const QStrin
     _display = text;
     updateRoadTrafficLinkData();
 }
-
 void RoadTrafficExaminerPanel::onRadioButtonAllToggled(bool checked) {
     if(checked) _displayType = RoadTrafficExaminerDisplayType::AllPeriodRTEType;
     updateRoadTrafficLinkData();

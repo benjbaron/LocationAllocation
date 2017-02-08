@@ -7,6 +7,7 @@
 #include "geometries.h"
 #include "constants.h"
 #include "shapefile.h"
+#include "shapefile_attribute_dialog.h"
 #include <ogrsf_frmts.h>
 #include <geos/geom/LineString.h>
 #include <QMenu>
@@ -123,6 +124,7 @@ protected:
     QHash<ProjectedPoint*, QGraphicsItem*> _projectedPointSignalGraphics;
 };
 
+
 class ShapefileLayer: public Layer {
     Q_OBJECT
 public:
@@ -167,11 +169,15 @@ private slots:
     void projectPoints();
     void showAttributes();
 
+signals:
+    void featureSelected(int);
+
 protected:
     PointLayer* _pointLayer;
     Shapefile* _shapefile;
     QHash<Geometry*, GeometryGraphics*> _geometryGraphics;
     QHash<Geometry*, ShapefileFeature*> _geometryShapefileFeatures;
+    ShapefileAttributeDialog* _shapefileAttributes = nullptr;
     Geometry* _selectedGeometry = nullptr;
 };
 

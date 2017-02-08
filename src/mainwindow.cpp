@@ -317,7 +317,8 @@ void MainWindow::openRoadTrafficData() {
     changeProjection(d.getShapefilePath(), _projOut);
 
     // instantiate a new layer and a new loader
-    RoadTraffic* t = new RoadTraffic(d.getShapefilePath(), d.getDataPath(), d.getRoadLinkIdx(), d.getDataIdx());
+    RoadTraffic* t = new RoadTraffic(d.getShapefilePath(), d.getDataPath(), d.getAdditionalPath(),
+                                     d.getRoadLinkIdx(), d.getDataIdx());
     RoadTrafficLayer* layer  = new RoadTrafficLayer(this, name, t);
     Loader loader;
     createLayer(name, layer, &loader);

@@ -104,7 +104,45 @@ QGraphicsItemGroup* WazeAlertRoadTrafficLayer::draw() {
         }
     }
 
+    /* Display the alerts to display (in set _alertsToDisplay) */
+    if(_alertsDisplayed == nullptr && !_alertsToDisplay.isEmpty()) {
+        _alertsDisplayed = new QGraphicsItemGroup();
+        _alertsDisplayed->setHandlesChildEvents(false);
+    }
+    addGraphicsItem(_alertsDisplayed);
+
     return _groupItem;
+}
+
+void WazeAlertRoadTrafficLayer::displayAlerts(const QSet<WazeAlert*>& alerts) {
+    int radius = 20;
+
+    /* remove alerts from the alerts that are displayed */
+    QMutableHashIterator<WazeAlert*,GeometryGraphics*> it(_alertsToDisplay);
+    while(it.hasNext()) {
+        it.next();
+        WazeAlert* wazeAlert = it.key();
+        if(!alerts.contains(wazeAlert)) {
+            // remove the Waze alert from the set of displayed alerts
+            _alertsDisplayed->removeFromGroup(it.value());
+            it.remove();
+        }
+    }
+
+    // add the new alerts
+    for(WazeAlert* wazeAlert : alerts) {
+        if(_alertsToDisplay.contains(wazeAlert))
+            continue;
+        QPointF p = wazeAlert->pos;
+        GeometryGraphics* item = new CircleGraphics(new Circle(p, radius));
+        item->setPen(Qt::NoPen);
+        QColor col(wazeAlertTypeToColor(wazeAlert->type));
+        if(col.isValid()) {
+            item->setBrush(QBrush(col));
+        }
+        _alertsToDisplay.insert(wazeAlert, item);
+        _alertsDisplayed->addToGroup(item);
+    }
 }
 
 bool WazeAlertRoadTrafficLayer::load(Loader* loader) {
@@ -138,7 +176,9 @@ void WazeAlertRoadTrafficLayer::onFeatureSelectedEvent(Geometry* geom, bool mod)
         _roadTrafficWazeDataExaminerPanel->onClosePanel();
 
     if(!_roadTrafficWazeDataExaminerPanel)
-        _roadTrafficWazeDataExaminerPanel = new RoadTrafficWazeDataExaminerPanel(_parent);
+        _roadTrafficWazeDataExaminerPanel = new RoadTrafficWazeDataExaminerPanel(_parent,
+                                                                                 static_cast<WazeAlertRoadTraffic*>(_shapefile),
+                                                                                 this);
 
     if(_parent)
         _parent->addDockWidget(Qt::RightDockWidgetArea, _roadTrafficWazeDataExaminerPanel);

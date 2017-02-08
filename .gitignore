@@ -18,3 +18,10 @@ src/CMakeFiles
 CMakeCache.txt
 scripts/moc_progress.cpp
 scripts/moc_progress.o
+data
+/scripts/path.png
+/scripts/Makefile
+/src/cmake-build-debug
+/src/.DS_Store
+/scripts/test
+/scripts/qtconcurrent.o

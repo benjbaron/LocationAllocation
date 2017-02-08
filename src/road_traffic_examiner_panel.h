@@ -9,10 +9,12 @@
 #include <QDate>
 #include <QSet>
 #include "constants.h"
+#include "utils.h"
 
 // forward class declarations
 class QCustomPlot;
 class RoadLink;
+
 
 namespace Ui {
     class RoadTrafficExaminerPanel;
@@ -40,6 +42,11 @@ protected:
     void updateRoadTrafficLinkData();
     void populateDisplays();
     void restoreSavedSettings();
+    void populateSeries(Series<int>* s, RoadTrafficDataType rtdType,
+                        QDate start, long long nbDays, int maxPeriodLength);
+    void populateSeriesSpeedClasses(QMap<RoadTrafficDataType, Series<int>*>* s, RoadTrafficDataType rtdType,
+                                    QDate start, long long nbDays, int maxPeriodLength);
+    void plotSpeedClasses(QMap<RoadTrafficDataType, Series<int>*>* s);
 
     Ui::RoadTrafficExaminerPanel* ui;
     RoadLink* _roadLink;

@@ -31,10 +31,10 @@ struct RoadLinkWazeAlerts {
 
 class WazeAlertRoadTraffic : public RoadTraffic {
 public:
-    WazeAlertRoadTraffic(const QString& shapefilePath, const QString& dataPath,
+    WazeAlertRoadTraffic(const QString& shapefilePath, const QString& dataPath, const QString& additionalPath,
             ShapefileIndexes* shapefileIdx, RoadTrafficDataIndexes* dataIdx,
             WazeAlertData* wazeAlerts) :
-            RoadTraffic(shapefilePath, dataPath, shapefileIdx, dataIdx), _wazeAlerts(wazeAlerts) { }
+            RoadTraffic(shapefilePath, dataPath, additionalPath, shapefileIdx, dataIdx), _wazeAlerts(wazeAlerts) { }
 
     bool open(Loader* loader);
     QHash<Geometry*, QString>* getBufferedRoadLinks() {
@@ -60,6 +60,9 @@ public:
     }
     const QHash<QPointF, ProjectedPoint*>& getProjectedPoints() {
         return _projectedPoints;
+    }
+    WazeAlertData* getWazeAlertData() {
+        return _wazeAlerts;
     }
 
 

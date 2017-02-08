@@ -1,0 +1,9 @@
+1
+MovementModel.worldSize = 5000, 5000
+MovementModel.rngSeed = 42
+
+Group1.groupID = t
+Group1.nrofHosts = 50
+Group1.movementModel = MapBasedMovement
+MapBasedMovement.nrofMapFiles = 1
+MapBasedMovement.mapFile1 = ONE/data/FileSystem/world.wkt

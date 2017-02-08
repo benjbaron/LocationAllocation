@@ -7,6 +7,7 @@
 #include <geos/geom/LineString.h>
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/CoordinateArraySequence.h>
+#include <geos/linearref/LinearLocation.h>
 #include <geos/linearref/LocationIndexedLine.h>
 #include <geos/algorithm/Angle.h>
 #include "constants.h"
@@ -61,6 +62,7 @@ public:
         _count++;
     }
     bool isEmpty() { return _count == 0; }
+    double getAverage() { return _average; }
 
     void plot(QCustomPlot* plot) {
         plot->clearPlottables();
@@ -87,13 +89,17 @@ public:
         plot->replot();
     }
 
+    QMap<T, double>* getValues() {
+        return &_values;
+    }
+    int getSize() {
+        return _values.size();
+    }
 
 private:
     QMap<T,double> _values; // ordered values
-    int _cummulativeSum = 0;
     int _count = 0;
     double _average = 0;
-    double _median = 0;
 };
 
 class Distribution {

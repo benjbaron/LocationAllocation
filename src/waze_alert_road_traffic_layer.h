@@ -114,6 +114,10 @@ private slots:
 
 protected:
     RoadTrafficWazeDataExaminerPanel* _roadTrafficWazeDataExaminerPanel = nullptr;
+    QHash<WazeAlert*,GeometryGraphics*> _alertsToDisplay;
+    QGraphicsItemGroup* _alertsDisplayed = nullptr;
+
+    void displayAlerts(const QSet<WazeAlert*>& alerts);
 };
 
 

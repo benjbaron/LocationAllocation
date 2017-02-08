@@ -11,11 +11,6 @@
 #include "waze_alert_cells_layer.h"
 #include "waze_alert_road_traffic_layer.h"
 
-const QColor COL_JAM(56,168,0);
-const QColor COL_ROAD_CLOSED(176,224,0);
-const QColor COL_WEATHERHAZARD(255,170,0);
-const QColor COL_ACCIDENT(255,0,0);
-
 class WazeAlertDataLayer : public Layer {
     Q_OBJECT
 public:

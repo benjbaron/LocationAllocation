@@ -106,12 +106,28 @@ bool ShapefileLayer::load(Loader* loader) {
 
 void ShapefileLayer::showAttributes() {
     qDebug() << "show shapefile attributes";
-    ShapefileAttributeDialog* diag = new ShapefileAttributeDialog(_parent);
-    diag->showShapefileAttributes(_shapefile);
-    diag->show();
+    if(_shapefileAttributes == nullptr) {
+        _shapefileAttributes = new ShapefileAttributeDialog(_parent, this);
+        _shapefileAttributes->showShapefileAttributes(_shapefile);
+
+        // connect the feature selection
+        connect(_shapefileAttributes, &ShapefileAttributeDialog::rowSelected, [=](int idx) {
+            Geometry* geom = _shapefile->getFeature(idx)->geometry;
+            if(_selectedGeometry == nullptr) {
+                _geometryGraphics.value(geom)->selected(true);
+                _selectedGeometry = geom;
+            } else {
+                _geometryGraphics.value(_selectedGeometry)->selected(false);
+                _geometryGraphics.value(geom)->selected(true);
+                _selectedGeometry = geom;
+            }
+        });
+    }
+    _shapefileAttributes->show();
 }
 
 void ShapefileLayer::onFeatureSelectedEvent(Geometry* geom, bool mod) {
+    qDebug() << "receive onFeatureSelectedEvent" << _geometryShapefileFeatures.value(geom)->id;
     if(_selectedGeometry == nullptr) {
         _geometryGraphics.value(geom)->selected(true);
         _selectedGeometry = geom;
@@ -122,6 +138,13 @@ void ShapefileLayer::onFeatureSelectedEvent(Geometry* geom, bool mod) {
     } else if (_selectedGeometry == geom) {
         _geometryGraphics.value(geom)->selected(false);
         _selectedGeometry = nullptr;
+    }
+
+    // emit the signal
+    if(_selectedGeometry != nullptr) {
+        int idx = _geometryShapefileFeatures.value(_selectedGeometry)->id;
+        qDebug() << "send signal for selected feature" << idx;
+        featureSelected(idx);
     }
 }
 

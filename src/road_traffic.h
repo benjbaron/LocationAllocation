@@ -70,11 +70,11 @@ struct RoadTrafficDataAggregate {
     }
 
     QStringList getAllRoadTrafficDataTypes() {
-        QStringList list;
+        QSet<QString> list;
         for(auto it = meanRoadTrafficData.begin(); it != meanRoadTrafficData.end(); ++it) {
             list << roadTrafficDataTypeToString(it.key());
         }
-        return list;
+        return list.toList();
     }
 
     void computeMeanValues(RoadTrafficData* rtd) {
@@ -179,9 +179,17 @@ public:
     }
     int getMaxPeriod(RoadTrafficDataType rtdType) {
         int maxPeriod = 0;
-        for(auto it = _roadTrafficData.begin(); it != _roadTrafficData.end(); ++it) {
-            int nbPeriods = it.value()->getSize(rtdType);
-            if(nbPeriods > maxPeriod) maxPeriod = nbPeriods;
+        if(rtdType != RoadTrafficDataType::SpeedClassRTDType) {
+            for(auto it = _roadTrafficData.begin(); it != _roadTrafficData.end(); ++it) {
+                int nbPeriods = it.value()->getSize(rtdType);
+                if(nbPeriods > maxPeriod) maxPeriod = nbPeriods;
+            }
+        } else {
+            for (int speedClass = RoadTrafficDataType::Speed0RTDType;
+                 speedClass <= RoadTrafficDataType::Speed14RTDType; ++speedClass) {
+                int mp = getMaxPeriod((RoadTrafficDataType) speedClass);
+                if(mp > maxPeriod) maxPeriod = mp;
+            }
         }
         return maxPeriod;
     }
@@ -211,9 +219,10 @@ private:
 
 class RoadTraffic : public Shapefile {
 public:
-    RoadTraffic(const QString& shapefilePath, const QString& dataPath,
+    RoadTraffic(const QString& shapefilePath, const QString& dataPath, const QString& additionalPath,
                 ShapefileIndexes* shapefileIdx, RoadTrafficDataIndexes* dataIdx):
-        Shapefile(shapefilePath, shapefileIdx), _dataPath(dataPath), _dataIdx(dataIdx) { }
+        Shapefile(shapefilePath, shapefileIdx), _dataPath(dataPath),
+        _additionalPath(additionalPath), _dataIdx(dataIdx) { }
 
     bool open(Loader* loader);
 
@@ -252,6 +261,7 @@ private:
 
 protected:
     const QString _dataPath;
+    const QString _additionalPath;
     RoadTrafficDataIndexes* _dataIdx;
     QHash<QString, RoadLink*> _roadLinks;
     QHash<int, QString> _featureToRoadLink;

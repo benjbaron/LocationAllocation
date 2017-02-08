@@ -25,7 +25,7 @@ bool RoadTraffic::open(Loader* loader) {
 }
 
 bool RoadTraffic::openDataset(const QString& roadTrafficFile, Loader* loader) {
-    /* process the data file second */
+    /* process the data file */
     QFile file(_dataPath);
     if (!file.open(QFile::ReadOnly | QFile::Text))
         return false;
@@ -70,11 +70,40 @@ bool RoadTraffic::openDataset(const QString& roadTrafficFile, Loader* loader) {
 
         // Indicate the load progress of the file
         if(loader != nullptr) {
-            loader->loadProgressChanged(0.3 + 0.6*(1.0 - file.bytesAvailable() / (qreal) file.size()), "Loading road traffic data...");
+            loader->loadProgressChanged(0.3 + 0.4*(1.0 - file.bytesAvailable() / (qreal) file.size()), "Loading road traffic data...");
         }
     }
 
     file.close();
+
+
+    /* process the additional file */
+    QFile fileAdditional(_additionalPath);
+    if (!fileAdditional.open(QFile::ReadOnly | QFile::Text))
+        return false;
+
+    // skip the header
+    line = QString(fileAdditional.readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+    // get the most probable CSV delimiter
+    del = determineCSVDelimiter(line);
+
+    while (!fileAdditional.atEnd()) {
+        line = QString(fileAdditional.readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+        QStringList fields = line.split(del);
+        QString joinIdx = fields.at(_dataIdx->join);
+        QDate date = QDate::fromString(fields.at(_dataIdx->date).split(" ")[0], "yyyy-MM-dd"); // format "[yyyy-MM-dd] HH:MM:SS"
+        int timePeriod = fields.at(_dataIdx->timePeriod).toInt();          // [0, 95]
+        int speedClass = fields.at(4).toInt(); // [0, 14]
+        int nbSpeed = fields.at(5).toInt();    // number of vehicles in the speed class
+
+        addTrafficData(joinIdx, new RoadTrafficData(joinIdx, _roadLinks.value(joinIdx),
+                                                    date, timePeriod,
+                                                    speedClassToRoadTrafficDataType(speedClass), nbSpeed));
+        if(loader != nullptr) {
+            loader->loadProgressChanged(0.7 + 0.3*(1.0 - fileAdditional.bytesAvailable() / (qreal) fileAdditional.size()), "Loading additional data...");
+        }
+
+    }
 
     return true;
 }

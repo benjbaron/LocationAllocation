@@ -13,7 +13,7 @@ struct WazeAlert {
     WazeAlert(QString uuid = QString(),
               QPointF pos = QPointF(),
               WazeAlertType type = WazeAlertType::WAZE_TYPE_NONE,
-              QString subtype = QString(),
+              WazeAlertSubType subtype = WazeAlertSubType::WAZE_SUBTYPE_NONE,
               long long timestamp = -1,
               int roadType = -1,
               int nbRatings = -1,
@@ -33,7 +33,7 @@ struct WazeAlert {
     QString uuid;
     QPointF pos;
     WazeAlertType type;
-    QString subType;
+    WazeAlertSubType subType;
     long long timestamp;
     int roadType;
     int nbRatings;
@@ -51,10 +51,17 @@ public:
     QHash<QString, QMap<long long, WazeAlert*>*>* getAlerts() {
         return &_alerts;
     };
+    QSet<WazeAlertSubType>* getAlertSubTypes(WazeAlertType wat) {
+        if(_alertTypes.contains(wat)) {
+            return _alertTypes.value(wat);
+        }
+        return nullptr;
+    }
 
 private:
     QString _wazeAlertFile;
     QHash<QString, QMap<long long, WazeAlert*>*> _alerts;
+    QHash<WazeAlertType,QSet<WazeAlertSubType>*> _alertTypes;
 };
 
 

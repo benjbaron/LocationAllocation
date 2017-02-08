@@ -13,7 +13,7 @@
 
 class ProjFactory {
 public:
-    static ProjFactory & getInstance() {
+    static ProjFactory& getInstance() {
         static ProjFactory instance; // Guaranteed to be destroyed.
                                      // Instantiated on first use.
         return instance;

@@ -20,7 +20,7 @@ FIND_PACKAGE(Qt5PrintSupport REQUIRED)
 FIND_PACKAGE(Qt5Network REQUIRED)
 
 FIND_LIBRARY(geos REQUIRED)
-FIND_LIBRARY(proj.9 REQUIRED)
+FIND_LIBRARY(proj REQUIRED)
 FIND_LIBRARY(gdal.1 REQUIRED)
 FIND_LIBRARY(qhttp REQUIRED)
 
@@ -152,7 +152,7 @@ TARGET_LINK_LIBRARIES(LocAll
         Qt5::Concurrent
         Qt5::PrintSupport
         Qt5::Network
-        proj.9
+        proj
         gdal.1
         geos
         qhttp)

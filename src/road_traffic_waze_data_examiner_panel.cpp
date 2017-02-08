@@ -4,9 +4,13 @@
 
 #include "road_traffic_waze_data_examiner_panel.h"
 #include "ui_road_traffic_examiner_panel.h"
+#include "waze_alert_road_traffic_layer.h"
+#include "waze_alert_road_traffic.h"
 
-RoadTrafficWazeDataExaminerPanel::RoadTrafficWazeDataExaminerPanel(QWidget* parent) :
-        RoadTrafficExaminerPanel(parent) {
+RoadTrafficWazeDataExaminerPanel::RoadTrafficWazeDataExaminerPanel(QWidget* parent,
+                                                                   WazeAlertRoadTraffic* wart,
+                                                                   WazeAlertRoadTrafficLayer* wartl) :
+        RoadTrafficExaminerPanel(parent), _wazeAlertRoadTraffic(wart), _wazeAlertRoadTrafficLayer(wartl) {
     setupUi();
     connectWidgets();
 }
@@ -28,21 +32,43 @@ void RoadTrafficWazeDataExaminerPanel::setupUi() {
 
     horizontalLayout->addWidget(wazeAlertLabel);
 
-    _alertTypeComboBox = new QComboBox(ui->dockWidgetContents);
+    _alertTypesComboBox = new QComboBox(ui->dockWidgetContents);
     QStringList comboBoxItems;
-    comboBoxItems << "" << RTWDE_DISPLAY_ALL << RTWDE_DISPLAY_JAM
+    comboBoxItems << RTWDE_DISPLAY_ALL << RTWDE_DISPLAY_JAM
                   << RTWDE_DISPLAY_ROADCLOSED << RTWDE_DISPLAY_WEATHERHAZARD << RTWDE_DISPLAY_ACCIDENT;
-    _alertTypeComboBox->addItems(comboBoxItems);
+    _alertTypesComboBox->addItems(comboBoxItems);
 
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(_alertTypeComboBox->sizePolicy().hasHeightForWidth());
-    _alertTypeComboBox->setSizePolicy(sizePolicy);
+    sizePolicy.setHeightForWidth(_alertTypesComboBox->sizePolicy().hasHeightForWidth());
+    _alertTypesComboBox->setSizePolicy(sizePolicy);
 
-    horizontalLayout->addWidget(_alertTypeComboBox);
+    horizontalLayout->addWidget(_alertTypesComboBox);
 
     ui->gridLayout_2->addLayout(horizontalLayout, 18, 0, 2, 1);
+
+    horizontalLayout = new QHBoxLayout();
+    QLabel* wazeSubAlertLabel = new QLabel(ui->dockWidgetContents);
+    wazeSubAlertLabel->setText("Waze alert subtype");
+    sizePolicy2.setHeightForWidth(wazeSubAlertLabel->sizePolicy().hasHeightForWidth());
+    wazeSubAlertLabel->setSizePolicy(sizePolicy2);
+    wazeSubAlertLabel->setMargin(5);
+
+    horizontalLayout->addWidget(wazeSubAlertLabel);
+
+    _alertSubTypesComboBox = new QComboBox(ui->dockWidgetContents);
+    comboBoxItems.clear();
+    comboBoxItems << RTWDE_DISPLAY_ALL;
+    _alertSubTypesComboBox->addItems(comboBoxItems);
+
+    sizePolicy.setHeightForWidth(_alertSubTypesComboBox->sizePolicy().hasHeightForWidth());
+    _alertSubTypesComboBox->setSizePolicy(sizePolicy);
+
+    horizontalLayout->addWidget(_alertSubTypesComboBox);
+
+    ui->gridLayout_2->addLayout(horizontalLayout, 20, 0, 2, 1);
+
 
     _wazePlot = new QCustomPlot(ui->dockWidgetContents);
     QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -51,7 +77,7 @@ void RoadTrafficWazeDataExaminerPanel::setupUi() {
     sizePolicy3.setHeightForWidth(_wazePlot->sizePolicy().hasHeightForWidth());
     _wazePlot->setSizePolicy(sizePolicy3);
 
-    ui->gridLayout_2->addWidget(_wazePlot, 20, 0, 1, 1);
+    ui->gridLayout_2->addWidget(_wazePlot, 22, 0, 1, 1);
 
     QLabel* wazeLabel = new QLabel(ui->dockWidgetContents);
     wazeLabel->setText("Waze data");
@@ -62,8 +88,13 @@ void RoadTrafficWazeDataExaminerPanel::connectWidgets() {
     qDebug() << "RoadTrafficWazeDataExaminerPanel connectWidgets";
     connect(ui->dateEdit, &QDateTimeEdit::dateChanged, this, &RoadTrafficWazeDataExaminerPanel::onDateTimeEditChanged);
 
-    connect(_alertTypeComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
+    connect(_alertTypesComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
             this, &RoadTrafficWazeDataExaminerPanel::onComboBoxAlertTypeChanged);
+
+    connect(_alertSubTypesComboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
+            this, &RoadTrafficWazeDataExaminerPanel::onComboBoxAlertSubTypeChanged);
+
+
 
     connect(ui->radioButton_all, &QRadioButton::toggled, this, &RoadTrafficWazeDataExaminerPanel::onRadioButtonAllToggled);
     connect(ui->radioButton_day, &QRadioButton::toggled, this, &RoadTrafficWazeDataExaminerPanel::onRadioButtonDayToggled);
@@ -81,7 +112,10 @@ void RoadTrafficWazeDataExaminerPanel::showRoadTrafficLinkWazeData(RoadLinkWazeA
     // get the saved value from settings
     QSettings settings;
     if(settings.contains(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_TYPE_DISPLAY)) {
-        _alertTypeComboBox->setCurrentText(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_TYPE_DISPLAY);
+        _alertTypesComboBox->setCurrentText(settings.value(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_TYPE_DISPLAY).toString());
+    }
+    if(settings.contains(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_SUBTYPE_DISPLAY)) {
+        _alertSubTypesComboBox->setCurrentText(settings.value(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_SUBTYPE_DISPLAY).toString());
     }
 
     updateWazeData();
@@ -92,11 +126,12 @@ void RoadTrafficWazeDataExaminerPanel::onClosePanel() {
 
     /* save the settings */
     QSettings settings;
-    settings.setValue(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_TYPE_DISPLAY, _alertType);
+    settings.setValue(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_TYPE_DISPLAY, _wazeAlertType);
+    settings.setValue(SETTINGS_ROAD_TRAFFIC_WAZE_DATA_EXAMINER_ALERT_SUBTYPE_DISPLAY, _wazeAlertSubType);
 }
 
 void RoadTrafficWazeDataExaminerPanel::updateWazeData() {
-    qDebug() << "update Waze data" << _date << _alertType << _display;
+    qDebug() << "update Waze data" << _date << _wazeAlertType << _wazeAlertSubType << _display;
 
     if (!_date.isValid() || !_roadLink->containsDataAtDate(_date))
         return;
@@ -141,9 +176,12 @@ void RoadTrafficWazeDataExaminerPanel::updateWazeData() {
     for(long long d = start.toMSecsSinceEpoch(); d <= end.toMSecsSinceEpoch(); d += binSize) {
         int count = 0;
         while(it.key() < d) {
-            WazeAlertType wazeAlertType = stringToDisplayToAlertType(_alertType);
-            if (_alertType == "" || _alertType == RTWDE_DISPLAY_ALL
-                || wazeAlertType == it.value()->type) {
+            WazeAlertType alertType = stringToAlertType(_wazeAlertType);
+            WazeAlertSubType alertSubType = stringToAlertSubType(_wazeAlertSubType);
+            if(alertType == WazeAlertType::WAZE_TYPE_NONE
+               || ((alertType == it.value()->type)
+                    && (alertSubType == WazeAlertSubType::WAZE_SUBTYPE_NONE
+                        || alertSubType == it.value()->subType))) {
                 count++;
             }
             it++;
@@ -168,11 +206,29 @@ void RoadTrafficWazeDataExaminerPanel::onComboBoxDisplayCurrentIndexChanged(cons
 }
 
 void RoadTrafficWazeDataExaminerPanel::onComboBoxAlertTypeChanged(const QString& text) {
+    _wazeAlertType = text;
+    WazeAlertType alertType = stringToAlertType(_wazeAlertType);
 
-    _alertType = text;
+    QStringList comboBoxItems;
+    comboBoxItems << RTWDE_DISPLAY_ALL;
+    if(alertType != WazeAlertType::WAZE_TYPE_NONE) {
+        QSet<WazeAlertSubType>* alertSubTypes = _wazeAlertRoadTraffic->getWazeAlertData()->getAlertSubTypes(alertType);
+        for(WazeAlertSubType subType : *alertSubTypes) {
+            if(subType == WazeAlertSubType::WAZE_SUBTYPE_NONE)
+                continue;
+
+            comboBoxItems << alertSubTypeToString(subType);
+        }
+    }
+    _alertSubTypesComboBox->clear();
+    _alertSubTypesComboBox->addItems(comboBoxItems);
+
     updateWazeData();
 }
-
+void RoadTrafficWazeDataExaminerPanel::onComboBoxAlertSubTypeChanged(const QString& text) {
+    _wazeAlertSubType = text;
+    updateWazeData();
+}
 void RoadTrafficWazeDataExaminerPanel::onRadioButtonAllToggled(bool checked) {
     RoadTrafficExaminerPanel::onRadioButtonAllToggled(checked);
     updateWazeData();

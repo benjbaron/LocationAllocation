@@ -15,14 +15,6 @@ bool WazeAlertData::open(Loader* loader) {
     // date format: "02/23/2015 12:10:00 AM"
     QString dateFormat = "MM/dd/yyyy hh:mm:ss AP";
 
-    QString fOutName = QFileInfo(_wazeAlertFile).baseName()+"-out.txt";
-    QFile fOut(fOutName );
-    if(!fOut.open(QFile::WriteOnly)) {
-        qDebug() << "Unable to write in file "<< fOutName ;
-        return false;
-    }
-    QTextStream out(&fOut);
-
     // header:
     // inject_date,street,city,roadType,pubMillis,locy,locx,subtype,reliability,uuid,type,reportRating,
     // magvar,country,startTime,startTimeMillis,endTime,endTimeMillis
@@ -40,22 +32,22 @@ bool WazeAlertData::open(Loader* loader) {
         int magvar = alert.value("magvar").toInt();
         QString street = alert.value("street");
 
-        qDebug() << uuid << lat << lon << magvar << street;
-
         WazeAlertType alertType = stringToAlertType(type);
+        WazeAlertSubType alertSubType = stringToAlertSubType(subType);
+        if(!_alertTypes.contains(alertType)) {
+            _alertTypes.insert(alertType, new QSet<WazeAlertSubType>());
+        }
+        _alertTypes.value(alertType)->insert(alertSubType);
 
         // convert the points to fit with the coordinate system
         double x, y;
         ProjFactory::getInstance().transformCoordinates(lat, lon, &x, &y);
 
-        out << uuid << ";" << QString::number(lat,'f',4) << ";" << QString::number(lon,'f',4)
-            << ";" << QString::number(x,'f',4) << ";" << QString::number(y,'f',4) << "\n";
-
         // convert the date
         QDateTime dateTime = QDateTime::fromString(date, dateFormat);
-        long long timestamp = dateTime.toMSecsSinceEpoch();
+        long long timestamp = dateTime.toMSecsSinceEpoch() - 18000*1000;
 
-        WazeAlert* wazeAlert = new WazeAlert(uuid,QPointF(x,y),alertType,subType,timestamp,roadType,rating,magvar,street);
+        WazeAlert* wazeAlert = new WazeAlert(uuid,QPointF(x,y),alertType,alertSubType,timestamp,roadType,rating,magvar,street);
         if(!_alerts.contains(uuid)) {
             _alerts.insert(uuid, new QMap<long long, WazeAlert*>());
         }
@@ -66,8 +58,6 @@ bool WazeAlertData::open(Loader* loader) {
         loader->loadProgressChanged(progressCount, "Loading file...");
         count++;
     }
-
-    fOut.close();
 
     loader->loadProgressChanged(1.0, "Done");
 

@@ -6,8 +6,7 @@
 GridLayer::GridLayer(MainWindow* parent, QString name, int cellSize):
     Layer(parent, name), _geometriesize(cellSize) { }
 
-QGraphicsItemGroup *GridLayer::draw()
-{
+QGraphicsItemGroup *GridLayer::draw() {
     _groupItem = new QGraphicsItemGroup();
 
     for(int i = 0; i < _geometries.size(); ++i) {

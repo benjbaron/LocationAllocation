@@ -7,12 +7,18 @@
 
 
 #include "road_traffic_examiner_panel.h"
-#include "waze_alert_road_traffic.h"
+
+// forward class declarations
+class WazeAlertRoadTraffic;
+class WazeAlertRoadTrafficLayer;
+struct RoadLinkWazeAlerts;
 
 class RoadTrafficWazeDataExaminerPanel : public RoadTrafficExaminerPanel {
     Q_OBJECT
 public:
-    explicit RoadTrafficWazeDataExaminerPanel(QWidget* parent = 0);
+    explicit RoadTrafficWazeDataExaminerPanel(QWidget* parent = 0,
+                                              WazeAlertRoadTraffic* wart = nullptr,
+                                              WazeAlertRoadTrafficLayer* wartl = nullptr);
     ~RoadTrafficWazeDataExaminerPanel();
 
     virtual void showRoadTrafficLinkWazeData(RoadLinkWazeAlerts* rlwa);
@@ -23,6 +29,7 @@ private slots:
     virtual void onComboBoxDisplayCurrentIndexChanged(const QString& text);
     virtual void onDateTimeEditChanged(const QDate& date);
     virtual void onComboBoxAlertTypeChanged(const QString& text);
+    virtual void onComboBoxAlertSubTypeChanged(const QString& text);
     virtual void onRadioButtonAllToggled(bool checked);
     virtual void onRadioButtonMonthToggled(bool checked);
     virtual void onRadioButtonDayToggled(bool checked);
@@ -31,9 +38,13 @@ private:
     void updateWazeData();
     void setupUi();
     RoadLinkWazeAlerts* _roadLinkWazeData;
-    QString _alertType;
+    WazeAlertRoadTraffic* _wazeAlertRoadTraffic;
+    WazeAlertRoadTrafficLayer* _wazeAlertRoadTrafficLayer;
+    QString _wazeAlertType;
+    QString _wazeAlertSubType;
     QCustomPlot* _wazePlot;
-    QComboBox* _alertTypeComboBox;
+    QComboBox* _alertTypesComboBox;
+    QComboBox* _alertSubTypesComboBox;
 };
 
 

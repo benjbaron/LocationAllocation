@@ -17,8 +17,9 @@ RoadTrafficOpenDialog::RoadTrafficOpenDialog(QWidget* parent, const QString& nam
         ui(new Ui::RoadTrafficOpenDialog) {
     ui->setupUi(this);
 
-    QString settingShapefileName = "savedRoadTrafficOpenDialog-"+name+"-shapefile";
-    QString settingDataName      = "savedRoadTrafficOpenDialog-"+name+"-data";
+    QString settingShapefileName  = "savedRoadTrafficOpenDialog-"+name+"-shapefile";
+    QString settingDataName       = "savedRoadTrafficOpenDialog-"+name+"-data";
+    QString settingAdditionalName = "savedRoadTrafficOpenDialog-"+name+"-additional";
 
     /* Shapefile */
     ui->shapefileLabel->setBuddy(ui->shapefileLineEdit);
@@ -239,7 +240,28 @@ RoadTrafficOpenDialog::RoadTrafficOpenDialog(QWidget* parent, const QString& nam
         checkConsistency();
     });
 
-    /* Button box */
+
+    /* Additional data */
+    connect(ui->additionalPushButton, &QPushButton::clicked, [=] () {
+        QSettings settings;
+        QFileDialog d(this, "Open an additional file");
+        QString path = d.getOpenFileName(this,
+                                         "Open an additional file",
+                                         settings.value(settingAdditionalName,
+                                                        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString());
+
+        if(path.isEmpty())
+            return;
+
+        ui->additionalLineEdit->setText(path);
+    });
+    connect(ui->additionalLineEdit, &QLineEdit::textChanged, [=](QString text) {
+        // record the file path
+        _additionalPath = text;
+        checkConsistency();
+    });
+
+        /* Button box */
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &RoadTrafficOpenDialog::done);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, [=]() {
         QDialog::reject();
@@ -253,6 +275,9 @@ RoadTrafficOpenDialog::RoadTrafficOpenDialog(QWidget* parent, const QString& nam
     }
     if(settings.contains(settingDataName)) {
         ui->dataLineEdit->setText(settings.value(settingDataName).toString());
+    }
+    if(settings.contains(settingAdditionalName)) {
+        ui->additionalLineEdit->setText(settings.value(settingAdditionalName).toString());
     }
 
     checkConsistency();
@@ -281,11 +306,13 @@ bool RoadTrafficOpenDialog::checkConsistency() {
 void RoadTrafficOpenDialog::saveFields() {
     /* Save both files */
     QSettings settings;
-    QString settingShapefileName = "savedRoadTrafficOpenDialog-"+_name+"-shapefile";
-    QString settingDataName      = "savedRoadTrafficOpenDialog-"+_name+"-data";
+    QString settingShapefileName  = "savedRoadTrafficOpenDialog-"+_name+"-shapefile";
+    QString settingDataName       = "savedRoadTrafficOpenDialog-"+_name+"-data";
+    QString settingAdditionalName = "savedRoadTrafficOpenDialog-"+_name+"-additional";
 
     settings.setValue(settingShapefileName, _shapefilePath);
     settings.setValue(settingDataName, _dataPath);
+    settings.setValue(settingAdditionalName, _additionalPath);
 
     QString settingName = settingShapefileName+"-"+QFileInfo(_shapefilePath).fileName();
     settings.setValue(settingName+"-join", ui->shapefileComboBox->currentIndex());
@@ -314,11 +341,15 @@ void RoadTrafficOpenDialog::done() {
 QStringList RoadTrafficOpenDialog::getCSVHeaders(const QString& file) {
     /* process the file */
     QFile f(file);
-    if (!f.open(QFile::ReadOnly | QFile::Text))
+    if(!f.open(QFile::ReadOnly | QFile::Text))
         return QStringList();
 
     // read the header
-    QString line = QString(f.readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts).at(0);
+    QStringList field = QString(f.readLine()).split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
+    if(field.isEmpty())
+        return QStringList();
+
+    QString line = field.at(0);
     // get the most probable CSV delimiter
     QString del = determineCSVDelimiter(line);
     QStringList fields;

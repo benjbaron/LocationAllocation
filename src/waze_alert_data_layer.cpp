@@ -17,23 +17,10 @@ QGraphicsItemGroup *WazeAlertDataLayer::draw() {
             QPointF p = wazeAlert->pos;
             GeometryGraphics* item = new CircleGraphics(new Circle(p, radius));
             item->setPen(Qt::NoPen);
-            switch(wazeAlert->type) {
-                case WazeAlertType::WAZE_TYPE_JAM:
-                    item->setBrush(QBrush(COL_JAM));
-                    break;
-                case WazeAlertType::WAZE_TYPE_ROAD_CLOSED:
-                    item->setBrush(QBrush(COL_ROAD_CLOSED));
-                    break;
-                case WazeAlertType::WAZE_TYPE_WEATHERHAZARD:
-                    item->setBrush(QBrush(COL_WEATHERHAZARD));
-                    break;
-                case WazeAlertType::WAZE_TYPE_ACCIDENT:
-                    item->setBrush(QBrush(COL_ACCIDENT));
-                    break;
-                default:
-                    break;
+            QColor col(wazeAlertTypeToColor(wazeAlert->type));
+            if(col.isValid()) {
+                item->setBrush(QBrush(col));
             }
-
             addGraphicsItem(item);
 //        item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         }
@@ -67,7 +54,7 @@ void WazeAlertDataLayer::addMenuBar() {
 
     QAction* actionWazeRoadTraffic = _menu->addAction("Road traffic layer");
     connect(actionWazeRoadTraffic, &QAction::triggered, this, [=](bool checked){
-        qDebug() << "Compute waze cells";
+        qDebug() << "Compute Waze Alert Road traffic";
         if(!_wazeAlertRoadTrafficLayer) {
             QString layerName = "Waze Alert Road traffic layer";
 
@@ -80,7 +67,7 @@ void WazeAlertDataLayer::addMenuBar() {
 
             _parent->changeProjection(d.getShapefilePath(), _parent->getProjOut());
 
-            WazeAlertRoadTraffic* wart = new WazeAlertRoadTraffic(d.getShapefilePath(), d.getDataPath(),
+            WazeAlertRoadTraffic* wart = new WazeAlertRoadTraffic(d.getShapefilePath(), d.getDataPath(), d.getAdditionalPath(),
                                                                   d.getRoadLinkIdx(), d.getDataIdx(),
                                                                   _wazeAlertData);
             _wazeAlertRoadTrafficLayer = new WazeAlertRoadTrafficLayer(_parent, layerName, wart);

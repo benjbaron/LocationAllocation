@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>473</width>
-    <height>591</height>
+    <height>663</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -305,6 +305,37 @@
         <widget class="QLabel" name="dataJourneytimeLabel">
          <property name="text">
           <string>Journey time</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="additionalLabel">
+       <property name="text">
+        <string>Browse additional data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="topMargin">
+        <number>10</number>
+       </property>
+       <item>
+        <widget class="QLineEdit" name="additionalLineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="additionalPushButton">
+         <property name="text">
+          <string>Browse</string>
          </property>
         </widget>
        </item>

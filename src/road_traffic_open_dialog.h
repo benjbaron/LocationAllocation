@@ -60,6 +60,9 @@ public:
     QString getDataPath() {
         return _dataPath;
     }
+    QString getAdditionalPath() {
+        return _additionalPath;
+    }
     RoadTrafficDataIndexes* getDataIdx() {
         return _dataIdx;
     }
@@ -76,6 +79,7 @@ protected:
     QString _name;
     QString _shapefilePath;
     QString _dataPath;
+    QString _additionalPath;
     RoadTrafficDataIndexes* _dataIdx;
     ShapefileIndexes* _roadLinkIdx;
 
