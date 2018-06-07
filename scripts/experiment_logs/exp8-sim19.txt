@@ -1,0 +1,1087 @@
+
+Scenario.name = filesystem_scenario
+Scenario.simulateConnections = true
+Scenario.updateInterval = 0.1
+Scenario.endTime = 21400
+MovementModel.rngSeed = 42
+
+wifi.type = SimpleBroadcastInterface
+wifi.transmitSpeed = 10M
+wifi.transmitRange = 150
+
+Events.nrof = 0
+Scenario.nrofHostGroups = 131
+
+Group.router = DirectDeliveryRouter
+Group.nrofInterfaces = 1
+Group.interface1 = wifi
+Group.speed = 2.7, 13.9
+
+MovementModel.worldSize = 37500, 59500
+
+MapBasedMovement.nrofMapFiles = 1
+MapBasedMovement.mapFile1 = ONE/data/FileSystem/sfmuni/world.wkt
+
+Group1.groupID = t
+Group1.movementModel = MapRouteMovement
+Group1.routeFile = ONE/data/FileSystem/sfmuni/bus1.wkt
+Group1.routeType = 2
+Group1.waitTime = 10, 30
+Group1.speed = 3.87595, 7.91181
+Group1.nrofHosts = 7
+
+Group2.groupID = t
+Group2.movementModel = MapRouteMovement
+Group2.routeFile = ONE/data/FileSystem/sfmuni/bus2.wkt
+Group2.routeType = 2
+Group2.waitTime = 10, 30
+Group2.speed = 3.05257, 4.2245
+Group2.nrofHosts = 3
+
+Group3.groupID = t
+Group3.movementModel = MapRouteMovement
+Group3.routeFile = ONE/data/FileSystem/sfmuni/bus3.wkt
+Group3.routeType = 2
+Group3.waitTime = 10, 30
+Group3.speed = 4.03271, 9.95972
+Group3.nrofHosts = 8
+
+Group4.groupID = t
+Group4.movementModel = MapRouteMovement
+Group4.routeFile = ONE/data/FileSystem/sfmuni/bus4.wkt
+Group4.routeType = 2
+Group4.waitTime = 10, 30
+Group4.speed = 3.02974, 3.42762
+Group4.nrofHosts = 3
+
+Group5.groupID = t
+Group5.movementModel = MapRouteMovement
+Group5.routeFile = ONE/data/FileSystem/sfmuni/bus5.wkt
+Group5.routeType = 2
+Group5.waitTime = 10, 30
+Group5.speed = 5.11945, 6.92736
+Group5.nrofHosts = 1
+
+Group6.groupID = t
+Group6.movementModel = MapRouteMovement
+Group6.routeFile = ONE/data/FileSystem/sfmuni/bus6.wkt
+Group6.routeType = 2
+Group6.waitTime = 10, 30
+Group6.speed = 5.29472, 12.1804
+Group6.nrofHosts = 6
+
+Group7.groupID = t
+Group7.movementModel = MapRouteMovement
+Group7.routeFile = ONE/data/FileSystem/sfmuni/bus7.wkt
+Group7.routeType = 2
+Group7.waitTime = 10, 30
+Group7.speed = 1.56631, 1.56631
+Group7.nrofHosts = 1
+
+Group8.groupID = t
+Group8.movementModel = MapRouteMovement
+Group8.routeFile = ONE/data/FileSystem/sfmuni/bus8.wkt
+Group8.routeType = 2
+Group8.waitTime = 10, 30
+Group8.speed = 6.31159, 7.29131
+Group8.nrofHosts = 5
+
+Group9.groupID = t
+Group9.movementModel = MapRouteMovement
+Group9.routeFile = ONE/data/FileSystem/sfmuni/bus9.wkt
+Group9.routeType = 2
+Group9.waitTime = 10, 30
+Group9.speed = 5.93898, 6.89315
+Group9.nrofHosts = 5
+
+Group10.groupID = t
+Group10.movementModel = MapRouteMovement
+Group10.routeFile = ONE/data/FileSystem/sfmuni/bus10.wkt
+Group10.routeType = 2
+Group10.waitTime = 10, 30
+Group10.speed = 5.73128, 17.2523
+Group10.nrofHosts = 10
+
+Group11.groupID = t
+Group11.movementModel = MapRouteMovement
+Group11.routeFile = ONE/data/FileSystem/sfmuni/bus11.wkt
+Group11.routeType = 2
+Group11.waitTime = 10, 30
+Group11.speed = 3.60041, 3.60041
+Group11.nrofHosts = 1
+
+Group12.groupID = t
+Group12.movementModel = MapRouteMovement
+Group12.routeFile = ONE/data/FileSystem/sfmuni/bus12.wkt
+Group12.routeType = 2
+Group12.waitTime = 10, 30
+Group12.speed = 7.00577, 9.9662
+Group12.nrofHosts = 2
+
+Group13.groupID = t
+Group13.movementModel = MapRouteMovement
+Group13.routeFile = ONE/data/FileSystem/sfmuni/bus13.wkt
+Group13.routeType = 2
+Group13.waitTime = 10, 30
+Group13.speed = 7.74406, 10.6047
+Group13.nrofHosts = 2
+
+Group14.groupID = t
+Group14.movementModel = MapRouteMovement
+Group14.routeFile = ONE/data/FileSystem/sfmuni/bus14.wkt
+Group14.routeType = 2
+Group14.waitTime = 10, 30
+Group14.speed = 4.41946, 8.04103
+Group14.nrofHosts = 4
+
+Group15.groupID = t
+Group15.movementModel = MapRouteMovement
+Group15.routeFile = ONE/data/FileSystem/sfmuni/bus15.wkt
+Group15.routeType = 2
+Group15.waitTime = 10, 30
+Group15.speed = 4.57447, 8.43581
+Group15.nrofHosts = 4
+
+Group16.groupID = t
+Group16.movementModel = MapRouteMovement
+Group16.routeFile = ONE/data/FileSystem/sfmuni/bus16.wkt
+Group16.routeType = 2
+Group16.waitTime = 10, 30
+Group16.speed = 5.49492, 15.8701
+Group16.nrofHosts = 8
+
+Group17.groupID = t
+Group17.movementModel = MapRouteMovement
+Group17.routeFile = ONE/data/FileSystem/sfmuni/bus17.wkt
+Group17.routeType = 2
+Group17.waitTime = 10, 30
+Group17.speed = 3.215, 3.215
+Group17.nrofHosts = 1
+
+Group18.groupID = t
+Group18.movementModel = MapRouteMovement
+Group18.routeFile = ONE/data/FileSystem/sfmuni/bus18.wkt
+Group18.routeType = 2
+Group18.waitTime = 10, 30
+Group18.speed = 3.57079, 12.4414
+Group18.nrofHosts = 8
+
+Group19.groupID = t
+Group19.movementModel = MapRouteMovement
+Group19.routeFile = ONE/data/FileSystem/sfmuni/bus19.wkt
+Group19.routeType = 2
+Group19.waitTime = 10, 30
+Group19.speed = 6.28568, 8.64763
+Group19.nrofHosts = 2
+
+Group20.groupID = t
+Group20.movementModel = MapRouteMovement
+Group20.routeFile = ONE/data/FileSystem/sfmuni/bus20.wkt
+Group20.routeType = 2
+Group20.waitTime = 10, 30
+Group20.speed = 14.5663, 19.3368
+Group20.nrofHosts = 2
+
+Group21.groupID = t
+Group21.movementModel = MapRouteMovement
+Group21.routeFile = ONE/data/FileSystem/sfmuni/bus21.wkt
+Group21.routeType = 2
+Group21.waitTime = 10, 30
+Group21.speed = 2.64647, 2.64647
+Group21.nrofHosts = 1
+
+Group22.groupID = t
+Group22.movementModel = MapRouteMovement
+Group22.routeFile = ONE/data/FileSystem/sfmuni/bus22.wkt
+Group22.routeType = 2
+Group22.waitTime = 10, 30
+Group22.speed = 3.9525, 8.99414
+Group22.nrofHosts = 6
+
+Group23.groupID = t
+Group23.movementModel = MapRouteMovement
+Group23.routeFile = ONE/data/FileSystem/sfmuni/bus23.wkt
+Group23.routeType = 2
+Group23.waitTime = 10, 30
+Group23.speed = 3.80093, 9.20916
+Group23.nrofHosts = 7
+
+Group24.groupID = t
+Group24.movementModel = MapRouteMovement
+Group24.routeFile = ONE/data/FileSystem/sfmuni/bus24.wkt
+Group24.routeType = 2
+Group24.waitTime = 10, 30
+Group24.speed = 10.5325, 10.5325
+Group24.nrofHosts = 1
+
+Group25.groupID = t
+Group25.movementModel = MapRouteMovement
+Group25.routeFile = ONE/data/FileSystem/sfmuni/bus25.wkt
+Group25.routeType = 2
+Group25.waitTime = 10, 30
+Group25.speed = 10.2805, 10.2805
+Group25.nrofHosts = 1
+
+Group26.groupID = t
+Group26.movementModel = MapRouteMovement
+Group26.routeFile = ONE/data/FileSystem/sfmuni/bus26.wkt
+Group26.routeType = 2
+Group26.waitTime = 10, 30
+Group26.speed = 3.52584, 7.9744
+Group26.nrofHosts = 4
+
+Group27.groupID = t
+Group27.movementModel = MapRouteMovement
+Group27.routeFile = ONE/data/FileSystem/sfmuni/bus27.wkt
+Group27.routeType = 2
+Group27.waitTime = 10, 30
+Group27.speed = 3.53583, 7.90216
+Group27.nrofHosts = 4
+
+Group28.groupID = t
+Group28.movementModel = MapRouteMovement
+Group28.routeFile = ONE/data/FileSystem/sfmuni/bus28.wkt
+Group28.routeType = 2
+Group28.waitTime = 10, 30
+Group28.speed = 7.26646, 14.9194
+Group28.nrofHosts = 6
+
+Group29.groupID = t
+Group29.movementModel = MapRouteMovement
+Group29.routeFile = ONE/data/FileSystem/sfmuni/bus29.wkt
+Group29.routeType = 2
+Group29.waitTime = 10, 30
+Group29.speed = 7.42357, 7.42357
+Group29.nrofHosts = 2
+
+Group30.groupID = t
+Group30.movementModel = MapRouteMovement
+Group30.routeFile = ONE/data/FileSystem/sfmuni/bus30.wkt
+Group30.routeType = 2
+Group30.waitTime = 10, 30
+Group30.speed = 6.4987, 15.9076
+Group30.nrofHosts = 6
+
+Group31.groupID = t
+Group31.movementModel = MapRouteMovement
+Group31.routeFile = ONE/data/FileSystem/sfmuni/bus31.wkt
+Group31.routeType = 2
+Group31.waitTime = 10, 30
+Group31.speed = 6.06792, 12.4289
+Group31.nrofHosts = 8
+
+Group32.groupID = t
+Group32.movementModel = MapRouteMovement
+Group32.routeFile = ONE/data/FileSystem/sfmuni/bus32.wkt
+Group32.routeType = 2
+Group32.waitTime = 10, 30
+Group32.speed = 4.06935, 4.06935
+Group32.nrofHosts = 1
+
+Group33.groupID = t
+Group33.movementModel = MapRouteMovement
+Group33.routeFile = ONE/data/FileSystem/sfmuni/bus33.wkt
+Group33.routeType = 2
+Group33.waitTime = 10, 30
+Group33.speed = 5.67445, 14.1212
+Group33.nrofHosts = 8
+
+Group34.groupID = t
+Group34.movementModel = MapRouteMovement
+Group34.routeFile = ONE/data/FileSystem/sfmuni/bus34.wkt
+Group34.routeType = 2
+Group34.waitTime = 10, 30
+Group34.speed = 2.22383, 2.22383
+Group34.nrofHosts = 2
+
+Group35.groupID = t
+Group35.movementModel = MapRouteMovement
+Group35.routeFile = ONE/data/FileSystem/sfmuni/bus35.wkt
+Group35.routeType = 2
+Group35.waitTime = 10, 30
+Group35.speed = 3.50762, 9.62452
+Group35.nrofHosts = 5
+
+Group36.groupID = t
+Group36.movementModel = MapRouteMovement
+Group36.routeFile = ONE/data/FileSystem/sfmuni/bus36.wkt
+Group36.routeType = 2
+Group36.waitTime = 10, 30
+Group36.speed = 2.48391, 4.03252
+Group36.nrofHosts = 6
+
+Group37.groupID = t
+Group37.movementModel = MapRouteMovement
+Group37.routeFile = ONE/data/FileSystem/sfmuni/bus37.wkt
+Group37.routeType = 2
+Group37.waitTime = 10, 30
+Group37.speed = 3.32829, 8.51341
+Group37.nrofHosts = 4
+
+Group38.groupID = t
+Group38.movementModel = MapRouteMovement
+Group38.routeFile = ONE/data/FileSystem/sfmuni/bus38.wkt
+Group38.routeType = 2
+Group38.waitTime = 10, 30
+Group38.speed = 3.20097, 9.1979
+Group38.nrofHosts = 4
+
+Group39.groupID = t
+Group39.movementModel = MapRouteMovement
+Group39.routeFile = ONE/data/FileSystem/sfmuni/bus39.wkt
+Group39.routeType = 2
+Group39.waitTime = 10, 30
+Group39.speed = 2.81328, 4.30479
+Group39.nrofHosts = 6
+
+Group40.groupID = t
+Group40.movementModel = MapRouteMovement
+Group40.routeFile = ONE/data/FileSystem/sfmuni/bus40.wkt
+Group40.routeType = 2
+Group40.waitTime = 10, 30
+Group40.speed = 2.49224, 2.49224
+Group40.nrofHosts = 3
+
+Group41.groupID = t
+Group41.movementModel = MapRouteMovement
+Group41.routeFile = ONE/data/FileSystem/sfmuni/bus41.wkt
+Group41.routeType = 2
+Group41.waitTime = 10, 30
+Group41.speed = 3.53612, 9.54635
+Group41.nrofHosts = 3
+
+Group42.groupID = t
+Group42.movementModel = MapRouteMovement
+Group42.routeFile = ONE/data/FileSystem/sfmuni/bus42.wkt
+Group42.routeType = 2
+Group42.waitTime = 10, 30
+Group42.speed = 3.8101, 6.98838
+Group42.nrofHosts = 4
+
+Group43.groupID = t
+Group43.movementModel = MapRouteMovement
+Group43.routeFile = ONE/data/FileSystem/sfmuni/bus43.wkt
+Group43.routeType = 2
+Group43.waitTime = 10, 30
+Group43.speed = 3.78327, 7.2602
+Group43.nrofHosts = 3
+
+Group44.groupID = t
+Group44.movementModel = MapRouteMovement
+Group44.routeFile = ONE/data/FileSystem/sfmuni/bus44.wkt
+Group44.routeType = 2
+Group44.waitTime = 10, 30
+Group44.speed = 5.26458, 7.78684
+Group44.nrofHosts = 1
+
+Group45.groupID = t
+Group45.movementModel = MapRouteMovement
+Group45.routeFile = ONE/data/FileSystem/sfmuni/bus45.wkt
+Group45.routeType = 2
+Group45.waitTime = 10, 30
+Group45.speed = 13.5401, 17.2504
+Group45.nrofHosts = 1
+
+Group46.groupID = t
+Group46.movementModel = MapRouteMovement
+Group46.routeFile = ONE/data/FileSystem/sfmuni/bus46.wkt
+Group46.routeType = 2
+Group46.waitTime = 10, 30
+Group46.speed = 25.7525, 27.1383
+Group46.nrofHosts = 2
+
+Group47.groupID = t
+Group47.movementModel = MapRouteMovement
+Group47.routeFile = ONE/data/FileSystem/sfmuni/bus47.wkt
+Group47.routeType = 2
+Group47.waitTime = 10, 30
+Group47.speed = 5.0681, 5.0681
+Group47.nrofHosts = 2
+
+Group48.groupID = t
+Group48.movementModel = MapRouteMovement
+Group48.routeFile = ONE/data/FileSystem/sfmuni/bus48.wkt
+Group48.routeType = 2
+Group48.waitTime = 10, 30
+Group48.speed = 5.90525, 7.51423
+Group48.nrofHosts = 2
+
+Group49.groupID = t
+Group49.movementModel = MapRouteMovement
+Group49.routeFile = ONE/data/FileSystem/sfmuni/bus49.wkt
+Group49.routeType = 2
+Group49.waitTime = 10, 30
+Group49.speed = 4.71839, 4.71839
+Group49.nrofHosts = 1
+
+Group50.groupID = t
+Group50.movementModel = MapRouteMovement
+Group50.routeFile = ONE/data/FileSystem/sfmuni/bus50.wkt
+Group50.routeType = 2
+Group50.waitTime = 10, 30
+Group50.speed = 4.91301, 9.57515
+Group50.nrofHosts = 8
+
+Group51.groupID = t
+Group51.movementModel = MapRouteMovement
+Group51.routeFile = ONE/data/FileSystem/sfmuni/bus51.wkt
+Group51.routeType = 2
+Group51.waitTime = 10, 30
+Group51.speed = 5.02476, 10.8163
+Group51.nrofHosts = 8
+
+Group52.groupID = t
+Group52.movementModel = MapRouteMovement
+Group52.routeFile = ONE/data/FileSystem/sfmuni/bus52.wkt
+Group52.routeType = 2
+Group52.waitTime = 10, 30
+Group52.speed = 5.54332, 11.4451
+Group52.nrofHosts = 7
+
+Group53.groupID = t
+Group53.movementModel = MapRouteMovement
+Group53.routeFile = ONE/data/FileSystem/sfmuni/bus53.wkt
+Group53.routeType = 2
+Group53.waitTime = 10, 30
+Group53.speed = 6.80374, 6.80374
+Group53.nrofHosts = 1
+
+Group54.groupID = t
+Group54.movementModel = MapRouteMovement
+Group54.routeFile = ONE/data/FileSystem/sfmuni/bus54.wkt
+Group54.routeType = 2
+Group54.waitTime = 10, 30
+Group54.speed = 5.38043, 12.856
+Group54.nrofHosts = 8
+
+Group55.groupID = t
+Group55.movementModel = MapRouteMovement
+Group55.routeFile = ONE/data/FileSystem/sfmuni/bus55.wkt
+Group55.routeType = 2
+Group55.waitTime = 10, 30
+Group55.speed = 3.29498, 5.76145
+Group55.nrofHosts = 4
+
+Group56.groupID = t
+Group56.movementModel = MapRouteMovement
+Group56.routeFile = ONE/data/FileSystem/sfmuni/bus56.wkt
+Group56.routeType = 2
+Group56.waitTime = 10, 30
+Group56.speed = 3.22375, 6.60806
+Group56.nrofHosts = 5
+
+Group57.groupID = t
+Group57.movementModel = MapRouteMovement
+Group57.routeFile = ONE/data/FileSystem/sfmuni/bus57.wkt
+Group57.routeType = 2
+Group57.waitTime = 10, 30
+Group57.speed = 4.46208, 5.29967
+Group57.nrofHosts = 5
+
+Group58.groupID = t
+Group58.movementModel = MapRouteMovement
+Group58.routeFile = ONE/data/FileSystem/sfmuni/bus58.wkt
+Group58.routeType = 2
+Group58.waitTime = 10, 30
+Group58.speed = 4.86008, 5.88238
+Group58.nrofHosts = 4
+
+Group59.groupID = t
+Group59.movementModel = MapRouteMovement
+Group59.routeFile = ONE/data/FileSystem/sfmuni/bus59.wkt
+Group59.routeType = 2
+Group59.waitTime = 10, 30
+Group59.speed = 4.35176, 4.35176
+Group59.nrofHosts = 1
+
+Group60.groupID = t
+Group60.movementModel = MapRouteMovement
+Group60.routeFile = ONE/data/FileSystem/sfmuni/bus60.wkt
+Group60.routeType = 2
+Group60.waitTime = 10, 30
+Group60.speed = 3.68603, 3.68603
+Group60.nrofHosts = 1
+
+Group61.groupID = t
+Group61.movementModel = MapRouteMovement
+Group61.routeFile = ONE/data/FileSystem/sfmuni/bus61.wkt
+Group61.routeType = 2
+Group61.waitTime = 10, 30
+Group61.speed = 3.32358, 7.48418
+Group61.nrofHosts = 8
+
+Group62.groupID = t
+Group62.movementModel = MapRouteMovement
+Group62.routeFile = ONE/data/FileSystem/sfmuni/bus62.wkt
+Group62.routeType = 2
+Group62.waitTime = 10, 30
+Group62.speed = 3.13972, 7.28465
+Group62.nrofHosts = 9
+
+Group63.groupID = t
+Group63.movementModel = MapRouteMovement
+Group63.routeFile = ONE/data/FileSystem/sfmuni/bus63.wkt
+Group63.routeType = 2
+Group63.waitTime = 10, 30
+Group63.speed = 4.81196, 8.94133
+Group63.nrofHosts = 1
+
+Group64.groupID = t
+Group64.movementModel = MapRouteMovement
+Group64.routeFile = ONE/data/FileSystem/sfmuni/bus64.wkt
+Group64.routeType = 2
+Group64.waitTime = 10, 30
+Group64.speed = 4.90259, 8.86366
+Group64.nrofHosts = 2
+
+Group65.groupID = t
+Group65.movementModel = MapRouteMovement
+Group65.routeFile = ONE/data/FileSystem/sfmuni/bus65.wkt
+Group65.routeType = 2
+Group65.waitTime = 10, 30
+Group65.speed = 5.03822, 9.80557
+Group65.nrofHosts = 3
+
+Group66.groupID = t
+Group66.movementModel = MapRouteMovement
+Group66.routeFile = ONE/data/FileSystem/sfmuni/bus66.wkt
+Group66.routeType = 2
+Group66.waitTime = 10, 30
+Group66.speed = 20.2366, 23.4587
+Group66.nrofHosts = 4
+
+Group67.groupID = t
+Group67.movementModel = MapRouteMovement
+Group67.routeFile = ONE/data/FileSystem/sfmuni/bus67.wkt
+Group67.routeType = 2
+Group67.waitTime = 10, 30
+Group67.speed = 28.7647, 28.7647
+Group67.nrofHosts = 1
+
+Group68.groupID = t
+Group68.movementModel = MapRouteMovement
+Group68.routeFile = ONE/data/FileSystem/sfmuni/bus68.wkt
+Group68.routeType = 2
+Group68.waitTime = 10, 30
+Group68.speed = 4.79673, 7.81733
+Group68.nrofHosts = 1
+
+Group69.groupID = t
+Group69.movementModel = MapRouteMovement
+Group69.routeFile = ONE/data/FileSystem/sfmuni/bus69.wkt
+Group69.routeType = 2
+Group69.waitTime = 10, 30
+Group69.speed = 4.15826, 7.90692
+Group69.nrofHosts = 2
+
+Group70.groupID = t
+Group70.movementModel = MapRouteMovement
+Group70.routeFile = ONE/data/FileSystem/sfmuni/bus70.wkt
+Group70.routeType = 2
+Group70.waitTime = 10, 30
+Group70.speed = 5.86643, 5.86643
+Group70.nrofHosts = 1
+
+Group71.groupID = t
+Group71.movementModel = MapRouteMovement
+Group71.routeFile = ONE/data/FileSystem/sfmuni/bus71.wkt
+Group71.routeType = 2
+Group71.waitTime = 10, 30
+Group71.speed = 24.194, 25.9228
+Group71.nrofHosts = 2
+
+Group72.groupID = t
+Group72.movementModel = MapRouteMovement
+Group72.routeFile = ONE/data/FileSystem/sfmuni/bus72.wkt
+Group72.routeType = 2
+Group72.waitTime = 10, 30
+Group72.speed = 7.14063, 10.0031
+Group72.nrofHosts = 2
+
+Group73.groupID = t
+Group73.movementModel = MapRouteMovement
+Group73.routeFile = ONE/data/FileSystem/sfmuni/bus73.wkt
+Group73.routeType = 2
+Group73.waitTime = 10, 30
+Group73.speed = 7.03608, 12.583
+Group73.nrofHosts = 1
+
+Group74.groupID = t
+Group74.movementModel = MapRouteMovement
+Group74.routeFile = ONE/data/FileSystem/sfmuni/bus74.wkt
+Group74.routeType = 2
+Group74.waitTime = 10, 30
+Group74.speed = 5.81648, 5.81648
+Group74.nrofHosts = 1
+
+Group75.groupID = t
+Group75.movementModel = MapRouteMovement
+Group75.routeFile = ONE/data/FileSystem/sfmuni/bus75.wkt
+Group75.routeType = 2
+Group75.waitTime = 10, 30
+Group75.speed = 4.09578, 4.09578
+Group75.nrofHosts = 1
+
+Group76.groupID = t
+Group76.movementModel = MapRouteMovement
+Group76.routeFile = ONE/data/FileSystem/sfmuni/bus76.wkt
+Group76.routeType = 2
+Group76.waitTime = 10, 30
+Group76.speed = 4.37211, 5.36143
+Group76.nrofHosts = 1
+
+Group77.groupID = t
+Group77.movementModel = MapRouteMovement
+Group77.routeFile = ONE/data/FileSystem/sfmuni/bus77.wkt
+Group77.routeType = 2
+Group77.waitTime = 10, 30
+Group77.speed = 5.44126, 5.75824
+Group77.nrofHosts = 1
+
+Group78.groupID = t
+Group78.movementModel = MapRouteMovement
+Group78.routeFile = ONE/data/FileSystem/sfmuni/bus78.wkt
+Group78.routeType = 2
+Group78.waitTime = 10, 30
+Group78.speed = 7.05574, 8.63502
+Group78.nrofHosts = 5
+
+Group79.groupID = t
+Group79.movementModel = MapRouteMovement
+Group79.routeFile = ONE/data/FileSystem/sfmuni/bus79.wkt
+Group79.routeType = 2
+Group79.waitTime = 10, 30
+Group79.speed = 6.11781, 6.34107
+Group79.nrofHosts = 2
+
+Group80.groupID = t
+Group80.movementModel = MapRouteMovement
+Group80.routeFile = ONE/data/FileSystem/sfmuni/bus80.wkt
+Group80.routeType = 2
+Group80.waitTime = 10, 30
+Group80.speed = 6.70549, 6.70549
+Group80.nrofHosts = 2
+
+Group81.groupID = t
+Group81.movementModel = MapRouteMovement
+Group81.routeFile = ONE/data/FileSystem/sfmuni/bus81.wkt
+Group81.routeType = 2
+Group81.waitTime = 10, 30
+Group81.speed = 3.50171, 6.36963
+Group81.nrofHosts = 3
+
+Group82.groupID = t
+Group82.movementModel = MapRouteMovement
+Group82.routeFile = ONE/data/FileSystem/sfmuni/bus82.wkt
+Group82.routeType = 2
+Group82.waitTime = 10, 30
+Group82.speed = 3.26554, 5.57906
+Group82.nrofHosts = 2
+
+Group83.groupID = t
+Group83.movementModel = MapRouteMovement
+Group83.routeFile = ONE/data/FileSystem/sfmuni/bus83.wkt
+Group83.routeType = 2
+Group83.waitTime = 10, 30
+Group83.speed = 3.22134, 5.41569
+Group83.nrofHosts = 4
+
+Group84.groupID = t
+Group84.movementModel = MapRouteMovement
+Group84.routeFile = ONE/data/FileSystem/sfmuni/bus84.wkt
+Group84.routeType = 2
+Group84.waitTime = 10, 30
+Group84.speed = 3.31379, 5.00171
+Group84.nrofHosts = 3
+
+Group85.groupID = t
+Group85.movementModel = MapRouteMovement
+Group85.routeFile = ONE/data/FileSystem/sfmuni/bus85.wkt
+Group85.routeType = 2
+Group85.waitTime = 10, 30
+Group85.speed = 3.3721, 4.85715
+Group85.nrofHosts = 5
+
+Group86.groupID = t
+Group86.movementModel = MapRouteMovement
+Group86.routeFile = ONE/data/FileSystem/sfmuni/bus86.wkt
+Group86.routeType = 2
+Group86.waitTime = 10, 30
+Group86.speed = 4.83392, 8.44625
+Group86.nrofHosts = 7
+
+Group87.groupID = t
+Group87.movementModel = MapRouteMovement
+Group87.routeFile = ONE/data/FileSystem/sfmuni/bus87.wkt
+Group87.routeType = 2
+Group87.waitTime = 10, 30
+Group87.speed = 3.4331, 3.77262
+Group87.nrofHosts = 4
+
+Group88.groupID = t
+Group88.movementModel = MapRouteMovement
+Group88.routeFile = ONE/data/FileSystem/sfmuni/bus88.wkt
+Group88.routeType = 2
+Group88.waitTime = 10, 30
+Group88.speed = 4.39344, 6.14887
+Group88.nrofHosts = 8
+
+Group89.groupID = t
+Group89.movementModel = MapRouteMovement
+Group89.routeFile = ONE/data/FileSystem/sfmuni/bus89.wkt
+Group89.routeType = 2
+Group89.waitTime = 10, 30
+Group89.speed = 4.18194, 5.2371
+Group89.nrofHosts = 1
+
+Group90.groupID = t
+Group90.movementModel = MapRouteMovement
+Group90.routeFile = ONE/data/FileSystem/sfmuni/bus90.wkt
+Group90.routeType = 2
+Group90.waitTime = 10, 30
+Group90.speed = 4.05875, 6.9722
+Group90.nrofHosts = 4
+
+Group91.groupID = t
+Group91.movementModel = MapRouteMovement
+Group91.routeFile = ONE/data/FileSystem/sfmuni/bus91.wkt
+Group91.routeType = 2
+Group91.waitTime = 10, 30
+Group91.speed = 3.52422, 3.75211
+Group91.nrofHosts = 1
+
+Group92.groupID = t
+Group92.movementModel = MapRouteMovement
+Group92.routeFile = ONE/data/FileSystem/sfmuni/bus92.wkt
+Group92.routeType = 2
+Group92.waitTime = 10, 30
+Group92.speed = 4.17934, 7.95563
+Group92.nrofHosts = 4
+
+Group93.groupID = t
+Group93.movementModel = MapRouteMovement
+Group93.routeFile = ONE/data/FileSystem/sfmuni/bus93.wkt
+Group93.routeType = 2
+Group93.waitTime = 10, 30
+Group93.speed = 4.51198, 8.15468
+Group93.nrofHosts = 4
+
+Group94.groupID = t
+Group94.movementModel = MapRouteMovement
+Group94.routeFile = ONE/data/FileSystem/sfmuni/bus94.wkt
+Group94.routeType = 2
+Group94.waitTime = 10, 30
+Group94.speed = 3.97221, 4.1259
+Group94.nrofHosts = 2
+
+Group95.groupID = t
+Group95.movementModel = MapRouteMovement
+Group95.routeFile = ONE/data/FileSystem/sfmuni/bus95.wkt
+Group95.routeType = 2
+Group95.waitTime = 10, 30
+Group95.speed = 4.18136, 9.78778
+Group95.nrofHosts = 6
+
+Group96.groupID = t
+Group96.movementModel = MapRouteMovement
+Group96.routeFile = ONE/data/FileSystem/sfmuni/bus96.wkt
+Group96.routeType = 2
+Group96.waitTime = 10, 30
+Group96.speed = 4.76906, 5.36705
+Group96.nrofHosts = 1
+
+Group97.groupID = t
+Group97.movementModel = MapRouteMovement
+Group97.routeFile = ONE/data/FileSystem/sfmuni/bus97.wkt
+Group97.routeType = 2
+Group97.waitTime = 10, 30
+Group97.speed = 4.27701, 6.90379
+Group97.nrofHosts = 4
+
+Group98.groupID = t
+Group98.movementModel = MapRouteMovement
+Group98.routeFile = ONE/data/FileSystem/sfmuni/bus98.wkt
+Group98.routeType = 2
+Group98.waitTime = 10, 30
+Group98.speed = 4.92305, 8.55472
+Group98.nrofHosts = 7
+
+Group99.groupID = t
+Group99.movementModel = MapRouteMovement
+Group99.routeFile = ONE/data/FileSystem/sfmuni/bus99.wkt
+Group99.routeType = 2
+Group99.waitTime = 10, 30
+Group99.speed = 4.20693, 6.03123
+Group99.nrofHosts = 5
+
+Group100.groupID = t
+Group100.movementModel = MapRouteMovement
+Group100.routeFile = ONE/data/FileSystem/sfmuni/bus100.wkt
+Group100.routeType = 2
+Group100.waitTime = 10, 30
+Group100.speed = 4.60576, 6.87212
+Group100.nrofHosts = 8
+
+Group101.groupID = t
+Group101.movementModel = MapRouteMovement
+Group101.routeFile = ONE/data/FileSystem/sfmuni/bus101.wkt
+Group101.routeType = 2
+Group101.waitTime = 10, 30
+Group101.speed = 3.38506, 4.56274
+Group101.nrofHosts = 4
+
+Group102.groupID = t
+Group102.movementModel = MapRouteMovement
+Group102.routeFile = ONE/data/FileSystem/sfmuni/bus102.wkt
+Group102.routeType = 2
+Group102.waitTime = 10, 30
+Group102.speed = 4.1758, 9.06759
+Group102.nrofHosts = 3
+
+Group103.groupID = t
+Group103.movementModel = MapRouteMovement
+Group103.routeFile = ONE/data/FileSystem/sfmuni/bus103.wkt
+Group103.routeType = 2
+Group103.waitTime = 10, 30
+Group103.speed = 3.38402, 5.43838
+Group103.nrofHosts = 4
+
+Group104.groupID = t
+Group104.movementModel = MapRouteMovement
+Group104.routeFile = ONE/data/FileSystem/sfmuni/bus104.wkt
+Group104.routeType = 2
+Group104.waitTime = 10, 30
+Group104.speed = 3.51709, 6.91127
+Group104.nrofHosts = 3
+
+Group105.groupID = t
+Group105.movementModel = MapRouteMovement
+Group105.routeFile = ONE/data/FileSystem/sfmuni/bus105.wkt
+Group105.routeType = 2
+Group105.waitTime = 10, 30
+Group105.speed = 3.86572, 11.3055
+Group105.nrofHosts = 4
+
+Group106.groupID = t
+Group106.movementModel = MapRouteMovement
+Group106.routeFile = ONE/data/FileSystem/sfmuni/bus106.wkt
+Group106.routeType = 2
+Group106.waitTime = 10, 30
+Group106.speed = 3.5224, 6.19549
+Group106.nrofHosts = 4
+
+Group107.groupID = t
+Group107.movementModel = MapRouteMovement
+Group107.routeFile = ONE/data/FileSystem/sfmuni/bus107.wkt
+Group107.routeType = 2
+Group107.waitTime = 10, 30
+Group107.speed = 3.96215, 12.0554
+Group107.nrofHosts = 6
+
+Group108.groupID = t
+Group108.movementModel = MapRouteMovement
+Group108.routeFile = ONE/data/FileSystem/sfmuni/bus108.wkt
+Group108.routeType = 2
+Group108.waitTime = 10, 30
+Group108.speed = 3.50572, 4.26728
+Group108.nrofHosts = 2
+
+Group109.groupID = t
+Group109.movementModel = MapRouteMovement
+Group109.routeFile = ONE/data/FileSystem/sfmuni/bus109.wkt
+Group109.routeType = 2
+Group109.waitTime = 10, 30
+Group109.speed = 4.52693, 5.64734
+Group109.nrofHosts = 2
+
+Group110.groupID = t
+Group110.movementModel = MapRouteMovement
+Group110.routeFile = ONE/data/FileSystem/sfmuni/bus110.wkt
+Group110.routeType = 2
+Group110.waitTime = 10, 30
+Group110.speed = 4.5123, 6.98111
+Group110.nrofHosts = 4
+
+Group111.groupID = t
+Group111.movementModel = MapRouteMovement
+Group111.routeFile = ONE/data/FileSystem/sfmuni/bus111.wkt
+Group111.routeType = 2
+Group111.waitTime = 10, 30
+Group111.speed = 4.45944, 4.53487
+Group111.nrofHosts = 7
+
+Group112.groupID = t
+Group112.movementModel = MapRouteMovement
+Group112.routeFile = ONE/data/FileSystem/sfmuni/bus112.wkt
+Group112.routeType = 2
+Group112.waitTime = 10, 30
+Group112.speed = 6.41539, 8.89188
+Group112.nrofHosts = 4
+
+Group113.groupID = t
+Group113.movementModel = MapRouteMovement
+Group113.routeFile = ONE/data/FileSystem/sfmuni/bus113.wkt
+Group113.routeType = 2
+Group113.waitTime = 10, 30
+Group113.speed = 3.07963, 5.96964
+Group113.nrofHosts = 4
+
+Group114.groupID = t
+Group114.movementModel = MapRouteMovement
+Group114.routeFile = ONE/data/FileSystem/sfmuni/bus114.wkt
+Group114.routeType = 2
+Group114.waitTime = 10, 30
+Group114.speed = 3.35258, 6.60872
+Group114.nrofHosts = 5
+
+Group115.groupID = t
+Group115.movementModel = MapRouteMovement
+Group115.routeFile = ONE/data/FileSystem/sfmuni/bus115.wkt
+Group115.routeType = 2
+Group115.waitTime = 10, 30
+Group115.speed = 3.93911, 4.99131
+Group115.nrofHosts = 2
+
+Group116.groupID = t
+Group116.movementModel = MapRouteMovement
+Group116.routeFile = ONE/data/FileSystem/sfmuni/bus116.wkt
+Group116.routeType = 2
+Group116.waitTime = 10, 30
+Group116.speed = 6.40948, 8.89921
+Group116.nrofHosts = 2
+
+Group117.groupID = t
+Group117.movementModel = MapRouteMovement
+Group117.routeFile = ONE/data/FileSystem/sfmuni/bus117.wkt
+Group117.routeType = 2
+Group117.waitTime = 10, 30
+Group117.speed = 3.65205, 3.65205
+Group117.nrofHosts = 1
+
+Group118.groupID = t
+Group118.movementModel = MapRouteMovement
+Group118.routeFile = ONE/data/FileSystem/sfmuni/bus118.wkt
+Group118.routeType = 2
+Group118.waitTime = 10, 30
+Group118.speed = 2.97894, 2.97894
+Group118.nrofHosts = 6
+
+Group119.groupID = t
+Group119.movementModel = MapRouteMovement
+Group119.routeFile = ONE/data/FileSystem/sfmuni/bus119.wkt
+Group119.routeType = 2
+Group119.waitTime = 10, 30
+Group119.speed = 3.06182, 3.06182
+Group119.nrofHosts = 7
+
+Group120.groupID = t
+Group120.movementModel = MapRouteMovement
+Group120.routeFile = ONE/data/FileSystem/sfmuni/bus120.wkt
+Group120.routeType = 2
+Group120.waitTime = 10, 30
+Group120.speed = 4.38596, 8.91819
+Group120.nrofHosts = 3
+
+Group121.groupID = t
+Group121.movementModel = MapRouteMovement
+Group121.routeFile = ONE/data/FileSystem/sfmuni/bus121.wkt
+Group121.routeType = 2
+Group121.waitTime = 10, 30
+Group121.speed = 4.82237, 8.95758
+Group121.nrofHosts = 3
+
+Group122.groupID = t
+Group122.movementModel = MapRouteMovement
+Group122.routeFile = ONE/data/FileSystem/sfmuni/bus122.wkt
+Group122.routeType = 2
+Group122.waitTime = 10, 30
+Group122.speed = 3.66423, 6.13563
+Group122.nrofHosts = 3
+
+Group123.groupID = t
+Group123.movementModel = MapRouteMovement
+Group123.routeFile = ONE/data/FileSystem/sfmuni/bus123.wkt
+Group123.routeType = 2
+Group123.waitTime = 10, 30
+Group123.speed = 4.24388, 5.50692
+Group123.nrofHosts = 4
+
+Group124.groupID = t
+Group124.movementModel = MapRouteMovement
+Group124.routeFile = ONE/data/FileSystem/sfmuni/bus124.wkt
+Group124.routeType = 2
+Group124.waitTime = 10, 30
+Group124.speed = 3.91319, 8.24971
+Group124.nrofHosts = 4
+
+Group125.groupID = t
+Group125.movementModel = MapRouteMovement
+Group125.routeFile = ONE/data/FileSystem/sfmuni/bus125.wkt
+Group125.routeType = 2
+Group125.waitTime = 10, 30
+Group125.speed = 3.35387, 6.13616
+Group125.nrofHosts = 4
+
+Group126.groupID = t
+Group126.movementModel = MapRouteMovement
+Group126.routeFile = ONE/data/FileSystem/sfmuni/bus126.wkt
+Group126.routeType = 2
+Group126.waitTime = 10, 30
+Group126.speed = 3.03183, 3.03183
+Group126.nrofHosts = 1
+
+Group127.groupID = t
+Group127.movementModel = MapRouteMovement
+Group127.routeFile = ONE/data/FileSystem/sfmuni/bus127.wkt
+Group127.routeType = 2
+Group127.waitTime = 10, 30
+Group127.speed = 2.66391, 2.66391
+Group127.nrofHosts = 1
+
+Group128.groupID = t
+Group128.movementModel = MapRouteMovement
+Group128.routeFile = ONE/data/FileSystem/sfmuni/bus128.wkt
+Group128.routeType = 2
+Group128.waitTime = 10, 30
+Group128.speed = 2.99745, 2.99745
+Group128.nrofHosts = 1
+
+Group129.groupID = t
+Group129.movementModel = MapRouteMovement
+Group129.routeFile = ONE/data/FileSystem/sfmuni/bus129.wkt
+Group129.routeType = 2
+Group129.waitTime = 10, 30
+Group129.speed = 4.12232, 6.51133
+Group129.nrofHosts = 12
+
+Group130.groupID = t
+Group130.movementModel = MapRouteMovement
+Group130.routeFile = ONE/data/FileSystem/sfmuni/bus130.wkt
+Group130.routeType = 2
+Group130.waitTime = 10, 30
+Group130.speed = 4.19857, 9.05414
+Group130.nrofHosts = 11
+
+
+
+Group131.groupID = f
+Group131.nrofHosts = 15
+Group131.movementModel = StationaryMovement
+# Group131.movementModel = RandomWaypoint # To make the facilities move
+Group131.nodeLocation = -1, -1
+
+Report.nrofReports = 1
+Report.warmup = 0
+Report.reportDir = reports/
+
+Report.report1 = FileSystemBackendNonAtomicReport
+FileSystemBackendNonAtomicReport.reqGenRate = 0.0005555555556
+FileSystemBackendNonAtomicReport.proportionPutReq = 0.1
+FileSystemBackendNonAtomicReport.deadline = 3600
+FileSystemBackendNonAtomicReport.putPolicy = first
+FileSystemBackendNonAtomicReport.useBackendNodes = true
+FileSystemBackendNonAtomicReport.propagationTimer = -1
+FileSystemBackendNonAtomicReport.nrofFileCopies = -1
+FileSystemBackendNonAtomicReport.fileSize = 50M
+FileSystemBackendNonAtomicReport.facilitiesFilename = ../data/sf-muni-ONE/alloc/alloc15-2400.txt
+FileSystemBackendNonAtomicReport.outputAvailabilityTimes = true

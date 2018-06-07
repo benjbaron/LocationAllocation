@@ -6,6 +6,7 @@
 from multiprocessing.dummy import Pool
 from subprocess import Popen, PIPE, STDOUT
 import optparse
+import datetime
 import re
 import time
 import json
@@ -14,9 +15,11 @@ import os
 import copy
 
 NB_PROCESSES = 7
-regex = "(?:[\d\.\w\-]+\,)+[\d\.\w\-]+"
+regex = r"(?:[\d\.\w\-]+\;)+[\d\.\w\-]+"
 URL_BASE = "http://localhost:8080"
 NB_MAX_REQ = 10
+LOG_PATH = "experiment_logs/"
+LOG_HISTORY_FILE = "log_history.txt"
 
 
 def send_request(base, params={}):
@@ -63,7 +66,6 @@ def get_allocation_file(out, method, nbFacilities, deadline, delFactor, travelTi
     count = 0
     with open(out, 'w') as f:
         for facility_id, facility in results.items():
-            print facility
             f.write("{id} {x} {y} {rank} {weight} {nbDeleted} {nbAllocated}\n".format(id=facility_id,
                                                                                  x=facility["x"],
                                                                                  y=facility["y"],
@@ -87,20 +89,31 @@ def run(settings, key, values, key2="", values2=[]):
     :param values2:
     :rtype allocation result dictionary
     """
+
+    nbSim = len(values) * max(1,len(values2))
+    expId = add_experiment_session(nbSim, key, values, key2, values2)
+    file_out = LOG_PATH+"exp-"+str(expId)+"-results.txt"
+
+    print("Experiment ID: "+str(expId))
+
     processes = []
     file_count = 1
     for v in values:
         settings[key] = v
+        settings['expId'] = expId
+        settings['simId'] = file_count
         s1 = copy.deepcopy(settings)
         if key2:
             for v2 in values2:
                 s2 = copy.deepcopy(s1)
                 s2[key2] = v2
+                s2['simId'] = file_count
                 processes.append((s2, v, v2, file_count))
                 file_count += 1
         else:
             processes.append((s1, v, "", file_count))
             file_count += 1
+
 
     def get_lines((s, v1, v2, count)):
         """
@@ -119,7 +132,6 @@ def run(settings, key, values, key2="", values2=[]):
                     deadline = 2400
                 alloc_file = s["allocPath"] + "alloc"+str(s['nrofFacilities'])+"-"+str(deadline)+".txt" #+str(s['deadline'])+".txt"
                 s["facilitiesFilename"] = alloc_file
-                print alloc_file, os.path.isfile(alloc_file)
                 if(not os.path.isfile(alloc_file)):
                     return
             else:
@@ -133,12 +145,13 @@ def run(settings, key, values, key2="", values2=[]):
                                     s['travelTime'],
                                     s['distance'])
                 s["nrofFacilities"] = nbFacilities
+        
         f = build_settings_file(s)
-        print f
-        process = Popen("echo \"{str}\" | java -jar ONE.jar -b {b} /dev/stdin".format(str=f, b=s["b"]),
+        settings_file_output(s['expId'], s['simId'], f)
+        process = Popen("echo \"{str}\" | java -jar {jarFile} -b {b} /dev/stdin".format(str=f, jarFile=s["jarFile"], b=s["b"]),
                         shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
 
-        return process.communicate()[0]  # get the output, [1] is the error
+        return s['simId'], process.communicate()[0]  # get the output, [1] is the error
 
     outputs = Pool(NB_PROCESSES).map(get_lines, processes)
 
@@ -150,11 +163,16 @@ def run(settings, key, values, key2="", values2=[]):
 
     # process the output of the simulations
     res = []
-    for out in outputs:
+    file_out = open(file_out, 'w')
+    for simId, out in outputs:
         print out
         if out :
             m = re.findall(regex, out)
             res += m
+            if len(m) > 0:
+                file_out.write("%s;%s\n" % (simId, m[0]))
+
+    file_out.close()
 
     return res
 
@@ -262,7 +280,6 @@ MapBasedMovement.nrofMapFiles = 1
 MapBasedMovement.mapFile1 = /Users/ben/Documents/workspace/ONE/src/one_1.4.1/data/FileSystem/world.wkt
 """.format(mobility=mobility, nrofMobileUsers=nrofMobileUsers)
     elif mobility == "" and mobilityFile != "":
-        print "hello", mobilityFile
         with open(mobilityFile, "r") as file_mobility:
             nrofHostGroups = 1+int(next(file_mobility))
             for line in file_mobility:
@@ -274,7 +291,7 @@ MapBasedMovement.mapFile1 = /Users/ben/Documents/workspace/ONE/src/one_1.4.1/dat
         facilityPlacement = "manhattanGrid"
     facilitiesFilename = ""
     if settings["facilityPlacement"] == "file" and settings["facilitiesFilename"]:
-        facilitiesFilename = "FileSystemBackendReport.facilitiesFilename = %s" % settings["facilitiesFilename"]
+        facilitiesFilename = "%s.facilitiesFilename = %s" % (settings["reportName"], settings["facilitiesFilename"])
 
     propagationTimer = settings["propagationTimer"]
     nrofFileCopies = settings["nrofFileCopies"]
@@ -282,6 +299,10 @@ MapBasedMovement.mapFile1 = /Users/ben/Documents/workspace/ONE/src/one_1.4.1/dat
     useGlobalInformation = "true" if settings["useGlobalInformation"] else "false"
     putPolicy = settings["putPolicy"]
     outputAvailabilityTimes = "true" if settings["outputAvailabilityTimes"] else "false"
+    reportName = settings["reportName"]
+    fileSize = settings["fileSize"]
+    reqGenRate = settings['reqGenRate']
+    proportionPutReq = settings['proportionPutReq']
 
     if settings["nrofFacilities"] != -1:
         nrofFacilities = settings["nrofFacilities"]
@@ -319,20 +340,22 @@ Report.nrofReports = 1
 Report.warmup = 0
 Report.reportDir = reports/
 
-Report.report1 = FileSystemBackendReport
-FileSystemBackendReport.reqGenRate = 0.0016667
-FileSystemBackendReport.proportionPutReq = 0.1
-FileSystemBackendReport.deadline = {deadline}
-FileSystemBackendReport.putPolicy = {putPolicy}
-FileSystemBackendReport.useBackendNodes = {useBackendNodes}
-FileSystemBackendReport.propagationTimer = {propagationTimer}
-FileSystemBackendReport.nrofFileCopies = {nrofFileCopies}
+Report.report1 = {reportName}
+{reportName}.reqGenRate = {reqGenRate}
+{reportName}.proportionPutReq = {proportionPutReq}
+{reportName}.deadline = {deadline}
+{reportName}.putPolicy = {putPolicy}
+{reportName}.useBackendNodes = {useBackendNodes}
+{reportName}.propagationTimer = {propagationTimer}
+{reportName}.nrofFileCopies = {nrofFileCopies}
+{reportName}.fileSize = {fileSize}
 {facilitiesFilename}
-FileSystemBackendReport.outputAvailabilityTimes = {outputAvailabilityTimes}
-""".format(simTime=settings["simTime"], nrofHostGroups=nrofHostGroups, nrofFacilities=nrofFacilities,
+{reportName}.outputAvailabilityTimes = {outputAvailabilityTimes}
+""".format(simTime=settings["simTime"], reportName=reportName, nrofHostGroups=nrofHostGroups, nrofFacilities=nrofFacilities,
            movementModel=movementModel, deadline=deadline, facilityPlacement=facilityPlacement, maxStorage=maxStorage,
            facilitiesFilename=facilitiesFilename, propagationTimer=propagationTimer, nrofFileCopies=nrofFileCopies,
-           useBackendNodes=useBackendNodes,useGlobalInformation=useGlobalInformation,putPolicy=putPolicy,outputAvailabilityTimes=outputAvailabilityTimes)
+           useBackendNodes=useBackendNodes, useGlobalInformation=useGlobalInformation, putPolicy=putPolicy,
+           outputAvailabilityTimes=outputAvailabilityTimes, fileSize=fileSize, reqGenRate=reqGenRate, proportionPutReq=proportionPutReq)
     return str
 
 
@@ -340,6 +363,49 @@ def run_allocation_thread(n):
     out = "alloc-"+str(n)+".txt"
     get_allocation_file(out, "loc", n, 500, -1, -1, -1)
     return out
+
+
+def add_experiment_session(nbSim, key1, value1, key2, value2):
+    with open(LOG_PATH+LOG_HISTORY_FILE, 'a+') as file:
+        exp_parameters_str = "%s %s \"%s\" %s \"%s\" %s" % (str(datetime.datetime.today()), str(nbSim),
+                                               key1, str(value1), key2, str(value2))
+        file.seek(0)
+        fisrtChar = file.read(1)
+        if not fisrtChar:
+            file.write("1 %s\n" % (exp_parameters_str))
+            return 1
+       
+        file.seek(0)
+        lastLine = file.readlines()[-1]
+        fields = lastLine.split(" ")
+        expId = int(fields[0]) + 1
+        file.write("%s %s\n" % (str(expId), exp_parameters_str))
+
+        file.close()
+        return expId
+
+
+def update_experiment_log(expId, nbSim, key1, value1, key2, value2):
+    path = LOG_PATH+LOG_HISTORY_FILE
+    tmpPath = LOG_PATH+LOG_HISTORY_FILE+"_"
+    with open(tmpPath, 'w') as out_file:
+        with open(path, 'r') as in_file:
+            for line in in_file:
+                if str(expId) in line:
+                    newLine = line.strip() + " " + str(nbSim) + " " + key1 + " " + str(value1) + " " + key2 + " " + str(value2) + "\n"
+                    out_file.write(newLine)
+                else:
+                    out_file.write(line)
+    os.remove(LOG_PATH+LOG_HISTORY_FILE)
+    os.rename(tmpPath,path)
+
+
+
+def settings_file_output(expId, simId, string_ouput):
+    filePath = LOG_PATH+"exp"+str(expId)+"-sim"+str(simId)+".txt"
+    file = open(filePath, 'w')
+    file.write(string_ouput)
+    file.close()
 
 
 if __name__ == '__main__':
@@ -353,8 +419,10 @@ if __name__ == '__main__':
     options = get_options()
     settings = {
         "file": options.file,
+        "jarFile": "one_run.jar", # ONE.jar
+        "reportName": "FileSystemBackendNonAtomicReport", # FileSystemBackendReport
         "simTime": 21400,
-        "deadline": 20000,  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
+        "deadline": 3600,  # options.deadline, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3600
         "mobility": "",    # "ManhattanGridMovement", # "RandomWaypoint", "MapBasedMovement", "" # options.mobility,
         "mobilityFile": "settings.txt", 
         "nrofFacilities": 15,  # options.nrofFacilities,
@@ -367,8 +435,11 @@ if __name__ == '__main__':
         "delFactor": 0.5,
         "travelTime": "1000",
         "distance": "1000",
+        "reqGenRate": 0.0016667,
+        "proportionPutReq": 0.1,
         "propagationTimer": -1,
         "nrofFileCopies": -1,
+        "fileSize": "5M",
         "useGlobalInformation": True,
         "useBackendNodes": True,
         "putPolicy": "first",  # {"all", "first"}
@@ -387,6 +458,6 @@ if __name__ == '__main__':
     #                     settings['travelTime'],
     #                     settings['distance'])
 
-    out = run(settings, "nrofFacilities", [19,20,21,22])
+    out = run(settings, "fileSize", ["1M", "5M", "10M", "25M", "50M", "100M"], "reqGenRate", [0.016667, 0.0016667, 0.0005555555556, 0.0002777777778])
     for o in out:
         print o
